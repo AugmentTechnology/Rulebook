@@ -179,7 +179,7 @@
 
 
                                     <div class="form-group myk-mb-3">
-                                        <label class="myk-form-label myk-text-dark">Designation Title:&nbsp;&nbsp;</label>
+                                        <label class="myk-form-label myk-text-dark">Designation&nbsp; Title:&nbsp;&nbsp;</label>
                                         <div class="data-row">
                                             <span class="view-mode">{{ office_contacts.provider_poc_designation }}</span>
                                             <input type="text" name="provider_poc_designation" class="edit-mode myk-form-input" value="{% if office_contacts.provider_poc_designation %}{{ office_contacts.provider_poc_designation }}{% endif %}" />
@@ -216,7 +216,13 @@
                                         <div class="data-row">
                                             <span class="view-mode">{{ office_contacts.billing_rep_phone }}</span>
                                             <input type="text" name="billing_rep_phone" class="edit-mode phone-mask" placeholder="(XXX) XXX-XXXX" maxlength="14" value="{% if office_contacts.billing_rep_phone %}{{ office_contacts.billing_rep_phone }}{% endif %}" />
-                                            <label class="myk-form-label myk-text-dark">&nbsp;&nbsp;Ext:&nbsp;&nbsp;</label>
+                                        </div>
+                                    </div>
+                                   
+                                   <div class="form-group myk-mb-3">
+                                        <label class="myk-form-label myk-text-dark">&nbsp;&nbsp;Ext:&nbsp;&nbsp;</label> 
+                                        <div class="data-row">        
+                                            
                                             <span class="view-mode">{{ office_contacts.billing_rep_ext }}</span>
                                             <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="(XXX) XXX-XXXX" maxlength="14" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
                                         </div>
@@ -388,92 +394,132 @@
                             </h2>
 
 
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Provider Name and NPI:</label>
+                           <div class="provider-table-wrapper">
 
-                                <div class="data-row">
+                                <div class="provider-table-label">
+                                    Provider Details
+                                </div>
 
-                                    <!-- VIEW MODE -->
-                                    <div class="view-mode">
-                                        {% if practice_providers and practice_providers|length > 0 %}
-                                        <ol class="provider-pairs">
+                                <!-- VIEW MODE -->
+                                <div class="view-mode provider-view-table-wrap">
+                                    {% if practice_providers and practice_providers|length > 0 %}
+                                    <table class="provider-clean-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Provider Name</th>
+                                                <th>NPI</th>
+                                                <th>Taxonomy</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {% for p in practice_providers %}
-                                            {% if p.provider_name or p.provider_npi %}
-                                            <li class="provider-pair-row">
-                                                <span class="provider-name">{{ p.provider_name }}</span>
-                                                {% if p.provider_npi %}
-                                                <span class="provider-npi"> - {{ p.provider_npi }}</span>
-                                                {% endif %}
-                                            </li>
+                                            {% if p.provider_name or p.provider_npi or p.taxonomy %}
+                                            <tr>
+                                                <td>{{ p.provider_name }}</td>
+                                                <td>{{ p.provider_npi }}</td>
+                                                <td>{{ p.taxonomy }}</td>
+                                            </tr>
                                             {% endif %}
                                             {% endfor %}
-                                        </ol>
-                                        {% endif %}
-                                    </div>
-
-                                    <!-- EDIT MODE -->
-
-
-
-
-                                    <div id="provider-container" class="edit-mode provider-edit-list" style="display:none;">
-                                        {% if practice_providers and practice_providers|length > 0 %}
-                                        {% for p in practice_providers %}
-                                        <div class="provider-edit-row">
-                                            <input type="text"
-                                                   name="provider_name"
-                                                   class="provider-line-input provider-name-input"
-                                                   value="{{ p.provider_name }}"
-                                                   placeholder="Provider name" />
-
-                                            <input type="text"
-                                                   name="provider_npi"
-                                                   class="provider-line-input provider-npi-input"
-                                                   maxlength="10"
-                                                   value="{{ p.provider_npi }}"
-                                                   placeholder="NPI" />
-
-                                            <button type="button"
-                                                    class="provider-remove-btn"
-                                                    onclick="removeProviderRow(this)">
-                                                x
-                                            </button>
-                                        </div>
-                                        {% endfor %}
-                                        {% else %}
-                                        <div class="provider-edit-row">
-                                            <input type="text"
-                                                   name="provider_name"
-                                                   class="provider-line-input provider-name-input"
-                                                   placeholder="Provider name" />
-
-                                            <input type="text"
-                                                   name="provider_npi"
-                                                   class="provider-line-input provider-npi-input"
-                                                   maxlength="10"
-                                                   placeholder="NPI" />
-
-                                            <button type="button"
-                                                    class="provider-remove-btn"
-                                                    onclick="removeProviderRow(this)">
-                                                x
-                                            </button>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-
-                                    <button type="button"
-                                            class="edit-mode provider-add-btn"
-                                            style="display:none;"
-                                            onclick="addProviderRow()">
-                                        + Add Provider
-                                    </button>
-
-                                    <div id="NPI" style="font-size: 0.85rem; margin-top: 5px; font-family: Book Antiqua;"></div>
-
-
-
+                                        </tbody>
+                                    </table>
+                                    {% endif %}
                                 </div>
+
+                                <!-- EDIT MODE -->
+                                <div id="provider-container" class="edit-mode provider-edit-table-wrap" style="display:none;">
+                                    <table class="provider-edit-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Provider Name</th>
+                                                <th>NPI</th>
+                                                <th>Taxonomy</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="provider-table-body">
+                                            {% if practice_providers and practice_providers|length > 0 %}
+                                            {% for p in practice_providers %}
+                                            <tr class="provider-edit-row">
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_name"
+                                                        class="provider-line-input provider-name-input"
+                                                        value="{{ p.provider_name }}"
+                                                        placeholder="Provider name">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_npi"
+                                                        class="provider-line-input provider-npi-input"
+                                                        maxlength="10"
+                                                        value="{{ p.provider_npi }}"
+                                                        placeholder="NPI">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_taxonomy"
+                                                        class="provider-line-input provider-taxonomy-input"
+                                                        value="{{ p.taxonomy }}"
+                                                        placeholder="Taxonomy">
+                                                </td>
+
+                                                <td class="provider-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeProviderRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <tr class="provider-edit-row">
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_name"
+                                                        class="provider-line-input provider-name-input"
+                                                        placeholder="Provider name">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_npi"
+                                                        class="provider-line-input provider-npi-input"
+                                                        maxlength="10"
+                                                        placeholder="NPI">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="provider_taxonomy"
+                                                        class="provider-line-input provider-taxonomy-input"
+                                                        placeholder="Taxonomy">
+                                                </td>
+
+                                                <td class="provider-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeProviderRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <button type="button"
+                                        class="edit-mode provider-add-btn"
+                                        style="display:none;"
+                                        onclick="addProviderRow()">
+                                    + Add Provider
+                                </button>
+
                             </div>
                         </div>
 
@@ -688,19 +734,25 @@
 
                                 </div>
                             </div>
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Standard Reports for Monthly meetings:&nbsp;&nbsp;</label>
+                            <div class="form-group myk-mb-3 form-group-stacked">
+                                <label class="myk-form-label myk-text-dark">
+                                    Standard Reports for Monthly meetings:
+                                </label>
+
                                 <textarea name="standard_monthly_reports" style="display:none;">{{ collection_agency_and_insurance_logins.get('standard_monthly_reports','') }}</textarea>
-                                {{
-                              BF.render_block_field(
-                                 block_data.monthly_reports_blocks,
-                                 "collection_agency_and_insurance_logins",
-                                 "standard_monthly_reports",
-                                 "monthly_reports",
-                                 practice_id,
-                                 practice_images
-                             )
-                                }}
+
+                                <div class="stacked-content">
+                                    {{
+                                        BF.render_block_field(
+                                            block_data.monthly_reports_blocks,
+                                            "collection_agency_and_insurance_logins",
+                                            "standard_monthly_reports",
+                                            "monthly_reports",
+                                            practice_id,
+                                            practice_images
+                                        )
+                                    }}
+                                </div>
                             </div>
                             <div class="form-group myk-mb-3">
                                 <label class="myk-form-label myk-text-dark">Custom Reports Required for Client Meetings:&nbsp;&nbsp;</label>
@@ -745,17 +797,17 @@
                                 }}
                             </div>
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Meeting Mode:&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">Meeting Mode:&nbsp;</label>
                                 <textarea name="meeting_mode" style="display:none;">{{ collection_agency_and_insurance_logins.get('meeting_mode','') }}</textarea>
                                 {{
-                              BF.render_block_field(
-                                 block_data.meeting_mode_blocks,
-                                 "collection_agency_and_insurance_logins",
-                                 "meeting_mode",
-                                 "meeting_mode",
-                                 practice_id,
-                                 practice_images
-                             )
+                                    BF.render_block_field(
+                                        block_data.meeting_mode_blocks,
+                                        "collection_agency_and_insurance_logins",
+                                        "meeting_mode",
+                                        "meeting_mode",
+                                        practice_id,
+                                        practice_images
+                                    )
                                 }}
                             </div>
                         </div>
@@ -1336,7 +1388,7 @@
                                 <img src="{{ url_for('static', filename='img/insurance.webp') }}" alt="insurance" class="item-icon" />
                             </div>
 
-                            <div class="form-group myk-mb-3">
+                            <div class="form-group myk-mb-3 form-group-stacked">
                                 <label class="myk-form-label myk-text-dark">Commercial:&nbsp;&nbsp;</label>
 
                                 <div class="view-mode">
@@ -1364,7 +1416,7 @@
 
                             </div>
 
-                            <div class="form-group myk-mb-3">
+                            <div class="form-group myk-mb-3 form-group-stacked">
                                 <label class="myk-form-label myk-text-dark">HMOs/Capitated Plans:&nbsp;&nbsp;</label>
                                 <div class="data-row">
                                     <div class="view-mode">
@@ -3007,7 +3059,7 @@
                      
 
                                 <h3 class="myk-form-label myk-text-dark">ERA's (Electronic Remittance Advice)</h3>
-                                <div class="form-group myk-mb-3">
+                                <div class="form-group myk-mb-3 form-group-stacked">
                                     <label class="myk-form-label myk-text-dark">ERAs received in the system:&nbsp;&nbsp;</label>
                                     <div class="data-row">
                                         <div class="view-mode">
@@ -3032,7 +3084,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group myk-mb-3">
+                                <div class="form-group myk-mb-3 form-group-stacked">
                                     <label class="myk-form-label myk-text-dark">ERAs not received:&nbsp;&nbsp;</label>
                                     <div class="data-row">
                                         <div class="view-mode">
@@ -3059,7 +3111,7 @@
                             
 
                                 <h3 class="myk-form-label myk-text-dark">EOBs (Explanation of Benefits)</h3>
-                                <div class="form-group myk-mb-3">
+                                <div class="form-group myk-mb-3 form-group-stacked">
                                     <label class="myk-form-label myk-text-dark">Paper EOBs Received:&nbsp;&nbsp;</label>
                                     <div class="data-row">
                                         <div class="view-mode">
@@ -3113,15 +3165,16 @@
                                     Insurance Website Logins
                                 </h2>
 
-                                <div class="form-group myk-mb-3">
+                                <div class="form-group myk-mb-3 form-group-stacked">
                                     <label class="myk-form-label myk-text-dark">Insurance with Login Access(Refer ATM for login access):&nbsp;&nbsp;</label>
                                     <div class="data-row">
                                         <div class="view-mode">
                                             {% if collection_agency_and_insurance_logins.insurance_with_login_access %}
                                             {% set items = collection_agency_and_insurance_logins.insurance_with_login_access.split(',') %}
                                             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                                {% for item in items %}
-                                                {% set name = item.strip() %}
+                                               {% for item in items | map('trim') | sort %}
+                                                {% set name = item %}
+                                                {% if name %}
                                                 {% set domain = get_domain(name) %}
 
                                                 <span class="hmo-badge" style="display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px;">
@@ -3130,6 +3183,7 @@
                                                          onerror="this.onerror=null; this.src='https://icons.duckduckgo.com/ip3/{{ domain }}.ico';">
                                                     {{ name }}
                                                 </span>
+                                                {% endif %}
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
@@ -3446,90 +3500,238 @@
         });
 
         let searchMatches = [];
-        let currentIndex = -1;
+let currentIndex = -1;
+let lastSearchQuery = "";
 
-        function performSearch() {
-            const query = document.getElementById('pageSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('.form-group');
+/* Remove old highlights */
+function clearSearchHighlightsOnly() {
+    document.querySelectorAll("#details-page .search-highlight, #details-page .search-highlight-active").forEach(function (el) {
+        const parent = el.parentNode;
+        if (!parent) return;
 
-            // Reset previous search
-            searchMatches = [];
-            rows.forEach(row => row.style.backgroundColor = "transparent");
+        parent.replaceChild(document.createTextNode(el.textContent), el);
+        parent.normalize();
+    });
 
-            if (query.length < 2) {
-                document.getElementById('searchStatus').innerText = "";
+    searchMatches = [];
+    currentIndex = -1;
+}
+
+/* Full clear when user clicks clear/search reset */
+function clearSearch() {
+    const input = document.getElementById("pageSearchInput");
+    const status = document.getElementById("searchStatus");
+
+    if (input) input.value = "";
+    if (status) status.innerText = "";
+
+    clearSearchHighlightsOnly();
+    lastSearchQuery = "";
+}
+
+/* Decide which text can be searched */
+function isSearchableTextNode(node) {
+    if (!node || !node.parentElement) return false;
+
+    const parent = node.parentElement;
+
+    if (!node.nodeValue || !node.nodeValue.trim()) return false;
+
+    if (parent.closest("script, style, textarea, input, select, button")) return false;
+    if (parent.closest(".search-pod")) return false;
+
+    return true;
+}
+
+/* Highlight matching text */
+function highlightTextNode(textNode, query) {
+    const text = textNode.nodeValue;
+    const lowerText = text.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+
+    let index = lowerText.indexOf(lowerQuery);
+    if (index === -1) return;
+
+    const fragment = document.createDocumentFragment();
+    let lastIndex = 0;
+
+    while (index !== -1) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex, index)));
+
+        const mark = document.createElement("span");
+        mark.className = "search-highlight";
+        mark.textContent = text.slice(index, index + query.length);
+
+        fragment.appendChild(mark);
+        searchMatches.push(mark);
+
+        lastIndex = index + query.length;
+        index = lowerText.indexOf(lowerQuery, lastIndex);
+    }
+
+    fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+    textNode.parentNode.replaceChild(fragment, textNode);
+}
+
+/* Main search */
+function performSearch() {
+    const input = document.getElementById("pageSearchInput");
+    const status = document.getElementById("searchStatus");
+
+    if (!input) return;
+
+    const query = input.value.trim();
+
+    clearSearchHighlightsOnly();
+    lastSearchQuery = query;
+
+    if (query.length < 2) {
+        if (status) status.innerText = "";
+        return;
+    }
+
+    const root = document.querySelector("#details-page");
+    if (!root) return;
+
+    const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode: function (node) {
+                return isSearchableTextNode(node)
+                    ? NodeFilter.FILTER_ACCEPT
+                    : NodeFilter.FILTER_REJECT;
+            }
+        }
+    );
+
+    const textNodes = [];
+    let node;
+
+    while ((node = walker.nextNode())) {
+        textNodes.push(node);
+    }
+
+    textNodes.forEach(function (textNode) {
+        highlightTextNode(textNode, query);
+    });
+
+    if (searchMatches.length > 0) {
+        currentIndex = 0;
+        updateSearchDisplay();
+    } else {
+        if (status) status.innerText = "No results found.";
+    }
+}
+
+/* Expand section if match is inside collapsed card */
+function expandSectionForSearch(element) {
+    const card = element.closest(".rulebook-card");
+    if (!card) return;
+
+    if (card.classList.contains("section-collapsed")) {
+        card.classList.remove("section-collapsed");
+
+        const body = card.querySelector(".section-collapse-body");
+        if (body) {
+            body.style.setProperty("display", "block", "important");
+        }
+
+        const btn = card.querySelector(".section-collapse-btn");
+        if (btn) {
+            btn.innerHTML = "▾";
+            btn.title = "Collapse section";
+        }
+    }
+}
+
+/* Show current match */
+function updateSearchDisplay() {
+    if (!searchMatches.length || currentIndex < 0) return;
+
+    searchMatches.forEach(function (match) {
+        match.classList.remove("search-highlight-active");
+    });
+
+    const currentMatch = searchMatches[currentIndex];
+    if (!currentMatch) return;
+
+    expandSectionForSearch(currentMatch);
+
+    currentMatch.classList.add("search-highlight-active");
+
+    setTimeout(function () {
+        currentMatch.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }, 120);
+
+    const status = document.getElementById("searchStatus");
+    if (status) {
+        status.innerText = `Match ${currentIndex + 1} of ${searchMatches.length}`;
+    }
+}
+
+/* Move next/previous */
+function moveSearch(direction) {
+    const input = document.getElementById("pageSearchInput");
+    if (!input) return;
+
+    const query = input.value.trim();
+
+    if (!query) {
+        clearSearch();
+        return;
+    }
+
+    if (!searchMatches.length || query !== lastSearchQuery) {
+        performSearch();
+        return;
+    }
+
+    currentIndex += direction;
+
+    if (currentIndex >= searchMatches.length) currentIndex = 0;
+    if (currentIndex < 0) currentIndex = searchMatches.length - 1;
+
+    updateSearchDisplay();
+}
+
+/* Enter key should go to next match */
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("pageSearchInput");
+
+    if (!input) return;
+
+    input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+
+            const query = input.value.trim();
+
+            if (!query) {
+                clearSearch();
                 return;
             }
 
-            // Find all matching rows
-            rows.forEach((row) => {
-                if (row.innerText.toLowerCase().includes(query)) {
-                    searchMatches.push(row);
-                }
-            });
-
-            if (searchMatches.length > 0) {
-                currentIndex = 0;
-                updateSearchDisplay();
+            if (!searchMatches.length || query !== lastSearchQuery) {
+                performSearch();
             } else {
-                document.getElementById('searchStatus').innerText = "No results found.";
+                moveSearch(1);
             }
         }
+    });
 
-        function updateSearchDisplay() {
-            // Remove highlight from all
-            searchMatches.forEach(row => row.style.backgroundColor = "transparent");
+    input.addEventListener("input", function () {
+        clearSearchHighlightsOnly();
 
-            // Highlight current
-            const currentRow = searchMatches[currentIndex];
-            currentRow.style.backgroundColor = "rgba(255, 255, 0, 0.4)";
+        const status = document.getElementById("searchStatus");
+        if (status) status.innerText = "";
 
-            // Scroll to the item
-            currentRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Update counter
-            document.getElementById('searchStatus').innerText =
-                `Match ${currentIndex + 1} of ${searchMatches.length}`;
-        }
-
-        function moveSearch(direction) {
-            if (searchMatches.length === 0) return;
-
-            currentIndex += direction;
-
-            // Loop around logic
-            if (currentIndex >= searchMatches.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = searchMatches.length - 1;
-
-            up
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            SearchDisplay();
-        }
-
-        function clearSearch() {
-            document.getElementById('pageSearchInput').value = "";
-            document.getElementById('searchStatus').innerText = "";
-            document.querySelectorAll('.form-group').forEach(row => {
-                row.style.backgroundColor = "transparent";
-            });
-            searchMatches = [];
-            currentIndex = -1;
-        }
+        lastSearchQuery = "";
+    });
+});
 
         // Listen for typing and Enter key
         document.getElementById('pageSearchInput').addEventListener("input", performSearch);
@@ -3651,33 +3853,62 @@
         btn.parentElement.remove();
     }
     function addProviderRow() {
-        const container = document.getElementById("providerRowsContainer");
+    const tbody = document.getElementById("provider-table-body");
+    if (!tbody) return;
 
-        const row = document.createElement("div");
-        row.className = "provider-edit-row";
-        row.style = "display:flex; gap:10px; margin-bottom:10px; align-items:center;";
+    const row = document.createElement("tr");
+    row.className = "provider-edit-row";
 
-        row.innerHTML = `
-        <input type="text"
-               name="provider_name"
-               class="myk-form-input"
-               placeholder="Provider name">
+    row.innerHTML = `
+        <td>
+            <input type="text"
+                   name="provider_name"
+                   class="provider-line-input provider-name-input"
+                   placeholder="Provider name">
+        </td>
 
-        <input type="text"
-               name="provider_npi"
-               class="myk-form-input npi-field"
-               maxlength="10"
-               placeholder="NPI">
+        <td>
+            <input type="text"
+                   name="provider_npi"
+                   class="provider-line-input provider-npi-input"
+                   maxlength="10"
+                   placeholder="NPI">
+        </td>
 
-        <button type="button"
-                class="myk-btn myk-btn-danger"
-                onclick="removeProviderRow(this)">
-            X
-        </button>
+        <td>
+            <input type="text"
+                   name="provider_taxonomy"
+                   class="provider-line-input provider-taxonomy-input"
+                   placeholder="Taxonomy">
+        </td>
+
+        <td class="provider-action-cell">
+            <button type="button"
+                    class="provider-remove-btn"
+                    onclick="removeProviderRow(this)">
+                x
+            </button>
+        </td>
     `;
 
-        container.appendChild(row);
+    tbody.appendChild(row);
+}
+
+function removeProviderRow(button) {
+    const row = button.closest(".provider-edit-row");
+    const tbody = document.getElementById("provider-table-body");
+
+    if (!row || !tbody) return;
+
+    const rows = tbody.querySelectorAll(".provider-edit-row");
+
+    if (rows.length === 1) {
+        row.querySelectorAll("input").forEach(input => input.value = "");
+        return;
     }
+
+    row.remove();
+}
 
     function removeProviderRow(button) {
         const row = button.closest(".provider-edit-row");

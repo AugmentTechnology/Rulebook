@@ -124,14 +124,23 @@ def index():
     return render_template("index.html", practices=practices)
 
 
-@app.route('/rulebook/select_practice', methods=['POST'])
+@app.route('/rulebook/select_practice', methods=['GET', 'POST'])
 def select_practice():
+
+    # When user clicks Go Back to Selection
+    if request.method == 'GET':
+        return redirect('/rulebook/')
+
+    # When user clicks Search / submits dropdown
     practice_id = request.form.get('practice_id')
 
     if practice_id == "NEW":
         return redirect(url_for('new_practice'))
 
-    return redirect(url_for('rulebook', practice_id=practice_id))
+    if practice_id:
+        return redirect(url_for('rulebook', practice_id=practice_id))
+
+    return redirect('/rulebook/')
    
 
 
@@ -297,19 +306,21 @@ def rulebook(practice_id):
 
     # ---------------- PRACTICE PROVIDERS (multiple rows) ----------------
     cur.execute("""
-        SELECT provider_id, provider_name, provider_npi
-        FROM practice_providers
-        WHERE practice_id = %s
-        ORDER BY provider_id
-    """, (practice_id,))
+            SELECT provider_id, provider_name, provider_npi, taxonomy
+            FROM practice_providers
+            WHERE practice_id = %s
+            ORDER BY provider_id
+        """, (practice_id,))
+
     practice_providers = [
-        {
-            "provider_id": r[0],
-            "provider_name": r[1],
-            "provider_npi": r[2]
-        }
-        for r in cur.fetchall()
-    ]
+            {
+                "provider_id": r[0],
+                "provider_name": r[1] or "",
+                "provider_npi": r[2] or "",
+                "taxonomy": r[3] or ""
+            }
+            for r in cur.fetchall()
+        ]
     
     # -------- COMMUNICATION METHOD READ --------
     cur.execute("""
@@ -822,23 +833,29 @@ def save_practice(practice_id):
 
     provider_names = request.form.getlist("provider_name")
     provider_npis = request.form.getlist("provider_npi")
+    provider_taxonomies = request.form.getlist("provider_taxonomy")
 
-    for name, npi in zip(provider_names, provider_npis):
-        if not name and not npi:
+    for name, npi, taxonomy in zip(provider_names, provider_npis, provider_taxonomies):
+        name = name.strip() if name else None
+        npi = npi.strip() if npi else None
+        taxonomy = taxonomy.strip() if taxonomy else None
+
+        if not name and not npi and not taxonomy:
             continue  # skip empty rows
 
         cur.execute("""
             INSERT INTO practice_providers (
                 practice_id,
                 provider_name,
-                provider_npi
-               
+                provider_npi,
+                taxonomy
             )
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """, (
             practice_id,
-            name.strip() if name else None,
-            npi.strip() if npi else None
+            name,
+            npi,
+            taxonomy
         ))
 
         # ---------------- COMMUNICATION METHOD UPSERT ----------------

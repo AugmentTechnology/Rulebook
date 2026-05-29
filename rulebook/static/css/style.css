@@ -569,29 +569,96 @@
 #details-page .rulebook-top-columns {
     gap: 18px;
 }
-/* Office Contacts inner layout */
+/* ================= Office Contacts Clean Alignment ================= */
+
 #details-page .office-contacts-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-}
-.row {
-    margin-bottom: 10px;
-    align-items: flex-start;
-}
-.d-flex,
-.flex-row {
-    align-items: flex-start;
-}
-
-#details-page .myk-table-custom td,
-#details-page .myk-table-custom th {
-    font-size: 0.9rem;
-    line-height: 1.2;
+    grid-template-columns: repeat(3, minmax(280px, 1fr));
+    gap: 28px;
+    align-items: start;
+    width: 100%;
 }
 
 #details-page .office-contact-block {
-    padding: 10px 5px;
+    padding: 10px 8px;
+    min-width: 0;
+}
+
+#details-page .office-contact-block h3 {
+    min-height: 52px;
+    margin-bottom: 14px !important;
+    line-height: 1.35;
+}
+
+/* ================= Office Contacts stable layout ================= */
+
+#details-page .section-officecontacts {
+    overflow: hidden !important;
+}
+
+#details-page .section-officecontacts .office-contacts-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 34px !important;
+    width: 100% !important;
+    align-items: start !important;
+}
+
+#details-page .section-officecontacts .office-contact-block {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 8px 4px !important;
+}
+
+#details-page .section-officecontacts .office-contact-block h3 {
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 14px !important;
+    min-height: 50px !important;
+}
+
+/* Each field row */
+#details-page .section-officecontacts .office-contact-block .form-group {
+    display: grid !important;
+    grid-template-columns: 95px minmax(0, 1fr) !important;
+    column-gap: 10px !important;
+    align-items: start !important;
+    margin-bottom: 12px !important;
+}
+
+/* Left label */
+#details-page .section-officecontacts .office-contact-block .form-group > label {
+    width: 95px !important;
+    min-width: 95px !important;
+    max-width: 95px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    margin: 0 !important;
+}
+
+/* Right value */
+#details-page .section-officecontacts .office-contact-block .data-row {
+    min-width: 0 !important;
+    width: 100% !important;
+    display: block !important;
+    line-height: 1.3 !important;
+}
+
+/* Prevent values from crossing into next column */
+#details-page .section-officecontacts .office-contact-block .view-mode {
+    display: block !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+}
+
+/* Edit inputs */
+#details-page .section-officecontacts .office-contact-block input.edit-mode {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
 }
 #details-page .section-practice {
     background-color: #96c1f1;
@@ -1773,6 +1840,367 @@
 #details-page .section-services .services-table-panel.service-panel-open {
     display: block !important;
 }
+/* ================= Stable Rulebook Page Width ================= */
+
+/* Keep the full rulebook layout stable on different screen sizes */
+
+
+/* Keep the main form from shrinking too much */
+#details-page .myk-card-clean {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Keep two-column layouts consistent */
+#details-page .rulebook-top-columns,
+#details-page .rulebook-mid-columns,
+#details-page .rulebook-billing-eob-columns {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Prevent cards from becoming too narrow */
+#details-page .rulebook-column {
+    min-width: 0;
+}
+
+/* Make card heights and spacing visually consistent */
+#details-page .rulebook-card {
+    box-sizing: border-box;
+    border-radius: 14px !important;
+    margin-bottom: 16px !important;
+}
+
+/* Prevent text/input overflow */
+#details-page .rulebook-card * {
+    box-sizing: border-box;
+}
+/* If screen is smaller, keep design stable and allow horizontal scroll */
+@media (max-width: 1200px) {
+    #details-page {
+        overflow-x: auto;
+    }
+
+    #details-page .myk-form-center-wrapper {
+        min-width: 1200px;
+    }
+}
+/* ================= Full Width Rulebook Layout Fix ================= */
+
+html,
+body {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+#details-page {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+/* Remove centered page restriction */
+#details-page .myk-form-center-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    box-sizing: border-box;
+}
+
+/* Make the form use full available width */
+#details-page .myk-card-clean {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Make all major layouts use full width */
+#details-page .rulebook-grid,
+#details-page .rulebook-top-columns,
+#details-page .rulebook-mid-columns,
+#details-page .rulebook-billing-eob-columns {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Keep columns balanced */
+#details-page .rulebook-top-columns,
+#details-page .rulebook-mid-columns,
+#details-page .rulebook-billing-eob-columns {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+}
+
+/* Full-width sections should also stretch properly */
+#details-page .section-facilities,
+#details-page .section-filedownload,
+#details-page .section-charge_entry,
+#details-page .section-coding,
+#details-page .section-top-denials,
+#details-page .section-patient-statement {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Remove unnecessary huge card height when collapsed */
+#details-page .rulebook-column .rulebook-card {
+    min-height: 0 !important;
+}
+
+/* Keep collapsed cards compact and neat */
+#details-page .rulebook-card.section-collapsed {
+    min-height: 110px !important;
+}
+
+/* ================= Provider Information Table Layout ================= */
+
+#details-page .section-provider .provider-table-wrapper {
+    width: 100%;
+    margin-top: 12px;
+}
+
+#details-page .section-provider .provider-table-label {
+    font-weight: 800;
+    color: #000;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+#details-page .section-provider .provider-clean-table,
+#details-page .section-provider .provider-edit-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#details-page .section-provider .provider-clean-table th,
+#details-page .section-provider .provider-edit-table th {
+    background: rgba(255, 255, 255, 0.55);
+    color: #064b85;
+    font-weight: 800;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.18);
+}
+
+#details-page .section-provider .provider-clean-table td,
+#details-page .section-provider .provider-edit-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    vertical-align: middle;
+}
+
+#details-page .section-provider .provider-line-input {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #9bb6d9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 6px 4px !important;
+    font-size: 15px;
+    outline: none;
+}
+
+#details-page .section-provider .provider-line-input:focus {
+    border-bottom: 2px solid #0b4ea2 !important;
+}
+
+#details-page .section-provider .provider-action-cell {
+    width: 45px;
+    text-align: center;
+}
+
+#details-page .section-provider .provider-remove-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #d62828 !important;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    box-shadow: none !important;
+}
+
+#details-page .section-provider .provider-add-btn {
+    background: #2eaf55 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 18px !important;
+    padding: 8px 14px !important;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+#details-page .section-provider .provider-add-btn:hover {
+    background: #259347 !important;
+}
+
+/* ================= Search Highlight ================= */
+
+#details-page .search-highlight {
+    background: #fff176 !important;
+    color: #000 !important;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+#details-page .search-highlight-active {
+    background: #ff9800 !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+    outline: 2px solid #d35400;
+}
+/* ================= Monthly Meeting Full-Width Blocks ================= */
+
+#details-page .section-meeting .monthly-report-block {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    clear: both !important;
+    margin-top: 18px !important;
+    margin-bottom: 24px !important;
+}
+
+#details-page .section-meeting .monthly-report-heading {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    margin-bottom: 10px !important;
+    line-height: 1.35 !important;
+}
+
+#details-page .section-meeting .monthly-report-answer {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    float: none !important;
+    clear: both !important;
+}
+
+/* Break old form-group behavior inside this answer box */
+#details-page .section-meeting .monthly-report-answer .form-group,
+#details-page .section-meeting .monthly-report-answer .data-row {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+    float: none !important;
+}
+
+/* Remove old label width inside this answer box */
+#details-page .section-meeting .monthly-report-answer .myk-form-label {
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 6px 0 !important;
+}
+
+/* Force all block content to use full width */
+#details-page .section-meeting .monthly-report-answer .view-mode,
+#details-page .section-meeting .monthly-report-answer p,
+#details-page .section-meeting .monthly-report-answer div,
+#details-page .section-meeting .monthly-report-answer span,
+#details-page .section-meeting .monthly-report-answer li {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    line-height: 1.45 !important;
+}
+
+/* Edit mode */
+#details-page .section-meeting .monthly-report-answer textarea,
+#details-page .section-meeting .monthly-report-answer input {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ================= Reusable Stacked Form Group ================= */
+/* Use this for long answers where label should be on top */
+
+#details-page .form-group-stacked {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 20px !important;
+    padding: 0 !important;
+    clear: both !important;
+}
+
+#details-page .form-group-stacked > .myk-form-label {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+    line-height: 1.35 !important;
+    font-weight: 800 !important;
+}
+
+#details-page .form-group-stacked .data-row,
+#details-page .form-group-stacked .stacked-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12px 14px !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    line-height: 1.45 !important;
+}
+
+#details-page .form-group-stacked .view-mode,
+#details-page .form-group-stacked p,
+#details-page .form-group-stacked div,
+#details-page .form-group-stacked span,
+#details-page .form-group-stacked li {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    line-height: 1.45 !important;
+}
+
+#details-page .form-group-stacked textarea,
+#details-page .form-group-stacked input {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
 /* ================= PDF VIEW PAGE ================= */
 #pdf-page {
     background: #f5f5f5;
