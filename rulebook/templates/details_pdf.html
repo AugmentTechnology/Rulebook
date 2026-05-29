@@ -1,0 +1,368 @@
+{% extends "base.html "%}
+
+{% block content %}
+{% import "components/block_field.html" as BF %}
+
+{% macro pdf_row(label, value, extra_class='') %}
+{% if value is not none and value|string|trim %}
+<div class="pdf-row {{ extra_class }}">
+    <strong>{{ label }}</strong>
+    <span>{{ value }}</span>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro comma_items(title, value) %}
+{% if value %}
+<div class="pdf-chip-group">
+    <strong>{{ title }}</strong>
+    <div class="pdf-chips">
+        {% for item in value.split(',') %}
+        {% set name = item.strip() %}
+        {% if name %}
+        <span class="pdf-chip">{{ name }}</span>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro block_section(title, blocks, section_name, field_name, prefix) %}
+<div class="pdf-block">
+    <h3>{{ title }}</h3>
+    {{
+        BF.render_block_field(
+            blocks,
+            section_name,
+            field_name,
+            prefix,
+            practice_id,
+            practice_images
+        )
+    }}
+</div>
+{% endmacro %}
+
+<body id="pdf-page">
+    <div class="pdf-wrapper">
+
+        <div class="pdf-header">
+            <div>
+                <h1>{{ details.practice_name }}</h1>
+                <p>Practice Rulebook PDF View</p>
+            </div>
+            <button type="button" class="pdf-print-btn" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+
+        <section class="pdf-section">
+            <h2>Practice Information</h2>
+            {{ pdf_row("Practice Billing Start Date with ATS:", details.billing_start_date.strftime('%m/%d/%Y') if details.billing_start_date) }}
+            {{ pdf_row("Practice Name:", details.practice_name) }}
+            {{ pdf_row("Speciality:", details.specialty) }}
+            {{ pdf_row("Address:", details.practice_address) }}
+            {{ pdf_row("Phone:", details.practice_phone) }}
+            {{ pdf_row("NPI:", details.practice_npi) }}
+            {{ pdf_row("Tax ID:", details.practice_tax_id) }}
+            {{ pdf_row("Email:", details.email) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Provider Information</h2>
+            {% if practice_providers and practice_providers|length > 0 %}
+            <table class="pdf-table">
+                <thead><tr><th>Provider Name</th><th>NPI</th></tr></thead>
+                <tbody>
+                    {% for p in practice_providers %}
+                    {% if p.provider_name or p.provider_npi %}
+                    <tr><td>{{ p.provider_name }}</td><td>{{ p.provider_npi }}</td></tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="pdf-muted">No provider information available.</p>
+            {% endif %}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Office Contacts</h2>
+            <div class="pdf-subgrid">
+                <div class="pdf-mini-card">
+                    <h3>Provider Office Point of Contact</h3>
+                    {{ pdf_row("Name:", office_contacts.provider_poc_name) }}
+                    {{ pdf_row("Email:", office_contacts.provider_poc_email) }}
+                    {{ pdf_row("Phone:", office_contacts.provider_poc_phone) }}
+                    {{ pdf_row("Fax:", office_contacts.provider_poc_fax) }}
+                    {{ pdf_row("Designation:", office_contacts.provider_poc_designation) }}
+                </div>
+                <div class="pdf-mini-card">
+                    <h3>Billing Contacts - US Account Rep</h3>
+                    {{ pdf_row("Name:", office_contacts.billing_rep_name) }}
+                    {{ pdf_row("Email:", office_contacts.billing_rep_email) }}
+                    {{ pdf_row("Phone:", office_contacts.billing_rep_phone) }}
+                    {{ pdf_row("Ext:", office_contacts.billing_rep_ext) }}
+                    {{ pdf_row("Direct Line:", office_contacts.billing_rep_direct_line) }}
+                    {{ pdf_row("Fax:", office_contacts.billing_rep_fax) }}
+                </div>
+                <div class="pdf-mini-card">
+                    <h3>Indian Office Contact</h3>
+                    {{ pdf_row("Team Lead:", office_contacts.offshore_team_lead) }}
+                    {{ pdf_row("Team Manager:", office_contacts.offshore_team_manager) }}
+                </div>
+            </div>
+        </section>
+
+        <section class="pdf-section">
+            <h2>Communication Method with the Practice</h2>
+            {{ pdf_row("Communication Method:", communication_method.communication_method) }}
+            {{ pdf_row("OP List / Pending Clarification Frequency:", communication_method.oplist_frequency) }}
+            {{ pdf_row("Mode of Delivery:", communication_method.delivery_mode) }}
+            {{ pdf_row("Email or Fax:", communication_method.email_or_fax) }}
+            {{ pdf_row("How OP List / Pending Clarification List is Sent:", communication_method.oplist_delivery_method) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Practice Software and Systems</h2>
+            <h3>Clinical Software</h3>
+            {{ comma_items("Software Name:", practice_software_systems.clinical_software_name) }}
+            {{ pdf_row("Login Access:", practice_software_systems.clinical_software_login_access) }}
+            <h3>Billing Software</h3>
+            {{ comma_items("Software Name:", practice_software_systems.billing_software_name) }}
+            {{ pdf_row("Tebra Location:", practice_software_systems.tebra_location) }}
+            {{ pdf_row("Login Access:", practice_software_systems.billing_software_login_access) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Monthly Meeting Reports and Requirements</h2>
+            <div class="pdf-alert-card">
+                <h3>OP List / Pending Client Clarification List</h3>
+                {{ pdf_row("Last Sent to the Client:", collection_agency_and_insurance_logins.last_sent_to_client, "pdf-red") }}
+                {{ pdf_row("Last Response Received from the Client:", collection_agency_and_insurance_logins.last_response_received_from_client, "pdf-red") }}
+                {{ pdf_row("Response Received as FULL or Partial:", collection_agency_and_insurance_logins.response_received_type, "pdf-red") }}
+            </div>
+            {{ block_section("Standard Reports for Monthly Meetings", block_data.monthly_reports_blocks, "collection_agency_and_insurance_logins", "standard_monthly_reports", "monthly_reports") }}
+            {{ block_section("Custom Reports Required for Client Meetings", block_data.custom_reports_blocks, "collection_agency_and_insurance_logins", "custom_client_reports", "custom_reports") }}
+            {{ block_section("Required Participants for Monthly Client Meeting", block_data.meeting_participants_blocks, "collection_agency_and_insurance_logins", "required_meeting_participants", "meeting_participants") }}
+            {{ block_section("Frequency of Meetings", block_data.meeting_frequency_blocks, "collection_agency_and_insurance_logins", "meeting_frequency", "meeting_frequency") }}
+            {{ block_section("Meeting Mode", block_data.meeting_mode_blocks, "collection_agency_and_insurance_logins", "meeting_mode", "meeting_mode") }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Participating Facilities</h2>
+            <div class="pdf-summary-grid">
+                {% if hospital_volume.daily_number_claims %}<div class="pdf-summary-card"><strong>Daily Claims</strong><span>{{ hospital_volume.daily_number_claims }}</span></div>{% endif %}
+                {% if hospital_volume.monthly_number_claims %}<div class="pdf-summary-card"><strong>Monthly Claims</strong><span>{{ hospital_volume.monthly_number_claims }}</span></div>{% endif %}
+                {% if hospital_volume.first_date_of_service %}<div class="pdf-summary-card"><strong>First DOS</strong><span>{{ hospital_volume.first_date_of_service }}</span></div>{% endif %}
+            </div>
+            {% set facility_groups = [
+                {"title": "Office Locations", "image": "office.png", "rows": facilities["office"]},
+                {"title": "Participating Hospitals", "image": "hospital.jpg", "rows": facilities["hospital"]},
+                {"title": "Participating Nursing Homes & ALFs", "image": "nursing.png", "rows": facilities["nursing"]},
+                {"title": "Participating Surgery Centers", "image": "surgery.png", "rows": facilities["surgery"]},
+                {"title": "Participating Dialysis Centers", "image": "dialysis.png", "rows": facilities["dialysis"]},
+                {"title": "Participating Cardiac Cath Labs", "image": "cathlab.png", "rows": facilities["cathlab"]}
+            ] %}
+            {% for group in facility_groups %}
+            {% set ns = namespace(has_value=false) %}
+            {% for row in group.rows %}
+            {% if (row.facility_name or '')|trim or (row.facility_address or '')|trim or (row.facility_npi or '')|trim or (row.login_access or '')|trim %}{% set ns.has_value = true %}{% endif %}
+            {% endfor %}
+            {% if ns.has_value %}
+            <div class="pdf-facility-group">
+            
+                    <h3 class="pdf-facility-title">
+                        <img src="{{ url_for('static', filename='img/' ~ group.image) }}"
+                             alt="{{ group.title }}"
+                             class="pdf-facility-icon">
+                        <span>{{ group.title }}</span>
+                    </h3>
+                <div class="pdf-card-grid">
+                    {% for row in group.rows %}
+                    {% if (row.facility_name or '')|trim or (row.facility_address or '')|trim or (row.facility_npi or '')|trim or (row.login_access or '')|trim %}
+                    <div class="pdf-mini-card">
+                        {{ pdf_row("Name:", row.facility_name) }}
+                        {{ pdf_row("Address:", row.facility_address) }}
+                        {{ pdf_row("NPI:", row.facility_npi) }}
+                        {{ pdf_row("Login Access:", row.login_access) }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Insurance Details</h2>
+            <h3>Insurances Accepted</h3>
+            {{ comma_items("Commercial:", insurance_details.commercial) }}
+            {{ comma_items("HMOs / Capitated Plans:", insurance_details.hmo_capitated_plans) }}
+            <h3>IPA Contact</h3>
+            {{ pdf_row("IPA Name:", insurance_details.ipa_name) }}
+            {{ pdf_row("Email:", insurance_details.ipa_email) }}
+            {{ pdf_row("Phone:", insurance_details.ipa_phone) }}
+            {{ pdf_row("Special Billing Rule for Capitated Insurance:", insurance_details.special_billing_rule_capitated) }}
+            {{ pdf_row("No Show Fee Amount:", insurance_details.no_show_fee_amount) }}
+            {{ pdf_row("No Show Rule:", insurance_details.no_show_rule) }}
+            <h3>Cash Patient Billing and Other Fee</h3>
+            {{ pdf_row("New Office Visit:", insurance_details.new_office_visit) }}
+            {{ pdf_row("Established Office Visit:", insurance_details.established_office_visit) }}
+            {% if insurance_procedure and insurance_procedure|length > 0 %}
+            <h3>Procedures</h3>
+            <table class="pdf-table"><thead><tr><th>Procedure / CPT</th><th>Fee</th></tr></thead><tbody>
+                {% for row in insurance_procedure %}{% if row.procedure_code or row.procedure_fee %}<tr><td>{{ row.procedure_code }}</td><td>{{ row.procedure_fee }}</td></tr>{% endif %}{% endfor %}
+            </tbody></table>
+            {% endif %}
+            <h3>Additional Forms Fee</h3>
+            {{ pdf_row("Disability Form:", insurance_details.disability_form) }}
+            {{ pdf_row("FMLA Form:", insurance_details.fmla_form) }}
+            {{ pdf_row("CDL Form:", insurance_details.cdl_form) }}
+            {{ pdf_row("Jury Form:", insurance_details.jury_form) }}
+            {{ pdf_row("Others:", insurance_details.others) }}
+            {{ pdf_row("Self Pay Rates:", insurance_details.self_pay_rates) }}
+            {{ pdf_row("Fee Schedule Setup in Billing System:", insurance_details.fee_schedule_setup) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Services and Procedures</h2>
+            <h3>List of Services Provided by the Practice</h3>
+            {% set cpt_codes = services_procedure.get('cptcode','').split('\n') %}
+            {% set cpt_descs = services_procedure.get('cptdesc','').split('\n') %}
+            <table class="pdf-table"><thead><tr><th>CPT Code</th><th>CPT Description</th></tr></thead><tbody>
+                {% for code in cpt_codes %}{% set desc = cpt_descs[loop.index0] if loop.index0 < cpt_descs|length else '' %}{% if code.strip() or desc.strip() %}<tr><td>{{ code.strip() }}</td><td>{{ desc.strip() }}</td></tr>{% endif %}{% endfor %}
+            </tbody></table>
+            {% set immun_codes = immun_procedure.get('cptcode','').split('\n') %}
+            {% set immun_descs = immun_procedure.get('cptdesc','').split('\n') %}
+            {% set ns = namespace(has_immun=false) %}
+            {% for code in immun_codes %}{% set desc = immun_descs[loop.index0] if loop.index0 < immun_descs|length else '' %}{% if code.strip() or desc.strip() %}{% set ns.has_immun = true %}{% endif %}{% endfor %}
+            {% if ns.has_immun %}
+            <h3>Immunizations Offered</h3>
+            <table class="pdf-table"><thead><tr><th>CPT Code</th><th>CPT Description</th></tr></thead><tbody>
+                {% for code in immun_codes %}{% set desc = immun_descs[loop.index0] if loop.index0 < immun_descs|length else '' %}{% if code.strip() or desc.strip() %}<tr><td>{{ code.strip() }}</td><td>{{ desc.strip() }}</td></tr>{% endif %}{% endfor %}
+            </tbody></table>
+            {% endif %}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Collection Agency Details</h2>
+            {{ pdf_row("Collection Agency Signed Up:", collection_agency_and_insurance_logins.has_collection_agency) }}
+            {{ pdf_row("Agency Name:", collection_agency_and_insurance_logins.collection_agency_name) }}
+            {{ pdf_row("Collection Agency Login Access:", collection_agency_and_insurance_logins.collection_agency_login_access) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Billing Protocols</h2>
+            <h3>Billing Rules for Submitting Claims</h3>
+            {{ pdf_row("Tax ID and NPI Claims Submitted Under:", billing_protocols.tax_id_npi_claims_submitted_under) }}
+            {{ pdf_row("Provider Type:", billing_protocols.provider_type) }}
+            {{ pdf_row("MID-Level Provider Names:", billing_protocols.mid_level_provider_names) }}
+            {{ pdf_row("Rules for Specific Insurance Carriers:", billing_protocols.rules_for_specific_insurance_carriers) }}
+            {{ pdf_row("Billing Rule for Capitation Plans:", billing_protocols.capitation_billing_rule) }}
+            {{ pdf_row("Billing Rules for Hospital / Nursing Home:", billing_protocols.hospital_nursing_home_billing_rules) }}
+            {{ pdf_row("Billing Rules for Immunizations and Vaccines:", billing_protocols.immunizations_vaccines_billing_rules) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>File Downloading Process</h2>
+            {{ block_section("Office Superbill Scans", block_data.office_superbill_blocks, "file_downloading_process", "office_superbill_scans", "office_superbill") }}
+            {{ block_section("Nursing / HHD / PD Superbill Scans", block_data.nursing_pd_superbill_blocks, "file_downloading_process", "nursing_peritoneal_dialysis_superbills_scans", "nursing_pd_superbill") }}
+            {{ block_section("Hospital Superbill Scans", block_data.hospital_superbill_blocks, "file_downloading_process", "hospital_superbill_scans", "hospital_superbill") }}
+            {{ block_section("Dialysis Billing Scans", block_data.dialysis_scans_blocks, "file_downloading_process", "dialysis_billing_scans", "dialysis_scans") }}
+            {{ block_section("EOB Scans", block_data.eob_scans_blocks, "file_downloading_process", "eob_scans", "eob_scans") }}
+            {{ block_section("Other Correspondence Scans", block_data.other_correspondence_blocks, "file_downloading_process", "other_correspondence_scans", "other_correspondence") }}
+            <h3>Paper EOB Details</h3>
+            {{ pdf_row("How are Paper EOBs Received:", clearinghouse_eob_details.paper_eob_receive_method) }}
+            {{ pdf_row("Attach EOBs to Individual Patient Accounts:", clearinghouse_eob_details.attach_eobs_to_patient_accounts) }}
+            {{ pdf_row("Dummy Patient Name:", clearinghouse_eob_details.dummy_patient_name) }}
+        </section>
+
+        <section class="pdf-section"><h2>Demo and Charge Entry Process</h2>
+            {{ block_section("Scheduling", block_data.scheduling_blocks, "demo_charge_entry_process", "scheduling", "scheduling") }}
+            {{ block_section("Office Demographics", block_data.office_demographics_blocks, "demo_charge_entry_process", "office_demographics", "office_demographics") }}
+            {{ block_section("Office Charges Entry", block_data.office_charges_blocks, "demo_charge_entry_process", "office_charges_entry", "office_charges") }}
+            {{ block_section("Office Authorization / Referral Rule", block_data.office_authorization_blocks, "demo_charge_entry_process", "office_authorization", "office_authorization") }}
+            {{ block_section("Hospital Charges", block_data.hospital_charges_blocks, "demo_charge_entry_process", "hospital_charges", "hospital_charges") }}
+            {{ block_section("Dialysis Charge Entry Process", block_data.dialysis_charge_entry_blocks, "demo_charge_entry_process", "dialysis_charge_entry_process", "dialysis_charge_entry") }}
+        </section>
+
+        <section class="pdf-section"><h2>Coding</h2>
+            <p class="pdf-section-note">What are the client's expectations for coding?</p>
+            {{ block_section("Coding Rules and Instructions", block_data.office_coding_rule_blocks, "coding", "office_rule", "office_coding_rule") }}
+            {{ block_section("Coding CPT / G2211 Rules", block_data.office_coding_cpt_rule_blocks, "coding", "office_cpt_rule", "office_coding_cpt_rule") }}
+        </section>
+
+        <section class="pdf-section"><h2>Top Denials and Actions</h2>
+            {{ block_section("Authorization / Referral", block_data.auth_blocks, "top_denials_and_actions", "auth", "auth") }}
+            {{ block_section("Medical Record Request", block_data.medical_record_request_blocks, "top_denials_and_actions", "medical_record_request", "medical_record_request") }}
+            {{ block_section("Medical Records Insufficient", block_data.medical_records_insufficient_blocks, "top_denials_and_actions", "medical_records_insufficient", "medical_records_insufficient") }}
+            {{ block_section("Overpayment Request", block_data.overpayment_request_blocks, "top_denials_and_actions", "overpayment_request", "overpayment_request") }}
+            {{ block_section("Coverage Issue", block_data.coverage_issue_blocks, "top_denials_and_actions", "coverage_issue", "coverage_issue") }}
+            {{ block_section("Inconsistent Dx", block_data.inconsistent_dx_blocks, "top_denials_and_actions", "inconsistent_dx", "inconsistent_dx") }}
+            {{ block_section("Hospice", block_data.hospice_blocks, "top_denials_and_actions", "hospice", "hospice") }}
+            {{ block_section("Primary Paid More Than Secondary Allowable", block_data.primary_paid_more_than_sec_allowable_blocks, "top_denials_and_actions", "primary_paid_more_than_sec_allowable", "primary_paid_more_than_sec_allowable") }}
+            {{ block_section("Non-Par / Out of Network", block_data.non_par_out_of_network_blocks, "top_denials_and_actions", "non_par_out_of_network", "non_par_out_of_network") }}
+            {{ block_section("Time Filing Limits", block_data.time_filing_limits_blocks, "top_denials_and_actions", "time_filing_limits", "time_filing_limits") }}
+            {{ block_section("Inclusive", block_data.inclusive_blocks, "top_denials_and_actions", "inclusive", "inclusive") }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Patient Statement Guidelines</h2>
+            {{ pdf_row("Frequency of Statements Sent:", clearinghouse_eob_details.statement_frequency) }}
+            {{ pdf_row("Minimum Balance Rule:", clearinghouse_eob_details.minimum_balance_rule) }}
+            {{ pdf_row("How to Print Customized Statements:", clearinghouse_eob_details.customized_statement_print_steps) }}
+            <h2 class="pdf-inner-heading">Patient Statement Process</h2>
+            {{ block_section("Generate Patient Balance List", generate_balance_blocks, "patient_statement_process", "generate_patient_balance_list", "generate_balance") }}
+            {{ block_section("Patient Statement Review Checklist", review_checklist_blocks, "patient_statement_process", "patient_statement_review_checklist", "review_checklist") }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Charge Collection Process</h2>
+            {% if billing_protocols.charge_collection_process %}
+            <h3>How are we getting charges?</h3>
+            <ol class="pdf-list">{% for item in billing_protocols.charge_collection_process.split('\n') %}{% if item.strip() %}<li>{{ item.strip() }}</li>{% endif %}{% endfor %}</ol>
+            {% set section_key = "billing_protocols" %}{% set field_key = "charge_collection_process" %}{% set imgs = practice_images.get(section_key, {}).get(field_key, []) %}
+            {% if imgs %}<div class="pdf-image-grid">{% for fn in imgs %}<img src="{{ url_for('static', filename='uploads/practice_' ~ practice_id ~ '/' ~ section_key ~ '/' ~ field_key ~ '/' ~ fn) }}" alt="Charge collection image">{% endfor %}</div>{% endif %}
+            {% endif %}
+            <h3>Progress Notes and Claims Lock Rule</h3>
+            {{ pdf_row("Wait for doctor's notes to be locked before submitting claims:", billing_protocols.notes_locked_before_claims) }}
+            {{ pdf_row("Inform client about unlocked notes weekly:", billing_protocols.notify_unlocked_notes_weekly) }}
+            <h3>Claims Hold Rule for Medicare Deductible</h3>
+            {{ pdf_row("Hold claims until Medicare deductible is met:", billing_protocols.hold_claims_until_medicare_deductible_met) }}
+            <h3>Patient Appointment Balance Reminder Rule</h3>
+            {{ pdf_row("Remind practice about weekly appointment patient balances:", billing_protocols.remind_weekly_patient_balances) }}
+            {{ pdf_row("Automated email or manually sent:", billing_protocols.automated_email) }}
+            {{ block_section("Patient Payment Confirmation Rule", block_data.payment_confirm_blocks, "billing_protocols", "patient_payment_confirmation_method", "payment_confirm") }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Clearinghouse and EOB Details</h2>
+            <h3>Clearinghouse Information</h3>
+            {{ pdf_row("Name of Clearinghouse:", clearinghouse_eob_details.clearinghouse_name) }}
+            {{ pdf_row("Site ID:", clearinghouse_eob_details.site_id) }}
+            {{ pdf_row("Clearinghouse Login Access:", clearinghouse_eob_details.has_clearinghouse_login) }}
+            <h3>ERA's (Electronic Remittance Advice)</h3>
+            {{ comma_items("ERAs Received in the System:", clearinghouse_eob_details.eras_received_in_system) }}
+            {{ comma_items("ERAs Not Received:", clearinghouse_eob_details.eras_not_received) }}
+            <h3>EOBs (Explanation of Benefits)</h3>
+            {{ comma_items("Paper EOBs Received:", clearinghouse_eob_details.paper_eobs_received) }}
+            <h3>Payment Posting</h3>
+            {{ pdf_row("Payment Posting Frequency:", clearinghouse_eob_details.payment_posting_frequency) }}
+            {{ pdf_row("Key Notes for US Rep:", clearinghouse_eob_details.key_notes_for_us_rep) }}
+        </section>
+
+        <section class="pdf-section">
+            <h2>Insurance Website Logins</h2>
+            {{ comma_items("Insurance with Login Access:", collection_agency_and_insurance_logins.insurance_with_login_access) }}
+            {{ pdf_row("Has Insurance Login Access:", collection_agency_and_insurance_logins.has_insurance_login_access) }}
+        </section>
+
+        <section class="pdf-section pdf-footer-section">
+            <h2>Update History</h2>
+            {{ pdf_row("Last Update By:", details.UpdatedBy) }}
+            {{ pdf_row("Last Update Time:", details.UpdatedAt) }}
+        </section>
+    </div>
+</body>
+{% endblock content %}

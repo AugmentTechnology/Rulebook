@@ -1,0 +1,12 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\billing-portal]
+@="URL:Billing Portal Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\billing-portal\shell]
+
+[HKEY_CLASSES_ROOT\billing-portal\shell\open]
+
+[HKEY_CLASSES_ROOT\billing-portal\shell\open\command]
+@="\"C:\\Users\\ATS_Health_Care\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Augment Technology Solutions Pvt ltd" \"%1\""

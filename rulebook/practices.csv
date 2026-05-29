@@ -1,0 +1,411 @@
+name,BillingStartDate,PracticeName,Specialty,Address,Phone,NPI,Tax_ID,atsemail,Provider_count,ProviderName,Providernpi,Pname,Pemail,Pphone,Pfax,Designation,Usname,USemail,USphone,ext,directline,Fax,communication,oplistsent,oplistdelivery,opemail,atmormanually,Csoftware,caccess,Bsoftware,baccess,Hname,Haddress,Hnpi,hlogin,nursingname,nursingaddress,nursingnpi,surgeryname,surgerynpi,dialysisname,dialysisnpi,cathlabname,cathlabnpi,Commercial,hmo,ipaname,ipaemail,ipaphone,specialrule,noshow,noshowrule,newvisit,establishedvisit,procpt,profee,disability,fmla,cdl,jury,others,cptcode,cptdesc,cptcode1,cptdesc1,immunization,charges,locked,unlocked,holdclaims,remind,emailsent,patientpay,claimssubmit,bill,midlevel,inscarriers,caprules,billrules,immunerules,clearninghousename,siteid,clraccess,receivedera,erareceived,received,how,attach,dummy,freqpay,notes,freq,balance,statements,agency,agencyname,logins,Mmeetings,Cmeetings,participants,Fmeetings,meetmode,UpdatedBy,UpdatedAt
+RAJENDRA A KARKARE MD PA,4/6/2021,Rajendra A Karkare MD PA,Internal Medicine,"10700 Johnson Blvd Suite3 Seminole, FL 33772-4875",(727) 392-8500,1366575789,20-5830118,RK@atshealth.com,1,Rajendra A Karkare MD,1235114364,Bridgette Stocker,bstockerpcpkarkare@hotmail.com,(727) 392-8500,,Practice manager,Tia Martin,tia.m@atshealth.com,(800) 454-9454,108,(321) 252-4399,(321) 252-4399,Email,Weekly,Email,bstockerpcpkarkare@hotmail.com,Manually by U.S. Representative,Eclinicalworks,Yes,Eclinicalworks,Yes,Morton Plant Hospital,"300 Pinellas Street, Clearwater, FL – 33756-3804",1376529743,YES BayCare User name : os101506,"Aspire at Seminole 
+Belleair Health Care Center
+East Bay Nursing Center
+Freedom Square Memory Unit
+Freedom Square Rehab 
+Oak Manor East Wing
+Oak Manor West Wing
+Palm Gardens of Largo
+Palm Gardens of Pinellas","9393 Park Blvd, Largo, FL – 33777-4140 
+1150 Ponce De Leon Blvd, Clearwater, FL – 337561041
+4470 East Bay Drive, Clearwater, FL – 337645772
+10800 Johnson Blvd, Seminole, FL – 337724745
+10800 Temple terrace, Seminole, FL – 337724736
+3500 Oak Manor Lane, Largo, FL – 337741211
+3500 Oak Manor Lane, Largo, FL – 337741211
+10500 STARKEY RD, SEMINOLE, FL – 33777-1137
+200 16TH AVE SE, LARGO, FL – 33771-4400","1700809662
+1073891248
+1598752180
+1033168992
+1033168992
+1740254911
+1740254911
+1629074828
+1316372360",NA,NA,NA,NA,NA,NA,"bcbs, aetna, uhc, wellmed, avmed, vaccn, sunshine, humana choice, ambetter","molina, uhc, careplus, humana, simply, optimum, tricare, baycare,aarp, wellcare",NIL,NIL,NIL,NIL,0,NIL,$150 ,$120 ,"EKG93000
+Urine HCG
+Step Swab
+Urine Dip
+Ear lavage
+Flu Shot
+Venipuncture36415","$40
+$25
+$25
+$10
+$46 for each ear
+$30
+$15",NIL,$350 ,NIL,$10 ,DMV Medical Clearance $75,"99222
+99232
+99239
+99238
+99223
+99233
+99235
+99203
+99231
+99214
+99204
+99214
+99497
+99306
+99309
+99308
+99305
+3075F
+3078F
+G8752
+G8754
+99213
+3079F
+3074F
+99496
+99499
+G0180
+G0179
+1090F
+1100F
+1126F
+1158F
+1159F
+1160F
+1170F
+3017F
+3288F
+3725F
+4019F
+G0439
+G0444
+G8427
+99203
+1125F
+99495
+99396
+99395
+3077F
+99406
+93000
+3080F
+81002
+36415
+99204
+1111F
+G8483
+69210
+11401
+95251
+96372
+J3420
+1036F
+G8753
+11104
+0521F
+G8755
+99397
+99080
+G0402
+20610
+J1100
+J1885
+17000
+17003
+NOCPT
+87880
+20550
+11402
+94664
+J1885
+95250
+form
+97602
+G8510
+11042
+T1999
+20612
+10060
+11422
+G2091
+81528
+12001
+11403
+3044F
+3052F
+G2089
+11421
+3061F
+99215
+11200
+G8431
+1034F
+4004F
+G0372
+87389
+23650
+G8482
+99080
+G8511
+G9899
+G9708
+G9754
+G0438","INIT HOSP-MOD CPLX
+HOSP SUB CARE-MOD CPLX
+HOSP DISC >30MIN
+HOSP DISC <30MIN
+INIT HOSP-HI CPLX
+HOSP SUB CARE-HI CPLX
+ADMDC SAME DAY-MOD CPLX
+NEW OFFICE VISIT
+HOSP SUB DAY-LOW CPLX
+Office Visit
+NEW
+Office Visit, Est Pt., Level 4
+ADVNCD CARE PLAN 30 MIN
+NURSING FACILITY CARE, INIT
+NURSING FAC CARE SUBSEQ
+NURSING FAC CARE SUBSEQ
+NURSING FACILITY CARE, INIT
+SYST BP GE 130 - 139MM HG
+DIAST BP < 80 MM HG
+MOST RECENT SYSTOLIC BP < 140MM HG
+MOST RECENT DIASTOLIC BP < 90MM HG
+Office Visit, Est Pt., Level 3
+DIAST BP 80-89 MM HG
+SYST BP LT 130 MM HG
+TRANS CARE MGMT 7 DAY DISCH
+UNLISTED E&M SERVICE
+MD certification HHA patient
+MD recertification HHA PT
+PRESABSN URINE INCON ASSESS
+PTFALLS ASSESS-DOC'D GE2+YR
+AMNT PAIN NOTED NONE PRSNT
+ADVNC CARE PLAN TLK DOCD
+MED LIST DOCD IN RCRD
+RVW MEDS BY RXDR IN RCRD
+FXNL STATUS ASSESSED
+COLORECTAL CA SCREEN DOC REV
+FALL RISK ASSESSMENT DOCD
+DEPRESSION SCREEN PERFORMED
+DOC RECPT COUNSL VIT DCALC+
+ANNUAL WELLNESS VST; PPS SUBSQT VST
+ANNUAL DEPRESSION SCREENING 15 MIN
+DOC MEDS VERIFIED WPT OR RE
+Office Visit, New Pt., Level 3
+AMNT PAIN NOTED PAIN PRSNT
+TRANS CARE MGMT 14 DAY DISCH
+Preventive Care Est Pt. Age 40-64
+Preventive Care Est Pt. Age 18-39
+SYST BP = 140 MM HG6 IT
+BEHAV CHNG SMOKING 3-10 MIN
+#NAME?
+DIAST BP = 90 MM HG
+URINE-NO MICRO
+VENIPUNCT, ROUTINE*
+Office Visit, New Pt., Level 4
+DSCHRG MEDCURRENT MED MERGE
+FLU IMMU NOT ADMINPT DECL'DREAS DOC
+EAR IRRIGATION
+EXC TR-EXT B9 MARG 0.6-1 CM
+GLUC MONITOR, CONT, PHYS I&R
+THERPROPHDIAG INJ, SCIM
+INJ VIT B-12 CYNOCOBLMN TO 1000 MCG
+TOBACCO NON-USER
+MOST RECENT SYSTOLIC BP >= 140MM HG
+PUNCH BX SKIN SINGLE LESION
+PLAN OF CARE 4 PAIN DOCD
+MOST RECENT DIASTOLIC BP >= 90MM HG
+Preventive Care Est Pt. Age 65 and over
+FORMS FEE
+INIT PREV PE LTD DUR 1ST 12 MOS MCR
+DRAININJECT, JOINTBURSA
+INJ DEXETHOSONE SODIM PHOSHATE 1 MG
+INJ KETOROLAC TROMETHAMINE 15 MG
+DESTROY BENIGNPREMLG LESION
+DESTROY LESIONS, 2-14
+CPT MISSNG
+STREP A ASSAY WOPTIC
+INJ TENDON SHEATHLIGAMENT
+EXC TR-EXT B9 MARG 1.1-2 CM
+NEBMDI DEMO
+Ketorolac Tromethamine
+GLUCOSE MONITORING, CONT
+medical form completed
+WOUND(S) CARE NON-SELECTIVE
+NEG SCR D PT NOT ELIG FUPLN DOC
+DEBRIDE SKINTISSUE
+MISC TX ITEMS&SUPPLIES RETAIL NOC
+ASPIRATEINJ GANGLION CYST
+DRAINAGE OF SKIN ABSCESS
+EXC H-F-NK-SP B9 MARG 1.1-2
+Pt 66+ frailty and adv ill
+ONCOLOGY COLORECTAL SCR
+LACERATION >2CM
+EXC TR-EXT B9 MARG 2.1-3 CM
+HG A1C LEVEL LT 7.0%
+HG A1C>EQUAL 8.0%<EQUAL 9.0%
+A1c level 7 to 9%
+EXC H-F-NK-SP B9 MARG 0.6-1
+NEG MICROALBUMINURIA REV
+Office Visit, Est Pt., Level 5
+REMOVAL OF SKIN TAGS
+CLIN DEPRESSION SCREEN DOC
+CURRENT TOBACCO SMOKER
+PT TOBACCO SCREEN RCVD TLK
+MD SERVICE REQUIRED FOR PMD
+HIV-1 AG WHIV-1 & HIV-2 AB
+TREAT SHOULDER DISLOCATION
+FLU IMM ORDER ADMPREV REC'D
+RECORDS RELEASE FEE
+SCR CLIN D FU PLAN NOT DOC RNS
+Scrn mam perf rslts doc
+WOMEN WHO HAD BIL MASTHX BIL MAST
+A FINDING OF INCIDENTAL PULM NODULE
+ANNUAL WELLNES VST; PERSNL PPS INIT","90656
+90686
+G0008
+90471
+90686
+90656","FLU VACCINE NO PRESERV 3 & >
+FLUAVAL QUAD 2024-2025
+ADMN FLU VAC NO FEE SCHED SAME DAY
+IMMUNIZATION ADMIN
+FLULAVAL TRIVALENT 2025-2026
+FLULAVAL TRIVALENT 2025-2026",Manually Sent,"OFFICE LOCATION - Print the Appointment list from Claims Module and uploaded in ATM for processing. CPT and DX will be taken from Billing Data, No Need to Wait for lockedsigned status.
+HOSPITAL & OTHERS - Dr office will upload the hospital and other superbills under Monthly Dummy Patient and will assign to  Verma,Divakar, Team will download and update in ATM for processing.",No,No,Yes,No,Manually Sent,Dr office will collect the copayment and   add the payment in ECW. Team will apply the payment while creating the claim.,Tax id: 205830118 Group NPI: 1366575789 IndNPI: 1235114364,MDs only,"Medicare, Wellmed, BayCare, FL BCBS, Humana, Sunshine, Wellcare, Medicaid, Cigna, Aetna,",No,Humana Gold Plus and Cigna Health Spring are capitated Plan. No over-ride for claims submission.,No special rule,We need to take Admin CPT & Dx based Vaccine given,Gateway EDI,2V9Q,Yes,"medicare, wellmed, baycare, flbcbs, humana, sunshine, wellcare,medicaid, cigna, aetna","UMR, BayCare, Avmed, GHI-Emblem, Geha, Optimum health","UMR, BayCare, Avmed, GHI-Emblem, Geha, Optimumhealth",Paper EOB’s and correspondence will be scanned under DUMMY patient name.,Yes,Billin Dec2025 (Month and year wise),Daily,N/A,Weekly - Monday,$9.99 ,"GoTo Account Lookup, Select the patient,  Verify  and hit patient Statement Button. •	 For print, GoTo EBO Reports, Statement,  Patient Statement Report, Select Envelope, Payment method and Statement by, Statement will be loaded in PDF format",N/A,N/A,"90degreebenefit, aarp, alliedbenefit, apwuhealthplan, availity, baycarehealthsystem, cignahealthspring, echohealthcare, gateway, geha, healthalliance, medicaid,mutualofomaha, payspan, progressive, sunshine health, transamericalifeinsurancecompany, tricareeast, tricareforlife, vaccnoptum, wellcare","AR report package, OP List, Monthly totals",None,Both U.S. Account Representative and Senior Account Representative are required,Upon Request,Remote,Unknown Employee,2/3/2026 0:04
+KIDNEY CARE ASSOCIATES LLC,11/8/2017,KIDNEY CARE ASSOCIATES LLC,Internal Medicine – Nephrology,"661 E ALTAMONTE DR STE 213, ALTAMONTE SPRINGS, FL 32701-5102",(407) 951-5883,1245752583,82-1533221,,3,"Syed Irfan Qadri MD
+ANDRES M REYES MD
+FAIZUL HUSSAIN D.O","1235497256
+1205829074
+1942560974","Rizwan Zaman, MBA",rizwan@kidneycareassociates.com,(407) 951-5883,,Business Development,Soma D,soma.d@atshealth.com,(800) 454-9454,126,,,Email,Biweekly,Fax,,Manually by U.S. Representative,Practice fusion,Yes,tebra,Yes,"CENTRAL FLORIDA REGIONAL HOSPITAL INC
+LAKE MARY HOSPITAL
+FL HOSP ALTAMONTE
+AdventHealth Winter Garden
+WINTER PART MEMORIAL HOSPITAL","1401 W SEMINOLE BLVD, SANFORD, FL 32771-6743
+380 RINEHART RD, LAKE MARY, FL 32746-2551
+601 E ALTAMONTE DR, ALTAMONTE SPRINGS, FL 32701-4802
+2000 FOWLER GROVE BOULEVARD, WINTER GARDEN, FL 34787-5050
+200 N LAKEMONT AVENUE, WINTER PARK, FL 32792-3273","1538503859
+1184709057
+1306938071
+1306938071
+1306938071","YES, HCA PORTAL Under CEO Sir (IMY7823)
+YES, EPIC portal Under DK Name
+YES, EPIC portal Under DK Name
+YES, EPIC portal Under DK Name
+YES, EPIC portal Under DK Name",REGENTS PARK OF WINTER PARK,,1750385308,NA,NA,"FMC DIALYSIS SERVICES - WINTER PARK
+FRESENIUS MEDICAL CARE-SANFORD
+FRESENIUS MEDICAL CARE CASSELBERRY, LLC
+PURE LIFE RENAL OF SANFORD, LLC
+BMA NORTH ORLANDO
+BMA APOPKA
+FMC DIALYSIS SERVICES - WINTER PARK
+FRESENIUS KIDNEY CARE MAITLAND
+NORMANDY VILLAGE DIALYSIS CENTER
+CARING HEART METRO WEST DIALYSIS LLC
+CENTRAL FLORIDA KIDNEY CENTERS INC
+CENTRAL FLORIDA KIDNEY CENTERS, INC-OSCEOLA
+CENTRAL FLORIDA KIDNEY CENTERS, INC- VINELAND
+CASSELBERRY DIALYSIS
+LAKE MARY DIALYSIS (LOURDES DIALYSIS, LLC)
+LOURDES DIALYSIS LLC
+SANFORD DIALYSIS","1215049085
+1780771998
+1740812726
+1770163941
+1619089471
+1043322894
+1215049085
+1396124905
+1134399397
+1720559198
+1942293691
+1891788550
+1831182583
+1376781989
+1083031223
+1881021517
+1841438454",NA,NA,"aetna,fl bcbs, cigna, ghi,humanaffs, magnacare, mutualofomaha,oscarhealthplan, transamericalife, tricareeast,umr, unitedhealthcare","aetnabetterhealth, flbcbs,careplus,cignahealthspring,curative, devoted, floridacommunitycare, floridahealthcareplans, freedomhealthcare, healthfirsthealthplans, humanaffs,molina,simplyhealthcaremcr, simplyhealthcarmch,sunshine,unitedhelathcare, wellcare",N/A,N/A,N/A,N/A,N/A,N/A,40% discount for Hospital Self-pay patients only,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"Dialysis Visit
+Dialysis Visit
+Dialysis Visit
+Dialysis Visit
+Dialysis Visit
+Dialysis Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Hospital Visit
+Nursing Home Visit
+Nursing Home Visit
+Nursing Home Visit
+Nursing Home Visit
+Nursing Home Visit
+Nursing Home Visit
+Nursing Home Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Office Visit
+Surgical Procedure
+Surgical Procedure","90935 - HEMODIALYSIS PROCEDURE W/ PHYS/QHP EVALUATION
+90960 - ESRD RELATED SVC MONTHLY 20&/> YR OLD 4/> VISITS
+90961 - ESRD RELATED SVC MONTHLY 20/>YR OLD 2/3 VISITS
+90962 - ESRD RELATED SVC MONTHLY 20&/>YR OLD 1 VISIT
+90966 - ESRD SVC HOME DIALYSIS FULL MONTH 20 YR OLD
+90989 - DIALYSIS TRAINING PATIENT COMPLETED COURSE
+99221 - 1ST HOSPITAL IP/OBS CARE SF/LOW MDM 40 MINUTES
+99222 - INITIAL HOSP
+99223 - INITIAL EXT HOSPITAL
+99231 - SBSQ HOSPITAL IP/OBS CARE SF/LOW MDM 25 MINUTES
+99232 - DAILY HOSPITAL
+99233 - DAILY EXT HOSPITAL
+99239 - EXT DISCHARGE
+99284 - Emerg Dept , Detailed ER visit
+99291 - CRITICAL CARE ILL/INJURED PATIENT INIT 30-74 MIN
+99305 - INITIAL NURSING FACILITY CARE MOD MDM 35 MINUTES
+99306 - INITIAL NURSING FACILITY CARE HI MDM 45 MINUTES
+99307 - SBSQ NURSING FACILITY CARE SF MDM 10 MINUTES
+99308 - SBSQ NURSING FACILITY CARE LOW MDM 15 MINUTES
+99309 - SBSQ NURSING FACILITY CARE MOD MDM 30 MINUTES
+99310 - SBSQ NURSING FACILITY CARE HIGH MDM 45 MINUTES
+99386 - INITIAL PREVENTIVE MEDICINE NEW PATIENT 40-64YRS
+96127 - BEHAV ASSMT W/SCORE & DOCD/STAND INSTRUMENT
+99203 - INIT OV - LEVEL III
+99204 - INIT OV - LEVEL IV
+99205 - INIT OV - LEVEL V
+99211 - EST OV - LEVEL I
+99212 - EST OV - LEVEL II
+99213 - EST OV - LEVEL III
+99214 - EST OV - LEVEL IV
+99215 - EST OV - LEVEL V
+99395 - EST WELL VISIT- AGE 18-39
+99396 - PERIODIC PREVENTIVE MED EST PATIENT 40-64YRS
+99483 - ASSMT & CARE PLANNING PT W/COGNITIVE IMPAIRMENT
+99495 - TRANSJ CARE MGMT MOD MDM F2F 14 CAL D DISCHARGE
+99496 - TRANSJ CARE MGMT HIGH MDM F2F 7 CAL D DISCHARGE
+99497 - ADVANCE CARE PLANNING FIRST 30 MINS
+G0439 - Ppps, subseq visit
+G2211 - Complex e/m visit add on
+G2212 - Prolong outpt/office vis
+36556 - INSJ NON-TUNNELED CENTRAL VENOUS CATH AGE 5 YR/>
+36580 - RPLCMT COMPL NON-TUN CVC W/O SUBQ PORT/PMP",N/A,N/A,,"For Office charges: Assigned to ATM-BOT to download Appointments, Copay Collections and Superbills from Practice fusion. BOT will download individual superbills and merger with Appointment sheet and copay collection. After Merging, will upload in Tebra/ATM for processing.
+For Hospital charges: We will receive Hospital round sheet from Individual Doctors and/or Dr off Staff in Practice Email(kca@atshealth.com). We will upload in Tebra/ATM for processing.
+For Dialysis charges: We will receive Dialysis sheet Doctors and/or Dr off Staff in Practice Email(kca@atshealth.com). We will upload in Tebra/ATM for processing. (Monthly Once).",Yes,Yes,Yes,No,Manually Sent,"Front Desk collection will be entered by Dr office staff in Practice fusion and we will download Payment collection report on daily basis (This include copay and On account payments)  •	Also statement payments will be received in EOB Scans",Tax ID: 82-1533221 NPI: 1245752583,MDs only,,No,"Yes, should be taken the ICD codes as per order given in the Medical records for the Hospital Claims only",N/A,Gateway,TEBRA IN-BUILT,,AETNA BETTER HEALTH BCBS OF FL CAREPLUS CIGNA-HEALTH SPRING FLORIDA COMMUNITY CARE FLORIDA HEALTH CARE PLANS GHI HEALTH FIRST HEALTH PLANS MAGNACARE OSCAR HEALTH PLAN,AETNA BETTER HEALTH BCBS OF FL CAREPLUS CIGNA-HEALTH SPRING FLORIDA COMMUNITY CARE FLORIDA HEALTH CARE PLANS GHI HEALTH FIRST HEALTH PLANS MAGNACARE OSCAR HEALTH PLAN,"Dr off scans and Downloaded from the Portals like availity, echo, etc.,",Yes,No Dummy Patients,Based on Scans received,N/A,Weekly,$10 ,Sent through electronically,NO,N/A,,1-Key Indicator Summary by Provider  (Post Date) 2-Key Indicator Summary by Service Location (By Post Date) 3-Key Indicator Summary by Provider by Monthly 4-Key Indicator Summary Monthly by Service Location 5-Key Indicator Summary by Comp Prev Year by Provider 6-Key Indicator Summary by Comp Prev Year by Location 7-Payment Summary 8-AR Aging Summary - By Provider 9-Payer Mix Summary 10-Provider Productivity 11-Missed Copays,"Quarterly Charges & Payment summary by Provider & Location •	Frequency of Meetings:",Both U.S. Account Representative and Senior Account Representative are required,On Request,In-person or Remote via Zoom,Unknown Employee,12/29/2025 11:15,,
+New Practice,,,,,,,,,,Rajendra A Karkare MD - 1235114361,,,,,,,,,,,,,Fax,Biweekly,Fax,,Manually by U.S. Representative,,No,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,No,No,No,No,Manually Sent,,,MID-level providers,,No,,,,,,No,,,,,No,,,,,,,,,,,,Both U.S. Account Representative and Senior Account Representative are required,Upon Request,In-person,Unknown Employee,2/2/2026 16:59

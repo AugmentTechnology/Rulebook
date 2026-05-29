@@ -1,0 +1,50 @@
+﻿{# templates/_fields.html #}
+
+{% macro text_row(mode, label, name, value, input_type='text') %}
+  {% set v = (value or '')|string|trim %}
+  {% if mode != 'view' or v %}
+<div class="form-group myk-mb-3">
+    <label class="myk-form-label myk-text-dark">{{ label }}:&nbsp;&nbsp;</label>
+
+    <span class="view-mode">{{ v }}</span>
+
+    <input type="{{ input_type }}" name="{{ name }}"
+           class="edit-mode myk-form-input"
+           value="{{ value or '' }}" style="display:none;">
+</div>
+  {% endif %}
+{% endmacro %}
+
+{% macro textarea_row(mode, label, name, value, rows=3) %}
+  {% set v = (value or '')|string|trim %}
+  {% if mode != 'view' or v %}
+<div class="form-group myk-mb-3">
+    <label class="myk-form-label myk-text-dark">{{ label }}:&nbsp;&nbsp;</label>
+
+    <div class="view-mode">{{ v }}</div>
+
+    <textarea name="{{ name }}"
+              class="edit-mode myk-form-input w-100"
+              rows="{{ rows }}" style="display:none;">{{ value or '' }}</textarea>
+</div>
+  {% endif %}
+{% endmacro %}
+
+{% macro yesno_row(mode, label, name, value) %}
+  {% if mode != 'view' or value is not none %}
+<div class="form-group myk-mb-3">
+    <label class="myk-form-label myk-text-dark">{{ label }}:&nbsp;&nbsp;</label>
+
+    <span class="view-mode">
+        {% if value is not none %}{{ 'Yes' if value else 'No' }}{% endif %}
+    </span>
+
+    <div class="edit-mode" style="display:none; border:none;">
+        <label><input type="radio" name="{{ name }}" value="Yes" {% if value is true %}checked{% endif %}> Yes</label>
+        <label style="margin-left:12px;">
+            <input type="radio" name="{{ name }}" value="No" {% if value is false or value is none %}checked{% endif %}> No
+        </label>
+    </div>
+</div>
+  {% endif %}
+{% endmacro %}

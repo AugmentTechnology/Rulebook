@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<body id="index-page">
+    <div class="myk-container">
+        <h1 class="myk-heading-main">Billing Rules and Protocols</h1>
+        <div class="myk-form-center-wrapper">
+
+            <form method="POST" action="{{ url_for('select_practice') }}" class="myk-form-clean">
+
+                <div class="myk-mb-3">
+                    <label for="practice_select" class="myk-form-label">
+                        Select Practice Name:
+                    </label>
+
+                    <select id="practice_select"
+                            name="practice_id"
+                            class="myk-select"
+                            required>
+
+                        <option value="" disabled selected>
+                            -- Select a Practice --
+                        </option>
+
+                        <option value="NEW" style="font-weight: bold; color: #28a745;">
+                            + Create New Practice
+                        </option>
+
+                        {% for p in practices %}
+                        <option value="{{ p.practice_id }}">
+                            {{ p.practice_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <button type="submit"
+                        class="myk-btn myk-btn-success myk-w-100">
+                    Search
+                </button>
+
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}

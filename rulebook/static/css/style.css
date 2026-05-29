@@ -1,0 +1,1923 @@
+/* background image for index page */
+#index-page {
+    background-color: rgba(0,0,0,0.4);
+    z-index: -1;
+    /* Prevent content from sticking to the edges of the window */
+    padding: 0;
+    margin: 0;
+    /* Add padding equal to the height of your Navbar + some extra space */
+    padding-top: 80px;
+    background-image:
+    
+    linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+    /* The Actual Image URL */
+    url('../img/background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+/* backgroung image for details page */
+#details-page {
+    z-index: -1;
+    /* Prevent content from sticking to the edges of the window */
+    padding: 0;
+    margin: 0;
+   
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+
+#index-page .myk-form-center-wrapper {
+    max-width:500px;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:15px;
+    padding-right:15px;
+    position: relative;
+}
+
+#index-page .myk-card {
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.125);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+#index-page .myk-mt-5 {
+    margin-top: 4rem !important;
+}
+
+#index-page .myk-mb-5 {
+    margin-top: 4rem !important;
+}
+
+#index-page .myk-heading-main {
+    font-family: 'Bookman Old Style';
+    font-weight: bold; 
+    font-size: 65px;
+    max-width: 60%;
+    margin-left: 25%;
+    text-align: left;
+}
+
+#details-page .myk-heading-main {
+    font-family: 'Bookman Old Style';
+    font-weight: bold;
+    font-size: 65px;
+    margin-top: 0%;
+    margin-left: 25px;
+    border-bottom: 5px solid rgb(0, 0, 0);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    margin-right: 40px;
+    display: inline-block;
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    margin-right: 20px;
+}
+
+#details-page .myk-heading {
+    font-family: Roboto;
+    
+    color: #04468d;
+    font-weight: bold;
+    font-size: 35px;
+    margin: 0px;
+    padding: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+#index-page .myk-form-clean {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:0;
+    margin:0;
+    padding: 15px 0;
+    gap: 55px;
+    white-space: nowrap;
+    padding: 10px;
+    z-index: 2;
+    position: relative;
+    font-family: 'Book Antiqua';
+    font-size: 35px;
+    color: #ffffff;
+}
+
+#details-page .myk-card-clean {
+    font-size: 18px;
+    margin-bottom: 12px;
+    padding: 0 !important;
+    margin-left: 25px;
+    font-family: 'Sitka Text';
+    margin-bottom: 12px;
+}
+
+#index-page .dropdown-and-label-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+
+#index-page .myk-mb-3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0 !important;
+}
+
+#index-page .myk-select-lg {
+    height: 42px;
+    padding: 0.5rem 1rem;
+    font-size: 1.15rem;
+    width: 400px;
+    border-radius: 0.4rem;
+    border: 1px solid #ced4da;
+    background-color: #ffffff;
+    font-family: 'Book Antiqua';
+}
+
+#index-page .myk-select {
+    display: block;
+    line-height: 10;
+    color: rgb(0, 0, 0);
+    height: 40px;
+    font-family: 'Book Antiqua';
+}
+
+.myk-btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 1.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.myk-btn-success {
+    font-family: 'Book Antiqua';
+    font-size: 1.15rem;
+    color: rgb(0, 0, 0);
+    background-color: #f6d8d8;
+    border-color: #f6d8d8;
+
+    &:hover {
+        background-color: #c2daf7;
+        border-color: #c2daf7;
+    }
+
+    height: 49px;
+    width: 250px;
+}
+
+#details-page .form-group {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.2px !important;
+    padding-bottom: 0 !important;
+}
+#details-page .data-row {
+    min-height: unset;
+    margin-bottom: 0px;
+    line-height: 0.8;
+}
+
+#details-page .profile-pic {
+    width: 150px;
+    height: 100px;
+    margin-right: 90px;
+
+}
+
+/* hide entire row in VIEW mode when it has no data */
+.view-mode-only.hide-when-empty {
+    display: none;
+}
+
+
+#details-page .profile-header {
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+#details-page .myk-form-label {
+    font-weight: bold;
+    margin: 0 !important;
+    margin-bottom: 2px !important;
+}
+#details-page .field-value {
+    margin-top: 0 !important;
+    margin-bottom: 1px !important;
+}
+#details-page p {
+    margin-top: 2px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+
+#details-page h3 {
+    color: #131282;
+    font-family: Roboto;
+    margin-bottom: 6px !important;
+    margin-top: 6px !important;
+}
+
+
+#details-page .item-icon {
+    width: 70px;
+    height: 70px;
+    margin-left:5px;
+}
+
+#details-page .myk-form-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #3498db; /* Blue border to indicate "Editing" */
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: #fff;
+}
+
+#details-page .data-row {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+#details-page .edit-mode {
+    display: none !important;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+    width:100%;
+    padding: 5px,0;
+    outline: none;
+    margin-bottom: 15px;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+#details-page .edit.edit-mode:focus{
+    border-bottom: 2px solid #0056b3;
+    transition: 0.3s;
+}
+
+#details-page .edit-mode .isvisible .active{
+    display: block !important;
+
+}
+
+/* Container to hold both the logo and the select box */
+#details-page .select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#details-page .logo-display-area img {
+    border-radius: 4px;
+    border: 1px solid #eee;
+    padding: 2px;
+    background: white;
+    transition: transform 0.2s;
+}
+#details-page .insurance-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f1f3f5;
+    border: 1px solid #ced4da;
+    border-radius: 16px; /* Makes it look like a pill/badge */
+    padding: 4px 12px;
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+#details-page .insurance-badge img {
+        margin-right: 8px;
+        border-radius: 50%; /* Rounds the logo */
+        object-fit: contain;
+    }
+#details-page .logo-display-area img:hover {
+        transform: scale(1.2); /* Makes the logo pop slightly when hovered */
+    }
+
+/* Adjust the select padding so text doesn't overlap the logo */
+#details-page .edit-mode.myk-form-input {
+    padding-left: 40px !important;
+}
+
+/* Hide the actual radio circle */
+#details-page .myk-radio-group input[type="radio"] {
+    display: none;
+}
+
+/* Style the labels as buttons */
+#details-page .radio-label {
+    display: inline-block;
+    padding: 5px 2px;
+    margin-right: 10px;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    transition: all 0.3s;
+}
+
+/* Style for when the button is selected */
+#details-page .myk-radio-group input[type="radio"]:checked + .radio-label {
+    border-bottom: 2px solid #0056b3; /* Thick blue line like your inputs */
+    color: #0056b3;
+    font-weight: bold;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 0;
+    bottom: 5px; /* Matches your input padding */
+    color: #333;
+    font-weight: bold;
+}
+
+.path-info-link {
+    color: #0056b3;
+    text-decoration: none;
+    font-style: italic;
+    margin-left: 10px;
+}
+
+    .path-info-link:hover {
+        text-decoration: underline;
+    }
+
+.path-explanation-container {
+    background: #f8f9fa;
+    padding: 10px;
+    border-left: 3px solid #0056b3;
+}
+
+/* Floating Search Container */
+#details-page .search-pod {
+    position: absolute;
+    top: 120px;
+    right: 250px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8); /* Slight blur effect over background */
+    padding: 5px 5px;
+    border-radius: 4px;
+}
+
+    /* The "Search" Label */
+#details-page .search-pod label {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: rgb(0, 0, 0);
+        margin-right: 10px;
+        
+    }
+
+/* The Input Line */
+#pageSearchInput {
+    border: none;
+    border-bottom: 2px solid #0056b3; /* Only the bottom line */
+    background: transparent;
+    outline: none;
+    width: 180px;
+    padding: 2px 2px;
+    font-size: 0.9rem;
+    transition: width 0.3s ease;
+}
+
+/* Navigation Buttons Styling */
+#details-page .search-nav-btn {
+    background: none;
+    border: none;
+    color: #0056b3;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 1.1rem;
+}
+
+#details-page .search-nav-btn:hover {
+        color: #003d80;
+    }
+
+/* Result Counter */
+#details-page #searchStatus {
+    font-size: 0.75rem;
+    color: #666;
+    margin-left: 8px;
+    min-width: 10px;
+}
+
+#details-page .myk-btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    background-color: #c2daf7;
+    border-color:#c2daf7;
+}
+
+/* Container for the status results */
+.npi-status-box {
+    position: absolute;
+    top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+}
+
+/* The individual result row */
+.npi-result-row {
+    display: inline-grid;
+    align-items: inherit;
+    white-space: nowrap;
+    font-size: 0.5rem;
+    font-weight: bold;
+}
+
+
+
+
+/* The Round Green Checkmark */
+.npi-check-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%; /* This makes it round */
+    font-size: 12px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+/* Verified Name Text */
+.npi-verified-name {
+    color: #28a745;
+}
+
+/* Error Text */
+.npi-error-text {
+    color: #dc3545;
+}
+#details-page .provider-pairs {
+    margin: 0;
+    padding-left: 18px; /* keep numbering nice */
+}
+
+#details-page .provider-pair-row {
+    display: grid;
+    grid-template-columns: 1fr 180px; /* name takes space, npi fixed */
+    gap: 16px;
+    align-items: baseline;
+    padding: 3px 0;
+}
+
+#details-page .provider-npi {
+    text-align: right;
+    font-family: monospace;
+    color: #333;
+
+}
+
+/* hide optional sections only in VIEW mode when blank */
+.hide-when-view .view-mode {
+    display: none !important;
+}
+
+/* but keep edit mode usable when user clicks Update */
+.hide-when-view .edit-mode {
+    display: none; /* your JS will turn it on */
+}
+
+#details-page .rulebook-grid {
+    display: block;
+}
+
+#details-page .rulebook-top-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+#details-page .rulebook-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+    #details-page .rulebook-column .rulebook-card {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 0;
+    }
+
+@media (max-width: 900px) {
+    #details-page .rulebook-top-columns {
+        grid-template-columns: 1fr;
+    }
+}
+#details-page .rulebook-card {
+    border-radius: 14px !important;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+#details-page .rulebook-column .rulebook-card {
+    border-radius: 18px !important;
+    overflow: hidden;
+}
+#details-page .myk-form-center-wrapper {
+    padding-left: 14px;
+    padding-right: 14px;
+}
+#details-page .rulebook-top-columns {
+    gap: 18px;
+}
+/* Office Contacts inner layout */
+#details-page .office-contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+}
+.row {
+    margin-bottom: 10px;
+    align-items: flex-start;
+}
+.d-flex,
+.flex-row {
+    align-items: flex-start;
+}
+
+#details-page .myk-table-custom td,
+#details-page .myk-table-custom th {
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+#details-page .office-contact-block {
+    padding: 10px 5px;
+}
+#details-page .section-practice {
+    background-color: #96c1f1;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+
+}
+#details-page .section-officecontacts {
+    background-color: #f6d8d8;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    align-items: flex-start;
+}
+#details-page .section-provider {
+    background-color: #f1bb92;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    align-items: flex-start;
+}
+#details-page .communication_method {
+    background-color: #f8eb83;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    align-items: flex-start;
+}
+#details-page .software_system {
+    background-color: #efec5c;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+}
+#details-page .section-facilities {
+    background-color: #b9ee60;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    padding: 25px 30px !important;
+}
+#details-page .section-insurance {
+    background-color: #bfe8ee;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+}
+#details-page .section-services {
+    background-color: #d8c3f0;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+}
+
+#details-page .section-billing {
+    background-color: #e8bfdc;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+}
+
+#details-page .section-eob {
+    background-color: #ea94d1;
+    margin-bottom: 14px;
+    padding-bottom:8px;
+    grid-auto-rows: min-content;
+}
+
+#details-page .section-collection {
+    background-color: #f5e7b8;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    grid-auto-rows: min-content;
+}
+#details-page .section-websites {
+    background-color: #d4a9f2;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+}
+#details-page .section-meeting {
+    background-color: #d7b4f2;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+}
+#details-page .section-filedownload {
+    background-color: #ead0c4;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+    padding: 25px 30px !important;
+}
+
+#details-page .section-charge_entry {
+    background-color: #9170f3;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    grid-auto-rows: min-content;
+    padding: 25px 30px !important;
+}
+
+
+/* Restore card shape after two-column layout */
+#details-page .myk-form-center-wrapper {
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+#details-page .rulebook-top-columns {
+    gap: 18px;
+}
+
+#details-page .rulebook-card {
+    border-radius: 14px !important;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+#details-page .rulebook-column .rulebook-card {
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+/* Make the top two-column cards more comfortable */
+#details-page .rulebook-top-columns {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+#details-page .rulebook-column .rulebook-card {
+    padding: 20px 24px !important;
+    min-height: 200px;
+    border-radius: 14px !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Better spacing for rows inside cards */
+#details-page .rulebook-card .form-group,
+#details-page .rulebook-card .myk-mb-3 {
+    margin-bottom: 14px !important;
+}
+
+/* Give labels breathing room */
+#details-page .rulebook-card .myk-form-label {
+    display: inline-block;
+    min-width: 220px;
+    line-height: 1.5;
+    vertical-align: top;
+    margin-right: 8px;
+}
+
+/* Make values more readable */
+#details-page .rulebook-card .view-mode,
+#details-page .rulebook-card .data-row,
+#details-page .rulebook-card p,
+#details-page .rulebook-card span,
+#details-page .rulebook-card div {
+    line-height: 1.5;
+}
+
+/* Slightly better heading spacing */
+#details-page .rulebook-card h2,
+#details-page .rulebook-card h3,
+#details-page .rulebook-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Provider edit UI cleaner style */
+#details-page .provider-edit-list {
+    width: 100%;
+    margin-top: 8px;
+}
+
+#details-page .provider-edit-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 14px;
+    width: 100%;
+}
+
+#details-page .provider-line-input {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #9bb6d9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 6px 4px !important;
+    font-size: 15px;
+    outline: none;
+}
+
+    #details-page .provider-line-input:focus {
+        border-bottom: 2px solid #0b4ea2 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+#details-page .provider-name-input {
+    flex: 2;
+    min-width: 220px;
+}
+
+#details-page .provider-npi-input {
+    flex: 1;
+    min-width: 120px;
+}
+
+#details-page .provider-remove-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #d62828 !important;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    box-shadow: none !important;
+}
+
+    #details-page .provider-remove-btn:hover {
+        color: #a30000 !important;
+        transform: scale(1.05);
+    }
+
+#details-page .provider-add-btn {
+    background: #2eaf55 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 18px !important;
+    padding: 8px 14px !important;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+    #details-page .provider-add-btn:hover {
+        background: #259347 !important;
+    }
+
+/* Participating Facilities clean view mode */
+#details-page .facility-view-panel {
+    width: 100%;
+}
+
+#details-page .facility-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 12px 0 22px 0;
+}
+
+#details-page .facility-summary-card {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(50, 120, 50, 0.25);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+#details-page .facility-summary-label {
+    font-size: 13px;
+    color: #3f6f35;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+#details-page .facility-summary-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #143d18;
+}
+
+#details-page .facility-group {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0,0,0,0.18);
+}
+
+#details-page .facility-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0b4d18;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    font-family: Roboto;
+}
+
+#details-page .facility-group-icon {
+    font-size: 22px;
+}
+
+#details-page .facility-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+#details-page .facility-mini-card {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#details-page .facility-line {
+    display: grid;
+    grid-template-columns: 115px 1fr;
+    gap: 8px;
+    margin-bottom: 7px;
+    line-height: 1.35;
+}
+
+    #details-page .facility-line strong {
+        color: #244b1f;
+    }
+
+    #details-page .facility-line span {
+        color: #111;
+    }
+
+@media (max-width: 900px) {
+    #details-page .facility-summary-grid,
+    #details-page .facility-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+#details-page .facility-group-img {
+    width: 95px;
+    height: 95px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#details-page .facility-line .npi-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#details-page .facility-line .npi-status {
+    font-size: 14px;
+    font-weight: bold;
+}
+/* Middle two-column layout */
+#details-page .rulebook-mid-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 18px;
+}
+
+    #details-page .rulebook-mid-columns .rulebook-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    #details-page .rulebook-mid-columns .rulebook-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+@media (max-width: 900px) {
+    #details-page .rulebook-mid-columns {
+        grid-template-columns: 1fr;
+    }
+}
+/* Services and Procedures clean layout */
+.section-services .services-panel {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.section-services .services-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.section-services .services-panel-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #064b85;
+    margin-bottom: 4px;
+}
+
+.section-services .services-panel-subtitle {
+    font-size: 13px;
+    color: #315b3a;
+    font-weight: 600;
+}
+
+ .section-services .services-toggle-btn {
+    background: #2eaf55;
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+     .section-services .services-toggle-btn:hover {
+        background: #259347;
+    }
+
+ .section-services .services-table-panel {
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 12px;
+    padding: 12px;
+}
+#details-page .section-services .services-table-scroll {
+    max-height: 430px;
+    overflow-y: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+}
+
+ .section-services .services-clean-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 14px;
+}
+
+    #details-page .section-services .services-clean-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #eaf6ff;
+        color: #064b85;
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(0,0,0,0.18);
+    }
+
+    #details-page .section-services .services-clean-table tbody td {
+        padding: 9px 12px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        vertical-align: top;
+        line-height: 1.35;
+    }
+
+    #details-page .section-services .services-clean-table tbody tr:nth-child(even) {
+        background: #f8fcff;
+    }
+
+    #details-page .section-services .services-clean-table tbody td:first-child {
+        font-weight: 700;
+        color: #123b16;
+        white-space: nowrap;
+    }
+
+#details-page .section-services .services-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 14px;
+}
+
+@media (max-width: 900px) {
+    #details-page .section-services .services-panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #details-page .section-services .services-edit-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* File Downloading Process clean layout */
+.section-filedownload .file-download-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.section-filedownload .file-download-card,
+.section-filedownload .file-download-extra-card {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    box-sizing: border-box;
+}
+
+.section-filedownload .file-download-extra-card {
+    margin-top: 16px;
+}
+
+.section-filedownload .file-download-card-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #064b85;
+    margin-bottom: 6px;
+}
+
+.section-filedownload .file-download-card-question {
+    font-size: 14px;
+    font-weight: 700;
+    color: #244b1f;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.section-filedownload .file-download-line {
+    margin-bottom: 16px;
+}
+
+    .section-filedownload .file-download-line label {
+        display: block;
+        font-weight: 800;
+        color: #244b1f;
+        margin-bottom: 5px;
+    }
+
+.section-filedownload .file-line-input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #9bb6d9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 6px 4px !important;
+    font-size: 15px;
+    outline: none;
+}
+
+    .section-filedownload .file-line-input:focus {
+        border-bottom: 2px solid #0b4ea2 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+.section-filedownload .file-radio-row {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    border: none !important;
+}
+
+    .section-filedownload .file-radio-row label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+    }
+
+.section-filedownload .file-help-btn {
+    background: transparent;
+    border: none;
+    color: #0056b3;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0;
+    margin-bottom: 12px;
+}
+
+.section-filedownload .file-help-box {
+    margin: 10px 0 16px 0;
+    background: rgba(255,255,255,0.90);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+    .section-filedownload .file-help-box p {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .section-filedownload .file-help-box img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.12);
+    }
+
+@media (max-width: 900px) {
+    .section-filedownload .file-download-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Demo and Charge Entry Process clean layout */
+.section-charge_entry {
+    background: #ffd6b5 !important; /* soft peach */
+}
+
+    .section-charge_entry .charge-entry-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .section-charge_entry .charge-entry-card {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(120, 70, 30, 0.18);
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        box-sizing: border-box;
+    }
+
+    .section-charge_entry .charge-entry-card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #8a3f05;
+        margin-bottom: 6px;
+    }
+
+    .section-charge_entry .charge-entry-card-subtitle {
+        font-size: 14px;
+        font-weight: 700;
+        color: #5b3a1d;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .section-charge_entry .data-row {
+        width: 100%;
+    }
+
+    .section-charge_entry .block-item {
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 12px;
+    }
+
+@media (max-width: 900px) {
+    .section-charge_entry .charge-entry-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Coding clean layout */
+.section-coding {
+    background: #dbeafe !important; /* soft blue */
+    padding: 26px 28px !important; /* more inner spacing from main card edge */
+}
+
+    .section-coding .coding-intro-text {
+        font-size: 16px;
+        font-weight: 800;
+        color: #123b66;
+        margin-bottom: 18px;
+    }
+
+    .section-coding .coding-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+        gap: 18px;
+    }
+
+    .section-coding .coding-mini-card {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(30, 80, 140, 0.18);
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        box-sizing: border-box;
+    }
+
+    .section-coding .coding-card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #064b85;
+        margin-bottom: 6px;
+    }
+
+    .section-coding .coding-card-subtitle {
+        font-size: 14px;
+        font-weight: 700;
+        color: #2f4f6f;
+        margin-bottom: 14px;
+        line-height: 1.4;
+    }
+
+    .section-coding .data-row {
+        width: 100%;
+    }
+
+    .section-coding .block-item {
+        background: rgba(255, 255, 255, 0.76);
+        border-radius: 12px;
+    }
+
+@media (max-width: 900px) {
+    .section-coding .coding-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Top Denials and Actions clean layout */
+.section-top-denials {
+    background: #f8d7da !important; /* soft rose */
+    padding: 28px 32px !important;
+}
+
+    .section-top-denials .denials-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .section-top-denials .denial-card {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(140, 45, 60, 0.18);
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        box-sizing: border-box;
+    }
+
+    .section-top-denials .denial-card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #8a1f35;
+        margin-bottom: 6px;
+    }
+
+    .section-top-denials .denial-card-subtitle {
+        font-size: 14px;
+        font-weight: 700;
+        color: #5b2630;
+        margin-bottom: 14px;
+        line-height: 1.4;
+    }
+
+    .section-top-denials .data-row {
+        width: 100%;
+    }
+
+    .section-top-denials .block-item {
+        background: rgba(255, 255, 255, 0.78);
+        border-radius: 12px;
+    }
+
+@media (max-width: 900px) {
+    .section-top-denials .denials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Patient Statement Guidelines clean layout */
+.section-patient-statement {
+    background: #fff3cd !important; /* soft warm cream */
+    padding: 28px 32px !important;
+}
+
+    .section-patient-statement .statement-guideline-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 18px;
+        margin-bottom: 26px;
+    }
+
+    .section-patient-statement .statement-process-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .section-patient-statement .statement-mini-card,
+    .section-patient-statement .statement-process-card {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(120, 90, 20, 0.18);
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        box-sizing: border-box;
+    }
+
+    .section-patient-statement .statement-card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #8a5a00;
+        margin-bottom: 8px;
+    }
+
+    .section-patient-statement .statement-card-subtitle {
+        font-size: 14px;
+        font-weight: 700;
+        color: #5a4200;
+        margin-bottom: 14px;
+        line-height: 1.4;
+    }
+
+    .section-patient-statement .statement-line {
+        line-height: 1.5;
+        color: #111;
+    }
+
+    .section-patient-statement .statement-line-input {
+        width: 100%;
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid #c9a94d !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 6px 4px !important;
+        font-size: 15px;
+        outline: none;
+    }
+
+        .section-patient-statement .statement-line-input:focus {
+            border-bottom: 2px solid #8a5a00 !important;
+        }
+
+    .section-patient-statement .statement-help-btn {
+        background: transparent;
+        border: none;
+        color: #0056b3;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .section-patient-statement .statement-help-box {
+        margin-top: 10px;
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(0,0,0,0.12);
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+        .section-patient-statement .statement-help-box p {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .section-patient-statement .statement-help-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.12);
+        }
+
+    .section-patient-statement .statement-process-heading {
+        margin-top: 20px;
+    }
+
+    .section-patient-statement .block-item {
+        background: rgba(255, 255, 255, 0.76);
+        border-radius: 12px;
+    }
+
+@media (max-width: 900px) {
+    .section-patient-statement .statement-guideline-grid,
+    .section-patient-statement .statement-process-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.rulebook-billing-eob-columns {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 18px;
+}
+
+    .rulebook-billing-eob-columns .rulebook-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .rulebook-billing-eob-columns .rulebook-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+@media (max-width: 900px) {
+    .rulebook-billing-eob-columns {
+        grid-template-columns: 1fr;
+    }
+}
+/* Charge Collection Process safe styling only */
+.section-charge-collection {
+    background: #d7f7f5 !important;
+    padding: 28px 32px !important;
+    border-radius: 14px !important;
+    box-sizing: border-box;
+}
+
+    .section-charge-collection h3 {
+        color: #00666b !important;
+        font-size: 18px;
+        font-weight: 800;
+        margin-top: 18px;
+        margin-bottom: 10px;
+    }
+
+    .section-charge-collection .form-group {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(0, 110, 110, 0.16);
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin-bottom: 18px !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .section-charge-collection table {
+        background: transparent !important;
+        border: none !important;
+    }
+
+        .section-charge-collection table td {
+            border: none !important;
+            padding: 0 !important;
+        }
+
+    .section-charge-collection .myk-form-label {
+        color: #244b1f !important;
+        font-weight: 800;
+    }
+
+    .section-charge-collection .view-mode {
+        line-height: 1.5;
+    }
+
+    .section-charge-collection img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+    /* OP List / Pending Client Clarification answers */
+    .op-answer-red {
+        color: #c1121f !important;
+        font-weight: 800 !important;
+    }
+
+    .op-clarification-row .view-mode {
+        color: #c1121f !important;
+        font-weight: 800 !important;
+    }
+@page {
+    margin: 18mm;
+}
+/* ================= PDF / PRINT FRIENDLY VIEW ================= */
+@media print {
+    body,
+    #details-page {
+        background: white !important;
+        color: #000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 12px !important;
+    }
+
+        #details-page .search-pod,
+        #details-page .button-group,
+        #details-page #update-btn,
+        #details-page #save-btn,
+        #details-page #cancel-btn,
+        #details-page .myk-btn,
+        #details-page .myk-btn1,
+        #details-page .edit-mode,
+        #details-page .provider-add-btn,
+        #details-page .provider-remove-btn,
+        #details-page .services-toggle-btn,
+        #details-page .file-help-btn,
+        #details-page .statement-help-btn {
+            display: none !important;
+        }
+
+        #details-page .view-mode {
+            display: inline !important;
+        }
+
+        #details-page .myk-form-center-wrapper,
+        #details-page .myk-card-clean {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #details-page .profile-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            margin-bottom: 12px !important;
+            page-break-after: avoid;
+        }
+
+        #details-page .profile-pic {
+            max-width: 90px !important;
+            max-height: 70px !important;
+            margin: 0 !important;
+        }
+
+        #details-page .myk-heading-main {
+            font-size: 28px !important;
+            margin: 0 0 10px 0 !important;
+            padding-bottom: 4px !important;
+            border-bottom: 2px solid #000 !important;
+            width: auto !important;
+        }
+
+        #details-page .myk-heading {
+            font-size: 20px !important;
+            color: #000 !important;
+            padding: 0 0 6px 0 !important;
+            margin-bottom: 8px !important;
+        }
+
+        #details-page h3,
+        #details-page h4 {
+            color: #000 !important;
+            font-size: 15px !important;
+        }
+
+        #details-page .rulebook-top-columns,
+        #details-page .rulebook-mid-columns,
+        #details-page .rulebook-billing-eob-columns {
+            display: block !important;
+        }
+
+        #details-page .rulebook-card {
+            background: #fff !important;
+            border: 1px solid #999 !important;
+            box-shadow: none !important;
+            border-radius: 8px !important;
+            padding: 12px 14px !important;
+            margin-bottom: 12px !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        #details-page .form-group,
+        #details-page .data-row {
+            display: block !important;
+            line-height: 1.35 !important;
+            margin-bottom: 6px !important;
+            padding: 0 !important;
+        }
+
+        #details-page .myk-form-label {
+            color: #000 !important;
+            font-weight: 700 !important;
+            min-width: unset !important;
+            display: inline !important;
+        }
+
+        #details-page .view-mode,
+        #details-page span,
+        #details-page p,
+        #details-page li,
+        #details-page div {
+            color: #000 !important;
+            line-height: 1.35 !important;
+        }
+
+        #details-page img {
+            max-width: 100% !important;
+            height: auto !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        #details-page table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            page-break-inside: auto;
+        }
+
+        #details-page th,
+        #details-page td {
+            border: 1px solid #777 !important;
+            padding: 5px !important;
+            color: #000 !important;
+            font-size: 11px !important;
+        }
+
+        #details-page .facility-card-grid,
+        #details-page .file-download-grid,
+        #details-page .charge-entry-grid,
+        #details-page .coding-grid,
+        #details-page .denials-grid,
+        #details-page .statement-guideline-grid,
+        #details-page .statement-process-grid {
+            display: block !important;
+        }
+
+        #details-page .facility-mini-card,
+        #details-page .file-download-card,
+        #details-page .file-download-extra-card,
+        #details-page .charge-entry-card,
+        #details-page .coding-mini-card,
+        #details-page .denial-card,
+        #details-page .statement-mini-card,
+        #details-page .statement-process-card,
+        #details-page .op-clarification-card {
+            background: #fff !important;
+            border: 1px solid #aaa !important;
+            box-shadow: none !important;
+            margin-bottom: 8px !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        #details-page .services-table-panel,
+        #details-page #procedureTableContent,
+        #details-page #immunizationTableContent {
+            display: block !important;
+        }
+
+        #details-page .services-table-scroll {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        #details-page .statement-help-box,
+        #details-page .file-help-box,
+        #details-page #paperEOB,
+        #details-page #balancePath {
+            display: block !important;
+        }
+}
+
+/* ================= Collapsible Rulebook Sections ================= */
+#details-page .section-collapse-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    padding-bottom: 8px;
+}
+
+#details-page .section-collapse-header h2 {
+    margin: 0 !important;
+    flex: 1;
+}
+
+#details-page .section-collapse-btn {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    color: #04468d;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+    #details-page .section-collapse-btn:hover {
+        background: #ffffff;
+        transform: scale(1.04);
+    }
+
+#details-page .section-collapsed .section-collapse-body {
+    display: none !important;
+}
+
+#details-page .section-services .services-table-panel.service-panel-open {
+    display: block !important;
+}
+/* ================= PDF VIEW PAGE ================= */
+#pdf-page {
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    font-family: "Book Antiqua", Georgia, serif;
+    color: #111;
+}
+
+    #pdf-page .pdf-wrapper {
+        max-width: 1100px;
+        margin: 30px auto;
+        padding: 30px;
+        background: #ffffff;
+    }
+
+    #pdf-page .pdf-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #111;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+        #pdf-page .pdf-header h1 {
+            margin: 0;
+            color: #04468d;
+            font-size: 34px;
+        }
+
+        #pdf-page .pdf-header p {
+            margin: 5px 0 0 0;
+            font-weight: 700;
+            color: #555;
+        }
+
+    #pdf-page .pdf-print-btn {
+        background: #04468d;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    #pdf-page .pdf-section {
+        border: 1px solid #d0d0d0;
+        border-radius: 12px;
+        padding: 18px 22px;
+        margin-bottom: 18px;
+        background: #ffffff;
+        page-break-inside: avoid;
+    }
+
+        #pdf-page .pdf-section h2 {
+            margin: 0 0 14px 0;
+            color: #04468d;
+            font-size: 24px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        #pdf-page .pdf-section h3 {
+            margin: 14px 0 8px 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+    #pdf-page .pdf-row {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 10px;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+        #pdf-page .pdf-row strong {
+            color: #222;
+        }
+
+    #pdf-page .pdf-red span {
+        color: #c1121f;
+        font-weight: 800;
+    }
+
+    #pdf-page .pdf-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+    }
+
+        #pdf-page .pdf-table th,
+        #pdf-page .pdf-table td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #pdf-page .pdf-table th {
+            background: #eef4ff;
+            color: #04468d;
+        }
+
+    #pdf-page .pdf-block {
+        margin-top: 14px;
+    }
+
+    #pdf-page img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    #pdf-page .pdf-facility-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 16px 0 10px 0;
+    }
+
+    #pdf-page .pdf-facility-icon {
+        width: 75px !important;
+        max-width: 75px !important;
+        height: 75px !important;
+        object-fit: contain !important;
+        flex-shrink: 0;
+    }
+@media print {
+    #pdf-page {
+        background: #ffffff !important;
+    }
+
+        #pdf-page .pdf-wrapper {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #pdf-page .pdf-print-btn {
+            display: none !important;
+        }
+
+        #pdf-page .pdf-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+}

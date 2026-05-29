@@ -1,0 +1,127 @@
+{% macro render_block_field(blocks, section_key, field_key, prefix, practice_id, practice_images) %}
+
+<div class="data-row">
+
+    <!-- VIEW MODE: Saved blocks -->
+    <div class="view-mode" style="display:block; width:100%;">
+        {% for block in blocks %}
+        <div class="saved-block" style="margin-bottom:14px;">
+
+            {% if block.block_type == 'heading' %}
+            <h3>{{ block.block_text }}</h3>
+
+            {% elif block.block_type == 'subheading' %}
+            <h4>{{ block.block_text }}</h4>
+
+            {% elif block.block_type == 'bullet_list' %}
+            <ul>
+                {% for item in block.block_text.split('\n') if item.strip() %}
+                <li>{{ item.strip() }}</li>
+                {% endfor %}
+            </ul>
+
+            {% elif block.block_type == 'numbered_list' %}
+            <ol>
+                {% for item in block.block_text.split('\n') if item.strip() %}
+                <li>{{ item.strip() }}</li>
+                {% endfor %}
+            </ol>
+
+            {% elif block.block_type == 'note' %}
+            <p><strong>Note:</strong> {{ block.block_text }}</p>
+
+            {% elif block.block_type == 'warning' %}
+            <p><strong>Warning:</strong> {{ block.block_text }}</p>
+
+            {% else %}
+            <p>{{ block.block_text }}</p>
+            {% endif %}
+
+            {% set imgs = [] %}
+            {% if practice_images.get(section_key)
+            and practice_images[section_key].get(field_key)
+            and practice_images[section_key][field_key] is mapping %}
+            {% set imgs = practice_images[section_key][field_key].get(block.block_order|string, []) %}
+            {% endif %}
+
+            {% for fn in imgs %}
+            <div style="margin-top:10px;">
+                <img src="{{ url_for('static', filename='uploads/practice_' ~ practice_id ~ '/' ~ section_key ~ '/' ~ field_key ~ '/' ~ fn) }}"
+                     style="width:150px; border:1px solid #ccc; cursor:pointer;"
+                     onclick="openImage(this.src)">
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <!-- EDIT MODE: Existing saved blocks with delete option -->
+    <div class="edit-mode" style="display:none; margin-top:10px;">
+
+        {% if blocks and blocks|length > 0 %}
+        <div class="saved-blocks-edit" style="margin-bottom:20px;">
+            <label style="font-weight:bold;">Saved Blocks:</label>
+
+            {% for block in blocks %}
+            <div class="saved-block-edit"
+                 style="margin-top:10px; padding:10px; border:1px solid #ccc; background:#f8f8f8;">
+
+                <div style="margin-bottom:8px;">
+                    <strong>{{ block.block_type|replace('_', ' ')|title }}:</strong>
+                    {{ block.block_text[:120] }}{% if block.block_text|length > 120 %}...{% endif %}
+                </div>
+
+                <button type="button"
+                        onclick="deleteSavedBlock('{{ block.id }}')"
+                        style="background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer;">
+                    Delete Saved Block
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- NEW UNSAVED BLOCKS -->
+        <div id="{{ prefix }}_container">
+
+            <div class="block-item" style="margin-bottom:15px; padding:10px; border:1px solid #ddd;">
+
+                <button type="button"
+                        onclick="removeBlock(this)"
+                        style="float:right; background:red; color:white; border:none; padding:3px 8px; cursor:pointer;">
+                    X
+                </button>
+
+                <label>Block Type:</label>
+                <select name="{{ prefix }}_block_type[]">
+                    <option value="paragraph">Paragraph</option>
+                    <option value="heading">Heading</option>
+                    <option value="subheading">Subheading</option>
+                    <option value="bullet_list">Bullet List</option>
+                    <option value="numbered_list">Numbered List</option>
+                    <option value="note">Note</option>
+                    <option value="warning">Warning</option>
+                </select>
+
+                <label style="margin-top:8px;">Block Text:</label>
+                <textarea name="{{ prefix }}_block_text[]" rows="4" style="width:100%;"></textarea>
+
+                <label style="margin-top:8px;">Block Image:</label>
+                <input type="file" name="{{ prefix }}_block_image[]">
+
+            </div>
+
+        </div>
+
+        <button type="button" onclick="addBlock('{{ prefix }}')" style="margin-top:10px;">
+            + Add Block
+        </button>
+
+    </div>
+
+</div>
+
+{% endmacro %}
