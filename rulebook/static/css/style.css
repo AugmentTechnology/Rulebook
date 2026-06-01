@@ -547,11 +547,7 @@
         margin-bottom: 0;
     }
 
-@media (max-width: 900px) {
-    #details-page .rulebook-top-columns {
-        grid-template-columns: 1fr;
-    }
-}
+
 #details-page .rulebook-card {
     border-radius: 14px !important;
     overflow: hidden;
@@ -569,97 +565,10 @@
 #details-page .rulebook-top-columns {
     gap: 18px;
 }
-/* ================= Office Contacts Clean Alignment ================= */
 
-#details-page .office-contacts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(280px, 1fr));
-    gap: 28px;
-    align-items: start;
-    width: 100%;
-}
 
-#details-page .office-contact-block {
-    padding: 10px 8px;
-    min-width: 0;
-}
 
-#details-page .office-contact-block h3 {
-    min-height: 52px;
-    margin-bottom: 14px !important;
-    line-height: 1.35;
-}
 
-/* ================= Office Contacts stable layout ================= */
-
-#details-page .section-officecontacts {
-    overflow: hidden !important;
-}
-
-#details-page .section-officecontacts .office-contacts-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 34px !important;
-    width: 100% !important;
-    align-items: start !important;
-}
-
-#details-page .section-officecontacts .office-contact-block {
-    min-width: 0 !important;
-    width: 100% !important;
-    padding: 8px 4px !important;
-}
-
-#details-page .section-officecontacts .office-contact-block h3 {
-    font-size: 18px !important;
-    line-height: 1.35 !important;
-    margin-bottom: 14px !important;
-    min-height: 50px !important;
-}
-
-/* Each field row */
-#details-page .section-officecontacts .office-contact-block .form-group {
-    display: grid !important;
-    grid-template-columns: 95px minmax(0, 1fr) !important;
-    column-gap: 10px !important;
-    align-items: start !important;
-    margin-bottom: 12px !important;
-}
-
-/* Left label */
-#details-page .section-officecontacts .office-contact-block .form-group > label {
-    width: 95px !important;
-    min-width: 95px !important;
-    max-width: 95px !important;
-    line-height: 1.25 !important;
-    white-space: normal !important;
-    margin: 0 !important;
-}
-
-/* Right value */
-#details-page .section-officecontacts .office-contact-block .data-row {
-    min-width: 0 !important;
-    width: 100% !important;
-    display: block !important;
-    line-height: 1.3 !important;
-}
-
-/* Prevent values from crossing into next column */
-#details-page .section-officecontacts .office-contact-block .view-mode {
-    display: block !important;
-    max-width: 100% !important;
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-word !important;
-    line-height: 1.3 !important;
-}
-
-/* Edit inputs */
-#details-page .section-officecontacts .office-contact-block input.edit-mode {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-}
 #details-page .section-practice {
     background-color: #96c1f1;
     margin-bottom: 14px;
@@ -801,7 +710,7 @@
 /* Give labels breathing room */
 #details-page .rulebook-card .myk-form-label {
     display: inline-block;
-    min-width: 220px;
+   
     line-height: 1.5;
     vertical-align: top;
     margin-right: 8px;
@@ -1875,16 +1784,8 @@
 #details-page .rulebook-card * {
     box-sizing: border-box;
 }
-/* If screen is smaller, keep design stable and allow horizontal scroll */
-@media (max-width: 1200px) {
-    #details-page {
-        overflow-x: auto;
-    }
 
-    #details-page .myk-form-center-wrapper {
-        min-width: 1200px;
-    }
-}
+
 /* ================= Full Width Rulebook Layout Fix ================= */
 
 html,
@@ -2201,6 +2102,241 @@ body {
     box-sizing: border-box !important;
 }
 
+
+/* =========================================================
+   GLOBAL RULEBOOK RESPONSIVE LAYOUT SYSTEM
+   ========================================================= */
+
+html,
+body {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+#details-page {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+/* Main page wrapper */
+#details-page .myk-form-center-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 22px !important;
+    box-sizing: border-box !important;
+}
+
+/* Main card/form container */
+#details-page .myk-card-clean {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Common card styling */
+#details-page .rulebook-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 16px !important;
+    padding: 26px 30px !important;
+    margin-bottom: 18px !important;
+    overflow: hidden !important;
+}
+
+/* Common card heading */
+#details-page .rulebook-card h2 {
+    font-size: clamp(24px, 2vw, 34px) !important;
+    line-height: 1.25 !important;
+    margin: 0 0 18px 0 !important;
+    color: #04468d !important;
+}
+
+/* Subheadings */
+#details-page .rulebook-card h3 {
+    font-size: clamp(17px, 1.2vw, 21px) !important;
+    line-height: 1.35 !important;
+    margin: 10px 0 12px 0 !important;
+}
+
+/* All text should wrap safely */
+#details-page .rulebook-card,
+#details-page .rulebook-card * {
+    box-sizing: border-box !important;
+    max-width: 100%;
+}
+
+/* Prevent text from overflowing */
+#details-page .view-mode,
+#details-page .data-row,
+#details-page .rulebook-card p,
+#details-page .rulebook-card span,
+#details-page .rulebook-card div,
+#details-page .rulebook-card li,
+#details-page .rulebook-card td {
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.45;
+}
+
+/* Inputs should never overflow */
+#details-page input,
+#details-page textarea,
+#details-page select {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* =========================================================
+   GENERAL TWO-COLUMN SECTION LAYOUT
+   ========================================================= */
+
+#details-page .rulebook-top-columns,
+#details-page .rulebook-mid-columns,
+#details-page .rulebook-billing-eob-columns {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    width: 100% !important;
+    align-items: start !important;
+    margin-bottom: 18px !important;
+}
+
+#details-page .rulebook-column {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+}
+
+/* Single full-width sections */
+#details-page .section-facilities,
+#details-page .section-filedownload,
+#details-page .section-charge_entry,
+#details-page .section-coding,
+#details-page .section-top-denials,
+#details-page .section-patient-statement {
+    width: 100% !important;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================= */
+
+/* Medium screens */
+@media (max-width: 1200px) {
+    #details-page .myk-form-center-wrapper {
+        padding: 0 16px !important;
+    }
+
+    #details-page .rulebook-card {
+        padding: 22px 24px !important;
+    }
+
+    #details-page .rulebook-top-columns,
+    #details-page .rulebook-mid-columns,
+    #details-page .rulebook-billing-eob-columns {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Small screens */
+@media (max-width: 768px) {
+    #details-page .myk-form-center-wrapper {
+        padding: 0 10px !important;
+    }
+
+    #details-page .rulebook-card {
+        padding: 18px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    #details-page .rulebook-card h2 {
+        font-size: 24px !important;
+    }
+
+    #details-page .section-collapse-btn {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* =========================================================
+   GENERAL FIELD LAYOUT
+   ========================================================= */
+
+/* Default short fields */
+#details-page .form-group {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px !important;
+    width: 100%;
+}
+
+#details-page .form-group > .myk-form-label {
+    font-weight: 800;
+    min-width: auto !important;
+    width: auto !important;
+    margin: 0 !important;
+    line-height: 1.4;
+}
+
+#details-page .form-group .data-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+/* Use this class for long answer fields */
+#details-page .form-group-stacked {
+    display: block !important;
+}
+
+#details-page .form-group-stacked > .myk-form-label {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+}
+
+#details-page .form-group-stacked .data-row,
+#details-page .form-group-stacked .stacked-content {
+    display: block !important;
+    width: 100% !important;
+    padding: 12px 14px !important;
+    background: rgba(255,255,255,0.45) !important;
+    border-radius: 12px !important;
+}
+/* =========================================================
+   GENERAL INNER CARD GRIDS
+   ========================================================= */
+
+
+
+#details-page .facility-mini-card,
+#details-page .file-download-card,
+#details-page .file-download-extra-card,
+#details-page .charge-entry-card,
+#details-page .coding-mini-card,
+#details-page .denial-card,
+#details-page .statement-mini-card,
+#details-page .statement-process-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
 /* ================= PDF VIEW PAGE ================= */
 #pdf-page {
     background: #f5f5f5;
