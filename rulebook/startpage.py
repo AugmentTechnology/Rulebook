@@ -63,9 +63,9 @@ BLOCK_FIELDS = [
     # -------- COLLECTION / MEETING REPORTS --------
     ("collection_agency_and_insurance_logins", "standard_monthly_reports", "monthly_reports"),
     ("collection_agency_and_insurance_logins", "custom_client_reports", "custom_reports"),
-    ("collection_agency_and_insurance_logins", "required_meeting_participants", "meeting_participants"),
-    ("collection_agency_and_insurance_logins", "meeting_frequency", "meeting_frequency"),
-    ("collection_agency_and_insurance_logins", "meeting_mode", "meeting_mode"),
+    #("collection_agency_and_insurance_logins", "required_meeting_participants", "meeting_participants"),
+    #("collection_agency_and_insurance_logins", "meeting_frequency", "meeting_frequency"),
+    #("collection_agency_and_insurance_logins", "meeting_mode", "meeting_mode"),
 ]
 
 # ---------------- DB CONNECTION ----------------
@@ -77,6 +77,39 @@ def get_db_connection():
         user="postgres",
         password="12345678"
     )
+
+
+def ensure_soft_delete_columns(cur):
+    """Ensure soft-delete/audit columns exist before reads or saves."""
+    soft_delete_tables = [
+        "practice_providers",
+        "participating_facilities",
+        "insurance_procedure",
+        "billing_specific_insurance_rules",
+        "coding",
+        "rulebook_field_blocks",
+        "practice_images",
+    ]
+
+    for table_name in soft_delete_tables:
+        cur.execute(f"""
+            ALTER TABLE IF EXISTS {table_name}
+            ADD COLUMN IF NOT EXISTS isactive BOOLEAN DEFAULT TRUE
+        """)
+
+        cur.execute(f"""
+            ALTER TABLE IF EXISTS {table_name}
+            ADD COLUMN IF NOT EXISTS modified_at TIMESTAMP DEFAULT NOW()
+        """)
+
+        cur.execute(f"""
+            UPDATE {table_name}
+            SET isactive = TRUE
+            WHERE isactive IS NULL
+        """)
+
+    # Commit schema changes immediately so future requests do not fail on missing columns.
+    cur.connection.commit()
 
 # ---------------- DOMAIN HELPERS ----------------
 Software_MAP = {
@@ -174,6 +207,7 @@ def new_practice():
         services_procedure={},
         immun_procedure={},
         billing_protocols={},
+        billing_specific_insurance_rules=[],
         clearinghouse_eob_details={},
         collection_agency_and_insurance_logins={},
         practice_images={},
@@ -191,6 +225,7 @@ def new_practice():
 def delete_block(block_id):
     conn = get_db_connection()
     cur = conn.cursor()
+    ensure_soft_delete_columns(cur)
 
     # First get block details so we can also hide its images
     cur.execute("""
@@ -262,8 +297,7 @@ def rulebook(practice_id):
     print("RULEBOOK PAGE OPENED")
     conn = get_db_connection()
     cur = conn.cursor()
-
-   
+    ensure_soft_delete_columns(cur)
 
     cur.execute("""
         SELECT *
@@ -306,11 +340,12 @@ def rulebook(practice_id):
 
     # ---------------- PRACTICE PROVIDERS (multiple rows) ----------------
     cur.execute("""
-            SELECT provider_id, provider_name, provider_npi, taxonomy
-            FROM practice_providers
-            WHERE practice_id = %s
-            ORDER BY provider_id
-        """, (practice_id,))
+        SELECT provider_id, provider_name, provider_npi, taxonomy
+        FROM practice_providers
+        WHERE practice_id = %s
+        AND COALESCE(isactive, true) = true
+        ORDER BY provider_id
+    """, (practice_id,))
 
     practice_providers = [
             {
@@ -360,6 +395,7 @@ def rulebook(practice_id):
     SELECT facility_id, facility_type, facility_name, facility_address, facility_npi, login_access, daily_number_claims, monthly_number_claims, first_date_of_service
     FROM participating_facilities
     WHERE practice_id = %s
+      AND COALESCE(isactive, true) = true
     ORDER BY facility_id
     """, (practice_id,))
 
@@ -404,13 +440,21 @@ def rulebook(practice_id):
     # -------- INSURANCE PROCEDURE --------
   
     cur.execute("""
-    SELECT procedure_code, procedure_fee
+    SELECT id, procedure_code, procedure_fee
     FROM insurance_procedure
     WHERE practice_id = %s
+      AND COALESCE(isactive, true) = true
     ORDER BY id
     """, (practice_id,))
 
-    insurance_procedure = [{"procedure_code": r[0], "procedure_fee": r[1]} for r in cur.fetchall()]
+    insurance_procedure = [
+        {
+            "id": r[0],
+            "procedure_code": r[1] or "",
+            "procedure_fee": r[2] or ""
+        }
+        for r in cur.fetchall()
+    ]
 
     # -------- SERVICES PROCEDURE --------
 
@@ -430,6 +474,31 @@ def rulebook(practice_id):
     bp_row = cur.fetchone()
     bp_cols = [d[0] for d in cur.description] if bp_row else []
     billing_protocols = dict(zip(bp_cols, bp_row)) if bp_row else {}
+
+    # -------- BILLING SPECIFIC INSURANCE RULES READ --------
+    cur.execute("""
+        SELECT
+            id,
+            insurance_name,
+            rule_text,
+            effective_date,
+            update_received_from_note
+        FROM billing_specific_insurance_rules
+        WHERE practice_id = %s
+          AND COALESCE(isactive, true) = true
+        ORDER BY id
+    """, (practice_id,))
+
+    billing_specific_insurance_rules = [
+        {
+            "id": r[0],
+            "insurance_name": r[1] or "",
+            "rule_text": r[2] or "",
+            "effective_date": r[3] or "",
+            "update_received_from_note": r[4] or ""
+        }
+        for r in cur.fetchall()
+    ]
 
     # -------- CLEARNING HOUSE AND EOB DETAILS --------
 
@@ -623,6 +692,7 @@ def rulebook(practice_id):
         services_procedure=services_procedure,
         immun_procedure=immun_procedure,
         billing_protocols=billing_protocols,
+        billing_specific_insurance_rules=billing_specific_insurance_rules,
         clearinghouse_eob_details=clearinghouse_eob_details,
         collection_agency_and_insurance_logins=collection_agency_and_insurance_logins,
         practice_images=practice_images,
@@ -674,7 +744,36 @@ def save_practice(practice_id):
     def clean(v):
         v = (v or "").strip()
         return v if v else None
+    
+    def clean_npi(v):
+        v = (v or "").strip()
 
+        if not v:
+            return None
+
+        digits = "".join(ch for ch in v if ch.isdigit())
+
+        if len(digits) != 10:
+            return None
+
+        return digits
+   
+    def clean_list_text(v):
+        v = (v or "").strip()
+
+        if not v:
+            return None
+
+        # allow comma-separated or new-line-separated input
+        parts = []
+
+        for line in v.replace(",", "\n").splitlines():
+            item = line.strip()
+            if item:
+                parts.append(item)
+
+        return "\n".join(parts) if parts else None
+    
     values = {
         "practice_id": practice_id,
         "practice_name": clean(data.get("practice_name")),
@@ -683,12 +782,13 @@ def save_practice(practice_id):
         "practice_address": clean(data.get("practice_address")),
         "practice_phone": clean(data.get("practice_phone")),
         "practice_tax_id": clean(data.get("practice_tax_id")),
-        "practice_npi": clean(data.get("practice_npi")),
+        "practice_npi": clean_npi(data.get("practice_npi")),
         "email": clean(data.get("email")),
     }
 
     conn = get_db_connection()
     cur = conn.cursor()
+    ensure_soft_delete_columns(cur)
 
     # Upsert (recommended): insert if missing, else update
     cur.execute("""
@@ -823,41 +923,82 @@ def save_practice(practice_id):
         provider_count if provider_count else None
     ))
 
-    # -------- PRACTICE PROVIDERS SAVE (MULTIPLE ROWS) --------
+    # -------- PRACTICE PROVIDERS SAVE WITH SOFT DELETE --------
 
-    # Remove existing providers for this practice (clean replace)
-    cur.execute(
-        "DELETE FROM practice_providers WHERE practice_id = %s",
-        (practice_id,)
-    )
+    deleted_provider_ids = request.form.getlist("deleted_provider_id[]")
 
+    for provider_id in deleted_provider_ids:
+        provider_id = clean(provider_id)
+
+        if not provider_id:
+            continue
+
+        cur.execute("""
+            UPDATE practice_providers
+            SET isactive = false,
+                modified_at = NOW()
+            WHERE provider_id = %s
+            AND practice_id = %s
+        """, (
+            provider_id,
+            practice_id
+        ))
+
+
+    provider_ids = request.form.getlist("provider_id[]")
     provider_names = request.form.getlist("provider_name")
     provider_npis = request.form.getlist("provider_npi")
     provider_taxonomies = request.form.getlist("provider_taxonomy")
 
-    for name, npi, taxonomy in zip(provider_names, provider_npis, provider_taxonomies):
-        name = name.strip() if name else None
-        npi = npi.strip() if npi else None
-        taxonomy = taxonomy.strip() if taxonomy else None
+    for provider_id, name, npi, taxonomy in zip_longest(
+        provider_ids,
+        provider_names,
+        provider_npis,
+        provider_taxonomies,
+        fillvalue=""
+    ):
+        provider_id = clean(provider_id)
+        name = clean(name)
+        npi = clean_npi(npi)
+        taxonomy = clean(taxonomy)
 
         if not name and not npi and not taxonomy:
-            continue  # skip empty rows
+            continue
 
-        cur.execute("""
-            INSERT INTO practice_providers (
+        if provider_id:
+            cur.execute("""
+                UPDATE practice_providers
+                SET provider_name = %s,
+                    provider_npi = %s,
+                    taxonomy = %s,
+                    isactive = true,
+                    modified_at = NOW()
+                WHERE provider_id = %s
+                AND practice_id = %s
+            """, (
+                name,
+                npi,
+                taxonomy,
+                provider_id,
+                practice_id
+            ))
+        else:
+            cur.execute("""
+                INSERT INTO practice_providers (
+                    practice_id,
+                    provider_name,
+                    provider_npi,
+                    taxonomy,
+                    isactive,
+                    modified_at
+                )
+                VALUES (%s, %s, %s, %s, true, NOW())
+            """, (
                 practice_id,
-                provider_name,
-                provider_npi,
+                name,
+                npi,
                 taxonomy
-            )
-            VALUES (%s, %s, %s, %s)
-        """, (
-            practice_id,
-            name,
-            npi,
-            taxonomy
-        ))
-
+            ))
         # ---------------- COMMUNICATION METHOD UPSERT ----------------
     cur.execute("""
         INSERT INTO communication_method (
@@ -887,13 +1028,13 @@ def save_practice(practice_id):
             oplist_delivery_method    = EXCLUDED.oplist_delivery_method
          
     """, {
-        "practice_id": practice_id,
-        "communication_method": data.get("communication_method"),
-        "oplist_frequency": data.get("oplist_frequency"),
-        "delivery_mode": data.get("delivery_mode"),
-        "email_or_fax": data.get("email_or_fax"),
-        "oplist_delivery_method": data.get("oplist_delivery_method"),
-    })
+            "practice_id": practice_id,
+            "communication_method": ", ".join(request.form.getlist("communication_method")),
+            "oplist_frequency": ", ".join(request.form.getlist("oplist_frequency")),
+            "delivery_mode": ", ".join(request.form.getlist("delivery_mode")),
+            "email_or_fax": clean(data.get("email_or_fax")),
+            "oplist_delivery_method": clean(data.get("oplist_delivery_method")),
+        })
 
 
     # -------- PRACTICE SOFTWARE & SYSTEMS SAVE --------
@@ -935,8 +1076,15 @@ def save_practice(practice_id):
     })
 
 
-    #------------------- PARTICIPATING FACILITIES --------------------
-    cur.execute("DELETE FROM participating_facilities WHERE practice_id = %s", (practice_id,))
+    #------------------- PARTICIPATING FACILITIES SAVE WITH SOFT DELETE --------------------
+    # Do not permanently delete old facility rows. Mark existing rows inactive,
+    # then insert the submitted rows as active rows.
+    cur.execute("""
+        UPDATE participating_facilities
+        SET isactive = false,
+            modified_at = NOW()
+        WHERE practice_id = %s
+    """, (practice_id,))
 
     def split_lines_keep_rows(field_name):
         """
@@ -1013,9 +1161,11 @@ def save_practice(practice_id):
                     login_access,
                     daily_number_claims,
                     monthly_number_claims,
-                    first_date_of_service
+                    first_date_of_service,
+                    isactive,
+                    modified_at
                 )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, true, NOW())
         """, (
             practice_id,
             ftype,
@@ -1176,21 +1326,74 @@ modified_at = NOW()
    
 
 
-    # ---------- PROCEDURE TABLE (MULTIPLE ROWS) SAVE ----------
+    # ---------- PROCEDURE TABLE SAVE WITH SOFT DELETE ----------
+    deleted_procedure_ids = request.form.getlist("deleted_procedure_id[]")
+
+    for procedure_id in deleted_procedure_ids:
+        procedure_id = clean(procedure_id)
+
+        if not procedure_id:
+            continue
+
+        cur.execute("""
+            UPDATE insurance_procedure
+            SET isactive = false,
+                modified_at = NOW()
+            WHERE id = %s
+              AND practice_id = %s
+        """, (
+            procedure_id,
+            practice_id
+        ))
+
+    procedure_ids = request.form.getlist("procedure_id[]")
     procedure_codes = request.form.getlist("procedure_code")
     procedure_fees  = request.form.getlist("procedure_fee")
 
-    cur.execute("DELETE FROM insurance_procedure WHERE practice_id = %s", (practice_id,))
+    for procedure_id, code, fee in zip_longest(
+        procedure_ids,
+        procedure_codes,
+        procedure_fees,
+        fillvalue=""
+    ):
+        procedure_id = clean(procedure_id)
+        code = clean(code)
+        fee = clean(fee)
 
-    for code, fee in zip(procedure_codes, procedure_fees):
-        if not ((code or "").strip() or (fee or "").strip()):
+        if not code and not fee:
             continue
-        cur.execute("""
-            INSERT INTO insurance_procedure (practice_id, procedure_code, procedure_fee)
-            VALUES (%s, %s, %s)
-        """, (practice_id, clean(code), clean(fee)))
 
-    
+        if procedure_id:
+            cur.execute("""
+                UPDATE insurance_procedure
+                SET procedure_code = %s,
+                    procedure_fee = %s,
+                    isactive = true,
+                    modified_at = NOW()
+                WHERE id = %s
+                  AND practice_id = %s
+            """, (
+                code,
+                fee,
+                procedure_id,
+                practice_id
+            ))
+        else:
+            cur.execute("""
+                INSERT INTO insurance_procedure (
+                    practice_id,
+                    procedure_code,
+                    procedure_fee,
+                    isactive,
+                    modified_at
+                )
+                VALUES (%s, %s, %s, true, NOW())
+            """, (
+                practice_id,
+                code,
+                fee
+            ))
+
     # ---------- SERVICES AND PROCEDURE ----------
 
 
@@ -1297,6 +1500,89 @@ modified_at = NOW()
         automated_email = EXCLUDED.automated_email,
         modified_at = NOW()
     """, bp)
+  
+    # -------- BILLING SPECIFIC INSURANCE RULES SAVE WITH SOFT DELETE --------
+
+    deleted_rule_ids = request.form.getlist("deleted_specific_insurance_rule_id[]")
+
+    for rule_id in deleted_rule_ids:
+        rule_id = clean(rule_id)
+
+        if not rule_id:
+            continue
+
+        cur.execute("""
+            UPDATE billing_specific_insurance_rules
+            SET isactive = false,
+                modified_at = NOW()
+            WHERE id = %s
+              AND practice_id = %s
+        """, (
+            rule_id,
+            practice_id
+        ))
+
+    specific_rule_ids = request.form.getlist("specific_insurance_rule_id[]")
+    specific_names = request.form.getlist("specific_insurance_name[]")
+    specific_rules = request.form.getlist("specific_insurance_rule[]")
+    specific_dates = request.form.getlist("specific_insurance_effective_date[]")
+    specific_notes = request.form.getlist("specific_insurance_note[]")
+
+    for rule_id, insurance_name, rule_text, effective_date, note in zip_longest(
+        specific_rule_ids,
+        specific_names,
+        specific_rules,
+        specific_dates,
+        specific_notes,
+        fillvalue=""
+    ):
+        rule_id = clean(rule_id)
+        insurance_name = clean(insurance_name)
+        rule_text = clean(rule_text)
+        effective_date = clean(effective_date)
+        note = clean(note)
+
+        if not insurance_name and not rule_text and not effective_date and not note:
+            continue
+
+        if rule_id:
+            cur.execute("""
+                UPDATE billing_specific_insurance_rules
+                SET insurance_name = %s,
+                    rule_text = %s,
+                    effective_date = %s,
+                    update_received_from_note = %s,
+                    isactive = true,
+                    modified_at = NOW()
+                WHERE id = %s
+                  AND practice_id = %s
+            """, (
+                insurance_name,
+                rule_text,
+                effective_date,
+                note,
+                rule_id,
+                practice_id
+            ))
+        else:
+            cur.execute("""
+                INSERT INTO billing_specific_insurance_rules (
+                    practice_id,
+                    insurance_name,
+                    rule_text,
+                    effective_date,
+                    update_received_from_note,
+                    isactive,
+                    modified_at
+                )
+                VALUES (%s, %s, %s, %s, %s, true, NOW())
+            """, (
+                practice_id,
+                insurance_name,
+                rule_text,
+                effective_date,
+                note
+            ))
 
     # -------- CLEARINGHOUSE + EOB DETAILS SAVE --------
 
@@ -1404,7 +1690,7 @@ modified_at = NOW()
         "custom_client_reports": clean(request.form.get("custom_client_reports")),
 
         # radios / selects (store as text)
-        "required_meeting_participants": clean(request.form.get("required_meeting_participants")),
+        "required_meeting_participants": clean_list_text(request.form.get("required_meeting_participants")),
         "meeting_frequency": clean(request.form.get("meeting_frequency")),
         "meeting_mode": clean(request.form.get("meeting_mode")),
 
@@ -1548,9 +1834,15 @@ modified_at = NOW()
 
    
 
-  # -------- CODING SAVE --------
+  # -------- CODING SAVE WITH SOFT DELETE --------
 
-    cur.execute("DELETE FROM coding WHERE practice_id = %s", (practice_id,))
+    # Preserve old coding rows by marking them inactive instead of deleting.
+    cur.execute("""
+        UPDATE coding
+        SET isactive = false,
+            modified_at = NOW()
+        WHERE practice_id = %s
+    """, (practice_id,))
 
     coding_rule = clean(data.get("coding_rule"))
     coding_cpt_rule = clean(data.get("coding_cpt_rule"))
@@ -1562,9 +1854,10 @@ modified_at = NOW()
                 facility_type,
                 rule,
                 cpt_rule,
+                isactive,
                 modified_at
             )
-            VALUES (%s, %s, %s, %s, NOW())
+            VALUES (%s, %s, %s, %s, true, NOW())
         """, (
             practice_id,
             "general",
@@ -1774,9 +2067,10 @@ def save_field_block(cur, practice_id, section_key, field_key, block_type_field,
                 block_order,
                 block_type,
                 block_text,
+                isactive,
                 modified_at
             )
-            VALUES (%s, %s, %s, %s, %s, %s, NOW())
+            VALUES (%s, %s, %s, %s, %s, %s, true, NOW())
         """, (
             practice_id,
             section_key,
@@ -1817,9 +2111,11 @@ def save_field_block(cur, practice_id, section_key, field_key, block_type_field,
                             block_order,
                             file_name,
                             original_name,
-                            mime_type
+                            mime_type,
+                            isactive,
+                            modified_at
                         )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, true, NOW())
                     """, (
                         practice_id,
                         section_key,
@@ -1885,8 +2181,8 @@ def save_field_image(cur, practice_id: int, section_key: str, field_key: str):
 
     # insert row
     cur.execute("""
-        INSERT INTO practice_images (practice_id, section_key, field_key, file_name, original_name, mime_type)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO practice_images (practice_id, section_key, field_key, file_name, original_name, mime_type, isactive, modified_at)
+        VALUES (%s, %s, %s, %s, %s, %s, true, NOW())
     """, (practice_id, section_key, field_key, new_name, original, f.mimetype))
 
     

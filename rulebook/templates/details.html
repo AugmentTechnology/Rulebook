@@ -100,8 +100,24 @@
                             <div class="form-group myk-mb-3">
                                 <label class="myk-form-label myk-text-dark">NPI:&nbsp;&nbsp;</label>
                                 <div class="data-row">
-                                    <span class="view-mode">{{ details.practice_npi }}</span>
-                                    <input type="text" name="practice_npi" class="edit-mode myk-form-input npi-field" maxlength="10" oninput="performNPIVerification(this, 'practice_npi')" value="{% if details.practice_npi %}{{ details.practice_npi }}{% endif %}" />
+                                  <span class="view-mode">
+                                    {% if details.practice_npi %}
+                                        <span class="npi-inline">
+                                            <span class="npi-value">{{ details.practice_npi }}</span>
+                                            <span class="npi-status" data-npi="{{ details.practice_npi }}"></span>
+                                        </span>
+                                    {% endif %}
+                                </span>
+                                    <input type="text"
+                                        name="practice_npi"
+                                        class="edit-mode myk-form-input npi-field"
+                                        maxlength="10"
+                                        inputmode="numeric"
+                                        pattern="[0-9]{10}"
+                                        title="NPI must be exactly 10 digits"
+                                        oninput="cleanNPIInput(this); performNPIVerification(this, 'practice_npi')"
+                                        value="{% if details.practice_npi %}{{ details.practice_npi }}{% endif %}" 
+                                    />
                                     <div id="practice_npi" style="font-size: 0.85rem; margin-top: 5px; font-family: Book Antiqua;"></div>
 
                                 </div>
@@ -220,11 +236,11 @@
                                     </div>
                                    
                                    <div class="form-group myk-mb-3">
-                                        <label class="myk-form-label myk-text-dark">&nbsp;&nbsp;Ext:&nbsp;&nbsp;</label> 
+                                        <label class="myk-form-label myk-text-dark">Ext:&nbsp;&nbsp;</label> 
                                         <div class="data-row">        
                                             
                                             <span class="view-mode">{{ office_contacts.billing_rep_ext }}</span>
-                                            <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="(XXX) XXX-XXXX" maxlength="14" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
+                                            <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="XXXXX" maxlength="5" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
                                         </div>
                                     </div>
 
@@ -275,80 +291,120 @@
                                 Communication Method with the Practice
                             </h2>
 
+                            {% set selected_comm = (communication_method.get('communication_method') or '').split(',') %}
+                            {% set selected_freq = (communication_method.get('oplist_frequency') or '').split(',') %}
+                            {% set selected_delivery = (communication_method.get('delivery_mode') or '').split(',') %}
+
                             <div class="form-group myk-mb-3">
                                 <label class="myk-form-label myk-text-dark">Communication method?&nbsp;&nbsp;</label>
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if communication_method.communication_method %}
-                                        {{ communication_method.communication_method }}
+                                            {{ communication_method.communication_method }}
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="checkbox" id="yes_{{ name }}" name="communication_method" value="Email"
-                                               {% if communication_method.get('communication_method')=='Email' %}checked{% endif %}>
-                                        <label for="yes_{{ name }}" class="checkbox-label">Email</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="communication_method" value="Fax"
-                                               {% if communication_method.get('communication_method')=='Fax' or not communication_method.get('communication_method') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Fax</label>
+                                    <div class="edit-mode checkbox-row" style="display: none; border: none;">
+                                        <input type="checkbox"
+                                            id="comm_method_email"
+                                            name="communication_method"
+                                            value="Email"
+                                            {% if 'Email' in selected_comm %}checked{% endif %}>
+                                        <label for="comm_method_email" class="checkbox-label">Email</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="communication_method" value="Phone"
-                                               {% if communication_method.get('communication_method')=='Phone' or not communication_method.get('communication_method') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Phone</label>
+                                        <input type="checkbox"
+                                            id="comm_method_fax"
+                                            name="communication_method"
+                                            value="Fax"
+                                            {% if 'Fax' in selected_comm %}checked{% endif %}>
+                                        <label for="comm_method_fax" class="checkbox-label">Fax</label>
+
+                                        <input type="checkbox"
+                                            id="comm_method_phone"
+                                            name="communication_method"
+                                            value="Phone"
+                                            {% if 'Phone' in selected_comm %}checked{% endif %}>
+                                        <label for="comm_method_phone" class="checkbox-label">Phone</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">How often is the OP List / Pending Clarification List sent to the client?&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    How often is the OP List / Pending Clarification List sent to the client?&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if communication_method.oplist_frequency %}
-                                        {{ communication_method.oplist_frequency }}
+                                            {{ communication_method.oplist_frequency }}
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="checkbox" id="yes_{{ name }}" name="oplist_frequency" value="Weekly"
-                                               {% if communication_method.get('oplist_frequency')=='Weekly' %}checked{% endif %}>
-                                        <label for="yes_{{ name }}" class="checkbox-label">Weekly</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="oplist_frequency" value="Biweekly"
-                                               {% if communication_method.get('oplist_frequency')=='Biweekly' or not communication_method.get('oplist_frequency') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Biweekly</label>
+                                    <div class="edit-mode checkbox-row" style="display: none; border: none;">
+                                        <input type="checkbox"
+                                            id="op_freq_weekly"
+                                            name="oplist_frequency"
+                                            value="Weekly"
+                                            {% if 'Weekly' in selected_freq %}checked{% endif %}>
+                                        <label for="op_freq_weekly" class="checkbox-label">Weekly</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="oplist_frequency" value="Monthly"
-                                               {% if communication_method.get('oplist_frequency')=='Monthly' or not communication_method.get('oplist_frequency') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Monthly</label>
+                                        <input type="checkbox"
+                                            id="op_freq_biweekly"
+                                            name="oplist_frequency"
+                                            value="Biweekly"
+                                            {% if 'Biweekly' in selected_freq %}checked{% endif %}>
+                                        <label for="op_freq_biweekly" class="checkbox-label">Biweekly</label>
+
+                                        <input type="checkbox"
+                                            id="op_freq_monthly"
+                                            name="oplist_frequency"
+                                            value="Monthly"
+                                            {% if 'Monthly' in selected_freq %}checked{% endif %}>
+                                        <label for="op_freq_monthly" class="checkbox-label">Monthly</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Mode of delivery for the OP / Pending Clarification List?&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Mode of delivery for the OP / Pending Clarification List?&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if communication_method.delivery_mode %}
-                                        {{ communication_method.delivery_mode }}
+                                            {{ communication_method.delivery_mode }}
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="checkbox" id="yes_{{ name }}" name="delivery_mode" value="Email"
-                                               {% if communication_method.get('delivery_mode')=='Email' %}checked{% endif %}>
-                                        <label for="yes_{{ name }}" class="checkbox-label">Email</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="delivery_mode" value="Fax"
-                                               {% if communication_method.get('delivery_mode')=='Fax' or not communication_method.get('delivery_mode') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Fax</label>
+                                    <div class="edit-mode checkbox-row" style="display: none; border: none;">
+                                        <input type="checkbox"
+                                            id="op_delivery_email"
+                                            name="delivery_mode"
+                                            value="Email"
+                                            {% if 'Email' in selected_delivery %}checked{% endif %}>
+                                        <label for="op_delivery_email" class="checkbox-label">Email</label>
 
-                                        <input type="checkbox" id="no_{{ name }}" name="delivery_mode" value="Phone"
-                                               {% if communication_method.get('delivery_mode')=='Phone' or not communication_method.get('delivery_mode') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="checkbox-label">Phone</label>
+                                        <input type="checkbox"
+                                            id="op_delivery_fax"
+                                            name="delivery_mode"
+                                            value="Fax"
+                                            {% if 'Fax' in selected_delivery %}checked{% endif %}>
+                                        <label for="op_delivery_fax" class="checkbox-label">Fax</label>
+
+                                        <input type="checkbox"
+                                            id="op_delivery_phone"
+                                            name="delivery_mode"
+                                            value="Phone"
+                                            {% if 'Phone' in selected_delivery %}checked{% endif %}>
+                                        <label for="op_delivery_phone" class="checkbox-label">Phone</label>
                                     </div>
                                 </div>
                             </div>
@@ -357,35 +413,48 @@
                                 <label class="myk-form-label myk-text-dark">
                                     Email or Fax to send OP / Pending Clarification list?&nbsp;&nbsp;
                                 </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">{{ communication_method.email_or_fax }}</span>
-                                    <input type="text" name="email_or_fax" class="edit-mode myk-form-input" value="{% if communication_method.email_or_fax %}{{ communication_method.email_or_fax }}{% endif %}" />
+                                    <input type="text"
+                                        name="email_or_fax"
+                                        class="edit-mode myk-form-input"
+                                        value="{% if communication_method.email_or_fax %}{{ communication_method.email_or_fax }}{% endif %}" />
                                 </div>
                             </div>
 
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">How is OP list / Pending Clarification list sent ?&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    How is OP list / Pending Clarification list sent?&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if communication_method.oplist_delivery_method %}
-                                        {{ communication_method.oplist_delivery_method }}
+                                            {{ communication_method.oplist_delivery_method }}
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="radio" id="yes_{{ name }}" name="oplist_delivery_method" value="Automatically via ATM"
-                                               {% if communication_method.get('oplist_delivery_method')=='Automatically via ATM' %}checked{% endif %}>
-                                        <label for="yes_{{ name }}" class="radio-label">Automatically via ATM</label>
 
-                                        <input type="radio" id="no_{{ name }}" name="oplist_delivery_method" value=" Manually by U.S. Representative"
-                                               {% if communication_method.get('oplist_delivery_method')==' Manually by U.S. Representative' or not communication_method.get('oplist_delivery_method') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="radio-label"> Manually by U.S. Representative</label>
+                                    <div class="edit-mode radio-row" style="display: none; border: none;">
+                                        <input type="radio"
+                                            id="op_sent_atm"
+                                            name="oplist_delivery_method"
+                                            value="Automatically via ATM"
+                                            {% if communication_method.get('oplist_delivery_method') == 'Automatically via ATM' %}checked{% endif %}>
+                                        <label for="op_sent_atm" class="radio-label">Automatically via ATM</label>
+
+                                        <input type="radio"
+                                            id="op_sent_manual"
+                                            name="oplist_delivery_method"
+                                            value="Manually by U.S. Representative"
+                                            {% if communication_method.get('oplist_delivery_method') == 'Manually by U.S. Representative' or not communication_method.get('oplist_delivery_method') %}checked{% endif %}>
+                                        <label for="op_sent_manual" class="radio-label">Manually by U.S. Representative</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="rulebook-column">
                         <div class="rulebook-card section-provider">
@@ -416,7 +485,14 @@
                                             {% if p.provider_name or p.provider_npi or p.taxonomy %}
                                             <tr>
                                                 <td>{{ p.provider_name }}</td>
-                                                <td>{{ p.provider_npi }}</td>
+                                                <td>
+                                                    {% if p.provider_npi %}
+                                                        <span class="npi-inline">
+                                                            <span class="npi-value">{{ p.provider_npi }}</span>
+                                                            <span class="npi-status" data-npi="{{ p.provider_npi }}"></span>
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{ p.taxonomy }}</td>
                                             </tr>
                                             {% endif %}
@@ -441,8 +517,10 @@
                                         <tbody id="provider-table-body">
                                             {% if practice_providers and practice_providers|length > 0 %}
                                             {% for p in practice_providers %}
-                                            <tr class="provider-edit-row">
+                                            <tr class="provider-edit-row" data-provider-id="{{ p.provider_id }}">
                                                 <td>
+                                                    <input type="hidden" name="provider_id[]" value="{{ p.provider_id }}">
+
                                                     <input type="text"
                                                         name="provider_name"
                                                         class="provider-line-input provider-name-input"
@@ -453,10 +531,14 @@
                                                 <td>
                                                     <input type="text"
                                                         name="provider_npi"
-                                                        class="provider-line-input provider-npi-input"
+                                                        class="provider-line-input provider-npi-input npi-field"
                                                         maxlength="10"
+                                                        inputmode="numeric"
+                                                        pattern="[0-9]{10}"
+                                                        title="NPI must be exactly 10 digits"
+                                                        oninput="cleanNPIInput(this)"
                                                         value="{{ p.provider_npi }}"
-                                                        placeholder="NPI">
+                                                        placeholder="10 digit NPI">
                                                 </td>
 
                                                 <td>
@@ -479,6 +561,8 @@
                                             {% else %}
                                             <tr class="provider-edit-row">
                                                 <td>
+                                                    <input type="hidden" name="provider_id[]" value="">
+
                                                     <input type="text"
                                                         name="provider_name"
                                                         class="provider-line-input provider-name-input"
@@ -488,9 +572,13 @@
                                                 <td>
                                                     <input type="text"
                                                         name="provider_npi"
-                                                        class="provider-line-input provider-npi-input"
+                                                        class="provider-line-input provider-npi-input npi-field"
                                                         maxlength="10"
-                                                        placeholder="NPI">
+                                                        inputmode="numeric"
+                                                        pattern="[0-9]{10}"
+                                                        title="NPI must be exactly 10 digits"
+                                                        oninput="cleanNPIInput(this)"
+                                                        placeholder="10 digit NPI">
                                                 </td>
 
                                                 <td>
@@ -512,7 +600,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-
+                                <div id="deletedProvidersBox"></div>
                                 <button type="button"
                                         class="edit-mode provider-add-btn"
                                         style="display:none;"
@@ -768,47 +856,122 @@
                              )
                                 }}
                             </div>
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Required participants for Monthly client Meeting:&nbsp;&nbsp;</label>
-                                <textarea name="required_meeting_participants" style="display:none;">{{ collection_agency_and_insurance_logins.get('required_meeting_participants','') }}</textarea>
-                                {{
-                              BF.render_block_field(
-                                 block_data.meeting_participants_blocks,
-                                 "collection_agency_and_insurance_logins",
-                                 "required_meeting_participants",
-                                 "meeting_participants",
-                                 practice_id,
-                                 practice_images
-                             )
-                                }}
+
+
+
+                            <!-- Required Participants -->
+                        <div class="form-group myk-mb-3 form-group-stacked meeting-simple-field">
+                            <label class="myk-form-label myk-text-dark">
+                                Required participants for Monthly client Meeting:
+                            </label>
+
+                            <div class="data-row">
+                                <div class="view-mode meeting-list-view">
+                                    {% if collection_agency_and_insurance_logins.required_meeting_participants %}
+                                        {% for person in collection_agency_and_insurance_logins.required_meeting_participants.replace(',', '\n').split('\n') %}
+                                            {% if person.strip() %}
+                                                <div class="meeting-list-item">{{ person.strip() }}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </div>
+
+                                <textarea name="required_meeting_participants"
+                                        class="edit-mode myk-form-input meeting-list-textarea"
+                                        rows="5"
+                                        placeholder="Enter participants separated by comma or each on a new line">{% if collection_agency_and_insurance_logins.required_meeting_participants %}{{ collection_agency_and_insurance_logins.required_meeting_participants }}{% endif %}</textarea>
                             </div>
+                        </div>
+
+
+                            <!-- Frequency of Meetings -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Frequency of Meetings:&nbsp;&nbsp;</label>
-                                <textarea name="meeting_frequency" style="display:none;">{{ collection_agency_and_insurance_logins.get('meeting_frequency','') }}</textarea>
-                                {{
-                              BF.render_block_field(
-                                 block_data.meeting_frequency_blocks,
-                                 "collection_agency_and_insurance_logins",
-                                 "meeting_frequency",
-                                 "meeting_frequency",
-                                 practice_id,
-                                 practice_images
-                             )
-                                }}
+                                <label class="myk-form-label myk-text-dark">
+                                    Frequency of Meetings:
+                                </label>
+
+                                <div class="data-row">
+                                    <span class="view-mode">
+                                        {% if collection_agency_and_insurance_logins.meeting_frequency %}
+                                            {{ collection_agency_and_insurance_logins.meeting_frequency }}
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </span>
+
+                                    <div class="edit-mode meeting-radio-row" style="display:none;">
+                                        <input type="radio"
+                                            id="meeting_frequency_daily"
+                                            name="meeting_frequency"
+                                            value="Daily"
+                                            {% if collection_agency_and_insurance_logins.meeting_frequency == 'Daily' %}checked{% endif %}>
+                                        <label for="meeting_frequency_daily">Daily</label>
+
+                                        <input type="radio"
+                                            id="meeting_frequency_weekly"
+                                            name="meeting_frequency"
+                                            value="Weekly"
+                                            {% if collection_agency_and_insurance_logins.meeting_frequency == 'Weekly' %}checked{% endif %}>
+                                        <label for="meeting_frequency_weekly">Weekly</label>
+
+                                        <input type="radio"
+                                            id="meeting_frequency_biweekly"
+                                            name="meeting_frequency"
+                                            value="Biweekly"
+                                            {% if collection_agency_and_insurance_logins.meeting_frequency == 'Biweekly' %}checked{% endif %}>
+                                        <label for="meeting_frequency_biweekly">Biweekly</label>
+
+                                        <input type="radio"
+                                            id="meeting_frequency_monthly"
+                                            name="meeting_frequency"
+                                            value="Monthly"
+                                            {% if collection_agency_and_insurance_logins.meeting_frequency == 'Monthly' %}checked{% endif %}>
+                                        <label for="meeting_frequency_monthly">Monthly</label>
+
+                                        <input type="radio"
+                                            id="meeting_frequency_on_request"
+                                            name="meeting_frequency"
+                                            value="On-request"
+                                            {% if collection_agency_and_insurance_logins.meeting_frequency == 'On-request' %}checked{% endif %}>
+                                        <label for="meeting_frequency_on_request">On-request</label>
+                                    </div>
+                                </div>
                             </div>
+
+
+                            <!-- Meeting Mode -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Meeting Mode:&nbsp;</label>
-                                <textarea name="meeting_mode" style="display:none;">{{ collection_agency_and_insurance_logins.get('meeting_mode','') }}</textarea>
-                                {{
-                                    BF.render_block_field(
-                                        block_data.meeting_mode_blocks,
-                                        "collection_agency_and_insurance_logins",
-                                        "meeting_mode",
-                                        "meeting_mode",
-                                        practice_id,
-                                        practice_images
-                                    )
-                                }}
+                                <label class="myk-form-label myk-text-dark">
+                                    Meeting Mode:
+                                </label>
+
+                                <div class="data-row">
+                                    <span class="view-mode">
+                                        {% if collection_agency_and_insurance_logins.meeting_mode %}
+                                            {{ collection_agency_and_insurance_logins.meeting_mode }}
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </span>
+
+                                    <div class="edit-mode meeting-radio-row" style="display:none;">
+                                        <input type="radio"
+                                            id="meeting_mode_online"
+                                            name="meeting_mode"
+                                            value="Online"
+                                            {% if collection_agency_and_insurance_logins.meeting_mode == 'Online' %}checked{% endif %}>
+                                        <label for="meeting_mode_online">Online</label>
+
+                                        <input type="radio"
+                                            id="meeting_mode_in_person"
+                                            name="meeting_mode"
+                                            value="In-person"
+                                            {% if collection_agency_and_insurance_logins.meeting_mode == 'In-person' %}checked{% endif %}>
+                                        <label for="meeting_mode_in_person">In-person</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1034,8 +1197,13 @@
 
                                             <td>
                                                 <div class="view-mode">{{ row.facility_npi }}</div>
-                                                <textarea name="office_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
-                                            </td>
+                                                <textarea name="office_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
 
                                             <td>
                                                 <div class="view-mode">{{ row.login_access }}</div>
@@ -1104,7 +1272,13 @@
 
                                             <td>
                                                 <div class="view-mode">{{ row.facility_npi }}</div>
-                                                <textarea name="hospital_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
+                                                <textarea name="hospital_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
                                             </td>
 
                                             <td>
@@ -1177,7 +1351,13 @@
                                                     <span class="npi-status" data-npi="{{ row.facility_npi }}"></span>
                                                     {% endif %}
                                                 </div>
-                                                <textarea name="nursing_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
+                                                <textarea name="nursing_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -1237,7 +1417,13 @@
                                                     <span class="npi-status" data-npi="{{ row.facility_npi }}"></span>
                                                     {% endif %}
                                                 </div>
-                                                <textarea name="surgery_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
+                                                <textarea name="surgery_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -1296,7 +1482,13 @@
                                                     <span class="npi-status" data-npi="{{ row.facility_npi }}"></span>
                                                     {% endif %}
                                                 </div>
-                                                <textarea name="dialysis_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
+                                                <textarea name="dialysis_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -1355,7 +1547,13 @@
                                                     <span class="npi-status" data-npi="{{ row.facility_npi }}"></span>
                                                     {% endif %}
                                                 </div>
-                                                <textarea name="cathlab_npi[]" class="edit-mode myk-form-input w-100" rows="2" style="display:none;">{{ row.facility_npi }}</textarea>
+                                                <textarea name="cathlab_npi[]"
+                                                    class="edit-mode myk-form-input w-100 npi-field"
+                                                    rows="2"
+                                                    maxlength="10"
+                                                    inputmode="numeric"
+                                                    oninput="cleanNPIMultilineInput(this)"
+                                                    style="display:none;">{{ row.facility_npi }}</textarea>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -1520,8 +1718,9 @@
                                 <table class="table table-bordered">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th style="width: 70%;">Procedure/CPT</th>
-                                            <th style="width: 30%; text-align: center;">Fee</th>
+                                            <th style="width: 65%;">Procedure/CPT</th>
+                                            <th style="width: 25%; text-align: center;">Fee</th>
+                                            <th style="width: 10%; text-align: center;"></th>
                                         </tr>
                                     </thead>
 
@@ -1545,27 +1744,57 @@
                                     <tbody class="edit-mode" id="procedureTableBody" style="display:none;">
                                         {% if insurance_procedure and insurance_procedure|length > 0 %}
                                         {% for row in insurance_procedure %}
-                                        <tr>
+                                        <tr class="procedure-edit-row" data-procedure-id="{{ row.id if row.id is defined else '' }}">
                                             <td>
-                                                <input type="text" name="procedure_code" class="myk-form-input w-100"
-                                                       value="{{ row.procedure_code or '' }}">
+                                                <input type="hidden"
+                                                    name="procedure_id[]"
+                                                    value="{{ row.id if row.id is defined else '' }}">
+
+                                                <input type="text"
+                                                    name="procedure_code"
+                                                    class="myk-form-input w-100"
+                                                    value="{{ row.procedure_code or '' }}">
                                             </td>
+
                                             <td style="text-align:center;">
-                                                <input type="text" name="procedure_fee" class="myk-form-input w-100 text-center"
-                                                       value="{{ row.procedure_fee or '' }}">
+                                                <input type="text"
+                                                    name="procedure_fee"
+                                                    class="myk-form-input w-100 text-center"
+                                                    value="{{ row.procedure_fee or '' }}">
+                                            </td>
+
+                                            <td style="text-align:center;">
+                                                <button type="button"
+                                                        class="provider-remove-btn"
+                                                        onclick="removeProcedureRow(this)">
+                                                    x
+                                                </button>
                                             </td>
                                         </tr>
                                         {% endfor %}
                                         {% else %}
-                                        <!-- start with one empty row -->
-                                        <tr>
-                                            <td><input type="text" name="procedure_code" class="myk-form-input w-100" value=""></td>
-                                            <td style="text-align:center;"><input type="text" name="procedure_fee" class="myk-form-input w-100 text-center" value=""></td>
+                                        <tr class="procedure-edit-row">
+                                            <td>
+                                                <input type="hidden" name="procedure_id[]" value="">
+                                                <input type="text" name="procedure_code" class="myk-form-input w-100" value="">
+                                            </td>
+
+                                            <td style="text-align:center;">
+                                                <input type="text" name="procedure_fee" class="myk-form-input w-100 text-center" value="">
+                                            </td>
+
+                                            <td style="text-align:center;">
+                                                <button type="button"
+                                                        class="provider-remove-btn"
+                                                        onclick="removeProcedureRow(this)">
+                                                    x
+                                                </button>
+                                            </td>
                                         </tr>
                                         {% endif %}
                                     </tbody>
                                 </table>
-
+                                <div id="deletedProceduresBox"></div>
                                 <!-- Add row button (show only in edit mode with your JS toggle) -->
                                 <div class="edit-mode" style="display:none;">
                                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addProcedureRow()">
@@ -1573,17 +1802,7 @@
                                     </button>
                                 </div>
 
-                                <script>
-                                    function addProcedureRow() {
-                                        const tbody = document.getElementById("procedureTableBody");
-                                        const tr = document.createElement("tr");
-                                        tr.innerHTML = `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <td><input type="text" name="procedure_code" class="myk-form-input w-100" value=""></td>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <td style="text-align:center;"><input type="text" name="procedure_fee" class="myk-form-input w-100 text-center" value=""></td>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `;
-                                        tbody.appendChild(tr);
-                                    }
-                                </script>
+                                
 
 
                             </div>
@@ -1832,90 +2051,380 @@
                             <h2 class="myk-heading myk-text-light myk-mb-4">
                                 Billing Protocols
                             </h2>
+
                             <br />
+
                             <h3 class="myk-form-label myk-text-dark">Billing Rules for Submitting Claims</h3>
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Under what Tax ID and NPI are claims submitted?:&nbsp;&nbsp;</label>
-                                <div class="data-row">
-                                    <span class="view-mode">{{ billing_protocols.tax_id_npi_claims_submitted_under }}</span>
-                                    <input type="text" name="tax_id_npi_claims_submitted_under" class="edit-mode myk-form-input" value="{% if billing_protocols.tax_id_npi_claims_submitted_under %}{{ billing_protocols.tax_id_npi_claims_submitted_under }}{% endif %}" />
+
+                            <!-- TAX ID AND NPI -->
+                            <div class="form-group myk-mb-3 billing-tax-npi-group">
+                                <label class="myk-form-label myk-text-dark">
+                                    Under what Tax ID and NPI are claims submitted?
+                                </label>
+
+                                <!-- VIEW MODE -->
+                                <div class="view-mode billing-tax-npi-view">
+                                    {% set saved_tax_npi_view = billing_protocols.get('tax_id_npi_claims_submitted_under') or '' %}
+                                    {% if saved_tax_npi_view %}
+                                        {% for line in saved_tax_npi_view.split('\n') %}
+                                            {% if line.strip() %}
+                                                <div>{{ line.strip() }}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </div>
+
+                                <!-- EDIT MODE -->
+                                <div class="edit-mode billing-tax-npi-edit" style="display:none;">
+
+                                    {% set saved_tax_npi = billing_protocols.get('tax_id_npi_claims_submitted_under') or '' %}
+                                    {% set ns_tax_npi = namespace(tax_value='', npi_value='') %}
+
+                                    {% for line in saved_tax_npi.split('\n') %}
+                                        {% if line.startswith('Tax ID:') %}
+                                            {% set ns_tax_npi.tax_value = line.replace('Tax ID:', '').strip() %}
+                                        {% elif line.startswith('NPI:') %}
+                                            {% set ns_tax_npi.npi_value = line.replace('NPI:', '').strip() %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <div class="billing-tax-npi-row">
+                                        <label for="billing_tax_id_display">Tax ID</label>
+                                        <input type="text"
+                                            id="billing_tax_id_display"
+                                            class="billing-line-input taxid-mask"
+                                            placeholder="XX-XXXXXXX"
+                                            maxlength="10"
+                                            value="{{ ns_tax_npi.tax_value }}">
+                                    </div>
+
+                                    <div class="billing-tax-npi-row">
+                                        <label for="billing_npi_display">NPI</label>
+                                        <input type="text"
+                                            id="billing_npi_display"
+                                            class="billing-line-input npi-field"
+                                            placeholder="10 digit NPI"
+                                            maxlength="10"
+                                            inputmode="numeric"
+                                            pattern="[0-9]{10}"
+                                            title="NPI must be exactly 10 digits"
+                                            oninput="cleanNPIInput(this)"
+                                            value="{{ ns_tax_npi.npi_value }}">
+                                    </div>
+
+                                    <textarea name="tax_id_npi_claims_submitted_under"
+                                            id="tax_id_npi_claims_submitted_under"
+                                            style="display:none;">{{ billing_protocols.get('tax_id_npi_claims_submitted_under') or '' }}</textarea>
                                 </div>
                             </div>
+
+
+                            <!-- PROVIDER TYPE -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Do we bill under MDs only or MID-level providers as well?&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Do we bill under MDs only or MID-level providers as well?&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if billing_protocols.provider_type %}
-                                        {{ billing_protocols.provider_type }}
+                                            {{ billing_protocols.provider_type }}
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="radio" id="yes_{{ name }}" name="provider_type" value="MDs only" class="bill-radio"
-                                               {% if billing_protocols.get('provider_type')=='MDs only' %}checked{% endif %}
-                                               onclick="toggleMidLevelQuestion(this)">
-                                        <label for="yes_{{ name }}" class="radio-label">MDs only</label>
 
-                                        <input type="radio" id="no_{{ name }}" name="provider_type" value="MID-level providers" class="bill-radio"
-                                               {% if billing_protocols.get('provider_type')=='MID-level providers' or not billing_protocols.get('provider_type') %}checked{% endif %}
-                                               onclick="toggleMidLevelQuestion(this)">
-                                        <label for="no_{{ name }}" class="radio-label">MID-level providers</label>
+                                    <div class="edit-mode billing-rule-radio-row" style="display:none; border:none;">
+                                        <input type="radio"
+                                            id="billing_provider_type_mds_only"
+                                            name="provider_type"
+                                            value="MDs only"
+                                            class="bill-radio"
+                                            {% if billing_protocols.get('provider_type') == 'MDs only' %}checked{% endif %}
+                                            onchange="toggleMidLevelQuestion(this.value)">
+                                        <label for="billing_provider_type_mds_only" class="radio-label">MDs only</label>
+
+                                        <input type="radio"
+                                            id="billing_provider_type_mid_level"
+                                            name="provider_type"
+                                            value="MID-level providers"
+                                            class="bill-radio"
+                                            {% if billing_protocols.get('provider_type') == 'MID-level providers' or not billing_protocols.get('provider_type') %}checked{% endif %}
+                                            onchange="toggleMidLevelQuestion(this.value)">
+                                        <label for="billing_provider_type_mid_level" class="radio-label">MID-level providers</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group myk-mb-3" id="midLevelContainer" style="display: none;">
-                                <label class="myk-form-label myk-text-dark">Please explain with the names of MID-Level Providers:&nbsp;&nbsp;</label>
+                            <div class="form-group myk-mb-3"
+                                id="midLevelContainer"
+                                style="display: none;">
+                                <label class="myk-form-label myk-text-dark">
+                                    Please explain with the names of MID-Level Providers:&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">{{ billing_protocols.mid_level_provider_names }}</span>
-                                    <input type="text" name="mid_level_provider_names" class="edit-mode myk-form-input" value="{% if billing_protocols.mid_level_provider_names %}{{ billing_protocols.mid_level_provider_names }}{% endif %}" />
+
+                                    <input type="text"
+                                        name="mid_level_provider_names"
+                                        class="edit-mode myk-form-input"
+                                        value="{% if billing_protocols.mid_level_provider_names %}{{ billing_protocols.mid_level_provider_names }}{% endif %}" />
                                 </div>
                             </div>
 
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Are there rules for specific insurance carriers?:&nbsp;&nbsp;</label>
+
+                            <!-- SPECIFIC INSURANCE RULE YES / NO -->
+                            <div class="form-group myk-mb-3 billing-specific-rule-group">
+                                <label class="myk-form-label myk-text-dark">
+                                    Are there rules for specific insurance carriers?
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">
                                         {% if billing_protocols.rules_for_specific_insurance_carriers %}
-                                        {{ 'Yes' if billing_protocols.get('rules_for_specific_insurance_carriers') else 'No' }}
+                                            Yes
                                         {% else %}
-                                        No
+                                            No
                                         {% endif %}
                                     </span>
-                                    <div class="edit-mode" style="display: none; border: none;">
-                                        <input type="radio" id="yes_{{ name }}" name="rules_for_specific_insurance_carriers" value="Yes"
-                                               {% if billing_protocols.get('rules_for_specific_insurance_carriers')=='Yes' %}checked{% endif %}>
-                                        <label for="yes_{{ name }}" class="radio-label">Yes</label>
 
-                                        <input type="radio" id="no_{{ name }}" name="rules_for_specific_insurance_carriers" value="No"
-                                               {% if billing_protocols.get('rules_for_specific_insurance_carriers')=='No' or not billing_protocols.get('rules_for_specific_insurance_carriers') %}checked{% endif %}>
-                                        <label for="no_{{ name }}" class="radio-label">No</label>
+                                    <div class="edit-mode billing-rule-radio-row" style="display:none; border:none;">
+                                        <input type="radio"
+                                            id="billing_specific_insurance_rules_yes"
+                                            name="rules_for_specific_insurance_carriers"
+                                            value="Yes"
+                                            {% if billing_protocols.rules_for_specific_insurance_carriers %}checked{% endif %}
+                                            onchange="toggleSpecificInsuranceRulesTable()">
+                                        <label for="billing_specific_insurance_rules_yes" class="radio-label">Yes</label>
+
+                                        <input type="radio"
+                                            id="billing_specific_insurance_rules_no"
+                                            name="rules_for_specific_insurance_carriers"
+                                            value="No"
+                                            {% if not billing_protocols.rules_for_specific_insurance_carriers %}checked{% endif %}
+                                            onchange="toggleSpecificInsuranceRulesTable()">
+                                        <label for="billing_specific_insurance_rules_no" class="radio-label">No</label>
                                     </div>
                                 </div>
                             </div>
 
+
+                            <!-- SPECIFIC INSURANCE RULES VIEW MODE -->
+                            {% if billing_protocols.rules_for_specific_insurance_carriers and billing_specific_insurance_rules %}
+                            <div class="view-mode specific-insurance-rules-view-panel">
+
+                                <div class="specific-insurance-rules-title">
+                                    Specific Insurance Carrier Rules
+                                </div>
+
+                                <table class="specific-insurance-rules-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Insurance Name</th>
+                                            <th>Rule</th>
+                                            <th>Effective Date</th>
+                                            <th>Update Received From / Note</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for row in billing_specific_insurance_rules %}
+                                        <tr>
+                                            <td>{{ row.insurance_name }}</td>
+                                            <td>{{ row.rule_text }}</td>
+                                            <td>{{ row.effective_date }}</td>
+                                            <td>{{ row.update_received_from_note }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            {% endif %}
+
+
+                            <!-- SPECIFIC INSURANCE RULES EDIT MODE -->
+                            <div id="specificInsuranceRulesTable"
+                                class="specific-insurance-rules-panel"
+                                style="display:none;">
+
+                                <div class="specific-insurance-rules-title">
+                                    Specific Insurance Carrier Rules
+                                </div>
+
+                                <table class="specific-insurance-rules-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Insurance Name</th>
+                                            <th>Rule</th>
+                                            <th>Effective Date</th>
+                                            <th>Update Received From / Note</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="specificInsuranceRulesBody">
+
+                                        {% if billing_specific_insurance_rules and billing_specific_insurance_rules|length > 0 %}
+                                            {% for row in billing_specific_insurance_rules %}
+                                            <tr class="specific-insurance-rule-row" data-rule-id="{{ row.id if row.id is defined else '' }}">
+                                                <td>
+                                                    <input type="hidden"
+                                                        name="specific_insurance_rule_id[]"
+                                                        value="{{ row.id if row.id is defined else '' }}">
+
+                                                    <input type="text"
+                                                        name="specific_insurance_name[]"
+                                                        class="billing-line-input"
+                                                        value="{{ row.insurance_name }}"
+                                                        placeholder="Example: Aetna">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_rule[]"
+                                                        class="billing-line-input"
+                                                        value="{{ row.rule_text }}"
+                                                        placeholder="Enter rule">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_effective_date[]"
+                                                        class="billing-line-input date-mask"
+                                                        value="{{ row.effective_date }}"
+                                                        placeholder="MM/DD/YYYY"
+                                                        maxlength="10">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_note[]"
+                                                        class="billing-line-input"
+                                                        value="{{ row.update_received_from_note }}"
+                                                        placeholder="Who sent update / notes">
+                                                </td>
+
+                                                <td class="specific-rule-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeSpecificInsuranceRuleRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr class="specific-insurance-rule-row">
+                                                <td>
+                                                    <input type="hidden"
+                                                        name="specific_insurance_rule_id[]"
+                                                        value="">
+
+                                                    <input type="text"
+                                                        name="specific_insurance_name[]"
+                                                        class="billing-line-input"
+                                                        placeholder="Example: Aetna">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_rule[]"
+                                                        class="billing-line-input"
+                                                        placeholder="Enter rule">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_effective_date[]"
+                                                        class="billing-line-input date-mask"
+                                                        placeholder="MM/DD/YYYY"
+                                                        maxlength="10">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text"
+                                                        name="specific_insurance_note[]"
+                                                        class="billing-line-input"
+                                                        placeholder="Who sent update / notes">
+                                                </td>
+
+                                                <td class="specific-rule-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeSpecificInsuranceRuleRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+
+                                <div id="deletedSpecificInsuranceRulesBox"></div>
+
+                                <button type="button"
+                                        class="specific-rule-add-btn"
+                                        onclick="addSpecificInsuranceRuleRow()">
+                                    + Add Insurance Rule
+                                </button>
+                            </div>
+
+
+                            <!-- CAPITATION RULE -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Billing Rule for Capitation Plans:&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Billing Rule for Capitation Plans:&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">{{ billing_protocols.capitation_billing_rule }}</span>
-                                    <input type="text" name="capitation_billing_rule" class="edit-mode myk-form-input" value="{% if billing_protocols.capitation_billing_rule %}{{ billing_protocols.capitation_billing_rule }}{% endif %}" />
+
+                                    <input type="text"
+                                        name="capitation_billing_rule"
+                                        class="edit-mode myk-form-input"
+                                        value="{% if billing_protocols.capitation_billing_rule %}{{ billing_protocols.capitation_billing_rule }}{% endif %}" />
                                 </div>
                             </div>
+
+
+                            <!-- HOSPITAL / NURSING RULE -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Billing rules for hospital/nursing home, etc:&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Billing rules for hospital/nursing home, etc:&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">{{ billing_protocols.hospital_nursing_home_billing_rules }}</span>
-                                    <input type="text" name="hospital_nursing_home_billing_rules" class="edit-mode myk-form-input" value="{% if billing_protocols.hospital_nursing_home_billing_rules %}{{ billing_protocols.hospital_nursing_home_billing_rules }}{% endif %}" />
+
+                                    <input type="text"
+                                        name="hospital_nursing_home_billing_rules"
+                                        class="edit-mode myk-form-input"
+                                        value="{% if billing_protocols.hospital_nursing_home_billing_rules %}{{ billing_protocols.hospital_nursing_home_billing_rules }}{% endif %}" />
                                 </div>
                             </div>
+
+
+                            <!-- IMMUNIZATION RULE -->
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Billing rules for immunizations and vaccines:&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Billing rules for immunizations and vaccines:&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
                                     <span class="view-mode">{{ billing_protocols.immunizations_vaccines_billing_rules }}</span>
-                                    <input type="text" name="immunizations_vaccines_billing_rules" class="edit-mode myk-form-input" value="{% if billing_protocols.immunizations_vaccines_billing_rules %}{{ billing_protocols.immunizations_vaccines_billing_rules }}{% endif %}" />
+
+                                    <input type="text"
+                                        name="immunizations_vaccines_billing_rules"
+                                        class="edit-mode myk-form-input"
+                                        value="{% if billing_protocols.immunizations_vaccines_billing_rules %}{{ billing_protocols.immunizations_vaccines_billing_rules }}{% endif %}" />
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -3321,6 +3830,8 @@
 
         // Check if the button actually exists to avoid errors
         function setMode(isEdit) {
+            isEditMode = isEdit;
+            toggleSpecificInsuranceRulesTable();
             // 1) swap buttons
             if (updateBtn) updateBtn.style.display = isEdit ? 'none' : 'inline-block';
             if (saveBtn) saveBtn.style.display = isEdit ? 'inline-block' : 'none';
@@ -3356,7 +3867,7 @@
 
         // Initial page state
         setMode(false);
-        verifyFacilityNPIs();
+        //verifyFacilityNPIs();
         // Update click -> enter edit mode
         if (updateBtn) {
             updateBtn.addEventListener('click', function () {
@@ -3451,6 +3962,8 @@
 
         function toggleMidLevelQuestion(val) {
             const container = document.getElementById('midLevelContainer');
+            if (!container) return;
+
             if (val === 'MID-level providers') {
                 container.style.display = 'block';
             } else {
@@ -3500,253 +4013,202 @@
         });
 
         let searchMatches = [];
-let currentIndex = -1;
-let lastSearchQuery = "";
+        let currentSearchIndex = -1;
+        let currentSearchText = "";
 
-/* Remove old highlights */
-function clearSearchHighlightsOnly() {
-    document.querySelectorAll("#details-page .search-highlight, #details-page .search-highlight-active").forEach(function (el) {
-        const parent = el.parentNode;
-        if (!parent) return;
+        function clearSearchHighlights() {
+            document.querySelectorAll("#details-page .search-highlight, #details-page .search-highlight-active").forEach(mark => {
+                const parent = mark.parentNode;
+                if (!parent) return;
 
-        parent.replaceChild(document.createTextNode(el.textContent), el);
-        parent.normalize();
-    });
+                parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                parent.normalize();
+            });
 
-    searchMatches = [];
-    currentIndex = -1;
-}
+            searchMatches = [];
+            currentSearchIndex = -1;
+        }
 
-/* Full clear when user clicks clear/search reset */
-function clearSearch() {
-    const input = document.getElementById("pageSearchInput");
-    const status = document.getElementById("searchStatus");
+        function isValidSearchTextNode(node) {
+            if (!node || !node.parentElement) return false;
 
-    if (input) input.value = "";
-    if (status) status.innerText = "";
+            const parent = node.parentElement;
 
-    clearSearchHighlightsOnly();
-    lastSearchQuery = "";
-}
+            if (!node.nodeValue || !node.nodeValue.trim()) return false;
 
-/* Decide which text can be searched */
-function isSearchableTextNode(node) {
-    if (!node || !node.parentElement) return false;
+            if (parent.closest("script, style, input, textarea, select, button")) return false;
+            if (parent.closest(".search-pod")) return false;
+            if (parent.closest(".edit-mode")) return false;
 
-    const parent = node.parentElement;
+            return true;
+        }
 
-    if (!node.nodeValue || !node.nodeValue.trim()) return false;
+        function highlightSearchTextNode(textNode, query) {
+            const text = textNode.nodeValue;
+            const lowerText = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
 
-    if (parent.closest("script, style, textarea, input, select, button")) return false;
-    if (parent.closest(".search-pod")) return false;
+            let index = lowerText.indexOf(lowerQuery);
+            if (index === -1) return;
 
-    return true;
-}
+            const fragment = document.createDocumentFragment();
+            let lastIndex = 0;
 
-/* Highlight matching text */
-function highlightTextNode(textNode, query) {
-    const text = textNode.nodeValue;
-    const lowerText = text.toLowerCase();
-    const lowerQuery = query.toLowerCase();
+            while (index !== -1) {
+                fragment.appendChild(document.createTextNode(text.slice(lastIndex, index)));
 
-    let index = lowerText.indexOf(lowerQuery);
-    if (index === -1) return;
+                const mark = document.createElement("span");
+                mark.className = "search-highlight";
+                mark.textContent = text.slice(index, index + query.length);
 
-    const fragment = document.createDocumentFragment();
-    let lastIndex = 0;
+                fragment.appendChild(mark);
+                searchMatches.push(mark);
 
-    while (index !== -1) {
-        fragment.appendChild(document.createTextNode(text.slice(lastIndex, index)));
+                lastIndex = index + query.length;
+                index = lowerText.indexOf(lowerQuery, lastIndex);
+            }
 
-        const mark = document.createElement("span");
-        mark.className = "search-highlight";
-        mark.textContent = text.slice(index, index + query.length);
+            fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+            textNode.parentNode.replaceChild(fragment, textNode);
+        }
 
-        fragment.appendChild(mark);
-        searchMatches.push(mark);
+        function expandCardForSearch(element) {
+            const card = element.closest(".rulebook-card");
+            if (!card) return;
 
-        lastIndex = index + query.length;
-        index = lowerText.indexOf(lowerQuery, lastIndex);
-    }
+            if (card.classList.contains("section-collapsed")) {
+                card.classList.remove("section-collapsed");
 
-    fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
-    textNode.parentNode.replaceChild(fragment, textNode);
-}
+                const body = card.querySelector(".section-collapse-body");
+                if (body) {
+                    body.style.setProperty("display", "block", "important");
+                }
 
-/* Main search */
-function performSearch() {
-    const input = document.getElementById("pageSearchInput");
-    const status = document.getElementById("searchStatus");
-
-    if (!input) return;
-
-    const query = input.value.trim();
-
-    clearSearchHighlightsOnly();
-    lastSearchQuery = query;
-
-    if (query.length < 2) {
-        if (status) status.innerText = "";
-        return;
-    }
-
-    const root = document.querySelector("#details-page");
-    if (!root) return;
-
-    const walker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT,
-        {
-            acceptNode: function (node) {
-                return isSearchableTextNode(node)
-                    ? NodeFilter.FILTER_ACCEPT
-                    : NodeFilter.FILTER_REJECT;
+                const btn = card.querySelector(".section-collapse-btn");
+                if (btn) {
+                    btn.innerHTML = "▾";
+                    btn.title = "Collapse section";
+                }
             }
         }
-    );
 
-    const textNodes = [];
-    let node;
+        function runPageSearch(query) {
+            clearSearchHighlights();
 
-    while ((node = walker.nextNode())) {
-        textNodes.push(node);
-    }
+            currentSearchText = query;
 
-    textNodes.forEach(function (textNode) {
-        highlightTextNode(textNode, query);
-    });
+            if (!query || query.length < 1) {
+                const status = document.getElementById("searchStatus");
+                if (status) status.innerText = "";
+                return;
+            }
 
-    if (searchMatches.length > 0) {
-        currentIndex = 0;
-        updateSearchDisplay();
-    } else {
-        if (status) status.innerText = "No results found.";
-    }
-}
+            const root = document.querySelector("#details-page .myk-card-clean");
+            if (!root) return;
 
-/* Expand section if match is inside collapsed card */
-function expandSectionForSearch(element) {
-    const card = element.closest(".rulebook-card");
-    if (!card) return;
+            const walker = document.createTreeWalker(
+                root,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function (node) {
+                        return isValidSearchTextNode(node)
+                            ? NodeFilter.FILTER_ACCEPT
+                            : NodeFilter.FILTER_REJECT;
+                    }
+                }
+            );
 
-    if (card.classList.contains("section-collapsed")) {
-        card.classList.remove("section-collapsed");
+            const nodes = [];
+            let node;
 
-        const body = card.querySelector(".section-collapse-body");
-        if (body) {
-            body.style.setProperty("display", "block", "important");
+            while ((node = walker.nextNode())) {
+                nodes.push(node);
+            }
+
+            nodes.forEach(node => highlightSearchTextNode(node, query));
+
+            if (searchMatches.length > 0) {
+                currentSearchIndex = 0;
+                showCurrentSearchMatch();
+            } else {
+                const status = document.getElementById("searchStatus");
+                if (status) status.innerText = "No results found.";
+            }
         }
 
-        const btn = card.querySelector(".section-collapse-btn");
-        if (btn) {
-            btn.innerHTML = "▾";
-            btn.title = "Collapse section";
+        function showCurrentSearchMatch() {
+            if (!searchMatches.length || currentSearchIndex < 0) return;
+
+            searchMatches.forEach(match => {
+                match.classList.remove("search-highlight-active");
+            });
+
+            const current = searchMatches[currentSearchIndex];
+            if (!current) return;
+
+            expandCardForSearch(current);
+
+            current.classList.add("search-highlight-active");
+
+            setTimeout(() => {
+                current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }, 120);
+
+            const status = document.getElementById("searchStatus");
+            if (status) {
+                status.innerText = `Match ${currentSearchIndex + 1} of ${searchMatches.length}`;
+            }
         }
-    }
-}
 
-/* Show current match */
-function updateSearchDisplay() {
-    if (!searchMatches.length || currentIndex < 0) return;
-
-    searchMatches.forEach(function (match) {
-        match.classList.remove("search-highlight-active");
-    });
-
-    const currentMatch = searchMatches[currentIndex];
-    if (!currentMatch) return;
-
-    expandSectionForSearch(currentMatch);
-
-    currentMatch.classList.add("search-highlight-active");
-
-    setTimeout(function () {
-        currentMatch.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }, 120);
-
-    const status = document.getElementById("searchStatus");
-    if (status) {
-        status.innerText = `Match ${currentIndex + 1} of ${searchMatches.length}`;
-    }
-}
-
-/* Move next/previous */
-function moveSearch(direction) {
-    const input = document.getElementById("pageSearchInput");
-    if (!input) return;
-
-    const query = input.value.trim();
-
-    if (!query) {
-        clearSearch();
-        return;
-    }
-
-    if (!searchMatches.length || query !== lastSearchQuery) {
-        performSearch();
-        return;
-    }
-
-    currentIndex += direction;
-
-    if (currentIndex >= searchMatches.length) currentIndex = 0;
-    if (currentIndex < 0) currentIndex = searchMatches.length - 1;
-
-    updateSearchDisplay();
-}
-
-/* Enter key should go to next match */
-document.addEventListener("DOMContentLoaded", function () {
-    const input = document.getElementById("pageSearchInput");
-
-    if (!input) return;
-
-    input.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
+        function moveToNextSearchMatch() {
+            const input = document.getElementById("pageSearchInput");
+            if (!input) return;
 
             const query = input.value.trim();
 
             if (!query) {
-                clearSearch();
+                clearSearchHighlights();
+                const status = document.getElementById("searchStatus");
+                if (status) status.innerText = "";
                 return;
             }
 
-            if (!searchMatches.length || query !== lastSearchQuery) {
-                performSearch();
-            } else {
-                moveSearch(1);
+            if (!searchMatches.length || query.toLowerCase() !== currentSearchText.toLowerCase()) {
+                runPageSearch(query);
+                return;
             }
+
+            currentSearchIndex++;
+
+            if (currentSearchIndex >= searchMatches.length) {
+                currentSearchIndex = 0;
+            }
+
+            showCurrentSearchMatch();
         }
-    });
 
-    input.addEventListener("input", function () {
-        clearSearchHighlightsOnly();
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("pageSearchInput");
+            if (!input) return;
 
-        const status = document.getElementById("searchStatus");
-        if (status) status.innerText = "";
+            input.addEventListener("input", function () {
+                clearSearchHighlights();
+                currentSearchText = "";
 
-        lastSearchQuery = "";
-    });
-});
+                const status = document.getElementById("searchStatus");
+                if (status) status.innerText = "";
+            });
 
-        // Listen for typing and Enter key
-        document.getElementById('pageSearchInput').addEventListener("input", performSearch);
-        document.getElementById('pageSearchInput').addEventListener("keydown", function (e) {
-            if (e.key === "Enter") moveSearch(1);
-            if (e.key === "ArrowDown") {
-                e.preventDefault();
-                moveSearch(1);
-            }
-            if (e.key === "ArrowUp") {
-                e.preventDefault();
-                moveSearch(-1);
-            }
+            input.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    moveToNextSearchMatch();
+                }
+            });
         });
-
 
 
         /* ================= DATE MASK ================= */
@@ -3769,28 +4231,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        /* ================= NPI VIEW MODE CHECK ================= */
-        document.querySelectorAll(".view-mode").forEach(cell => {
-            if (cell.closest(".facility-view-panel")) return;
-            if (cell.dataset.npiChecked) return;
-
-            const match = cell.textContent.match(/\b\d{10}\b/);
-            if (!match) return;
-
-            cell.dataset.npiChecked = "true";
-            const npi = match[0];
-
-            const icon = document.createElement("span");
-            icon.textContent = " 🔍";
-            cell.appendChild(icon);
-
-            fetch(`/rulebook/api/verify-npi/${npi}`)
-                .then(r => r.json())
-                .then(d => {
-                    icon.textContent = d.status === "verified" ? " ✓" : " ❌";
-                })
-                .catch(() => icon.textContent = " ⚠️");
-        });
 
         function setMode(isEdit) {
             // show/hide your normal view/edit parts
@@ -3820,7 +4260,33 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("imgModal").style.display = "none";
     }
 
-    function addBlock(prefix) {
+    function toggleMidLevelQuestion(val) {
+    const container = document.getElementById('midLevelContainer');
+    if (!container) return;
+
+    const value = (typeof val === "string") ? val : (val && val.value ? val.value : "");
+
+    if (value === 'MID-level providers') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function togglePatientBalance(val) {
+    const container = document.getElementById('patientbalanceContainer');
+    if (!container) return;
+
+    const value = (typeof val === "string") ? val : (val && val.value ? val.value : "");
+
+    if (value === 'Yes') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function addBlock(prefix) {
 
         const container = document.getElementById(prefix + "_container");
 
@@ -3849,8 +4315,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
         container.appendChild(block);
     }
+    function attachDateMask(input) {
+        if (!input || input.dataset.dateMaskAttached === "true") return;
+
+        input.dataset.dateMaskAttached = "true";
+
+        input.addEventListener('input', function (e) {
+            let inputVal = e.target.value.replace(/\D/g, '');
+            let formattedVal = '';
+
+            if (inputVal.length > 0) {
+                formattedVal = inputVal.substring(0, 2);
+
+                if (inputVal.length > 2) {
+                    formattedVal += '/' + inputVal.substring(2, 4);
+                }
+
+                if (inputVal.length > 4) {
+                    formattedVal += '/' + inputVal.substring(4, 8);
+                }
+            }
+
+            e.target.value = formattedVal;
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace') {
+                let val = e.target.value;
+                if (val.endsWith('/')) {
+                    e.target.value = val.slice(0, -1);
+                }
+            }
+        });
+    }
+
+    function cleanNPIInput(input) {
+        input.value = input.value.replace(/\D/g, '').slice(0, 10);
+    }
     function removeBlock(btn) {
         btn.parentElement.remove();
+    }
+
+   
+
+
+    function deleteSavedBlock(blockId) {
+        if (!confirm("Are you sure you want to delete this saved block?")) {
+            return;
+        }
+
+        fetch(`/rulebook/delete-block/${blockId}`, {
+            method: "POST"
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || "Could not delete block.");
+                }
+            })
+            .catch(error => {
+                console.error("Delete block error:", error);
+                alert("Something went wrong while deleting the block.");
+            });
     }
     function addProviderRow() {
     const tbody = document.getElementById("provider-table-body");
@@ -3861,6 +4389,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     row.innerHTML = `
         <td>
+            <input type="hidden" name="provider_id[]" value="">
+
             <input type="text"
                    name="provider_name"
                    class="provider-line-input provider-name-input"
@@ -3870,9 +4400,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>
             <input type="text"
                    name="provider_npi"
-                   class="provider-line-input provider-npi-input"
+                   class="provider-line-input provider-npi-input npi-field"
                    maxlength="10"
-                   placeholder="NPI">
+                   inputmode="numeric"
+                   pattern="[0-9]{10}"
+                   title="NPI must be exactly 10 digits"
+                   oninput="cleanNPIInput(this)"
+                   placeholder="10 digit NPI">
         </td>
 
         <td>
@@ -3897,95 +4431,169 @@ document.addEventListener("DOMContentLoaded", function () {
 function removeProviderRow(button) {
     const row = button.closest(".provider-edit-row");
     const tbody = document.getElementById("provider-table-body");
+    const deletedBox = document.getElementById("deletedProvidersBox");
 
     if (!row || !tbody) return;
 
-    const rows = tbody.querySelectorAll(".provider-edit-row");
+    const providerId = row.getAttribute("data-provider-id");
 
-    if (rows.length === 1) {
-        row.querySelectorAll("input").forEach(input => input.value = "");
-        return;
+    if (providerId && deletedBox) {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "deleted_provider_id[]";
+        hidden.value = providerId;
+        deletedBox.appendChild(hidden);
     }
 
     row.remove();
+
+    if (tbody.querySelectorAll(".provider-edit-row").length === 0) {
+        addProviderRow();
+    }
 }
 
-    function removeProviderRow(button) {
-        const row = button.closest(".provider-edit-row");
-        const container = document.getElementById("providerRowsContainer");
+function addProcedureRow() {
+    const tbody = document.getElementById("procedureTableBody");
+    if (!tbody) return;
 
-        if (container.querySelectorAll(".provider-edit-row").length > 1) {
-            row.remove();
-        } else {
-            row.querySelectorAll("input").forEach(input => input.value = "");
-        }
-    }
-    function deleteSavedBlock(blockId) {
-        if (!confirm("Are you sure you want to delete this saved block?")) {
-            return;
-        }
+    const tr = document.createElement("tr");
+    tr.className = "procedure-edit-row";
 
-        fetch(`/rulebook/delete-block/${blockId}`, {
-            method: "POST"
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message || "Could not delete block.");
-                }
-            })
-            .catch(error => {
-                console.error("Delete block error:", error);
-                alert("Something went wrong while deleting the block.");
-            });
-    }
-    function addProviderRow() {
-        const container = document.getElementById("provider-container");
-        if (!container) return;
+    tr.innerHTML = `
+        <td>
+            <input type="hidden" name="procedure_id[]" value="">
+            <input type="text"
+                   name="procedure_code"
+                   class="myk-form-input w-100"
+                   value="">
+        </td>
 
-        const row = document.createElement("div");
-        row.className = "provider-edit-row";
+        <td style="text-align:center;">
+            <input type="text"
+                   name="procedure_fee"
+                   class="myk-form-input w-100 text-center"
+                   value="">
+        </td>
 
-        row.innerHTML = `
-        <input type="text"
-               name="provider_name"
-               class="provider-line-input provider-name-input"
-               placeholder="Provider name" />
-
-        <input type="text"
-               name="provider_npi"
-               class="provider-line-input provider-npi-input"
-               maxlength="10"
-               placeholder="NPI" />
-
-        <button type="button"
-                class="provider-remove-btn"
-                onclick="removeProviderRow(this)">
-            x
-        </button>
+        <td style="text-align:center;">
+            <button type="button"
+                    class="provider-remove-btn"
+                    onclick="removeProcedureRow(this)">
+                x
+            </button>
+        </td>
     `;
 
-        container.appendChild(row);
+    tbody.appendChild(tr);
+}
+
+function removeProcedureRow(button) {
+    const row = button.closest(".procedure-edit-row");
+    const tbody = document.getElementById("procedureTableBody");
+    const deletedBox = document.getElementById("deletedProceduresBox");
+
+    if (!row || !tbody) return;
+
+    const procedureId = row.getAttribute("data-procedure-id");
+
+    if (procedureId && deletedBox) {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "deleted_procedure_id[]";
+        hidden.value = procedureId;
+        deletedBox.appendChild(hidden);
     }
 
-    function removeProviderRow(button) {
-        const row = button.closest(".provider-edit-row");
-        const container = document.getElementById("provider-container");
+    row.remove();
 
-        if (!row || !container) return;
-
-        const rows = container.querySelectorAll(".provider-edit-row");
-
-        if (rows.length === 1) {
-            row.querySelectorAll("input").forEach(input => input.value = "");
-            return;
-        }
-
-        row.remove();
+    if (tbody.querySelectorAll(".procedure-edit-row").length === 0) {
+        addProcedureRow();
     }
-    function verifyFacilityNPIs() {
+}
+
+function addSpecificInsuranceRuleRow() {
+    const tbody = document.getElementById("specificInsuranceRulesBody");
+    if (!tbody) return;
+
+    const row = document.createElement("tr");
+    row.className = "specific-insurance-rule-row";
+
+    row.innerHTML = `
+        <td>
+            <input type="hidden"
+                   name="specific_insurance_rule_id[]"
+                   value="">
+
+            <input type="text"
+                   name="specific_insurance_name[]"
+                   class="billing-line-input"
+                   placeholder="Example: Aetna">
+        </td>
+
+        <td>
+            <input type="text"
+                   name="specific_insurance_rule[]"
+                   class="billing-line-input"
+                   placeholder="Enter rule">
+        </td>
+
+        <td>
+            <input type="text"
+                   name="specific_insurance_effective_date[]"
+                   class="billing-line-input date-mask"
+                   placeholder="MM/DD/YYYY"
+                   maxlength="10">
+        </td>
+
+        <td>
+            <input type="text"
+                   name="specific_insurance_note[]"
+                   class="billing-line-input"
+                   placeholder="Who sent update / notes">
+        </td>
+
+        <td class="specific-rule-action-cell">
+            <button type="button"
+                    class="provider-remove-btn"
+                    onclick="removeSpecificInsuranceRuleRow(this)">
+                x
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+
+    const dateInput = row.querySelector(".date-mask");
+    if (dateInput) {
+        attachDateMask(dateInput);
+    }
+}
+
+function removeSpecificInsuranceRuleRow(button) {
+    const row = button.closest(".specific-insurance-rule-row");
+    const tbody = document.getElementById("specificInsuranceRulesBody");
+    const deletedBox = document.getElementById("deletedSpecificInsuranceRulesBox");
+
+    if (!row || !tbody) return;
+
+    const ruleId = row.getAttribute("data-rule-id");
+
+    if (ruleId && deletedBox) {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "deleted_specific_insurance_rule_id[]";
+        hidden.value = ruleId;
+        deletedBox.appendChild(hidden);
+    }
+
+    row.remove();
+
+    if (tbody.querySelectorAll(".specific-insurance-rule-row").length === 0) {
+        addSpecificInsuranceRuleRow();
+    }
+}
+
+function verifyFacilityNPIs() {
         document.querySelectorAll(".npi-status[data-npi]").forEach(span => {
             const npi = span.getAttribute("data-npi");
 
@@ -4014,50 +4622,14 @@ function removeProviderRow(button) {
                 });
         });
     }
-    function addProcedureRow() {
-        const tbody = document.getElementById("procedureTableBody");
-        if (!tbody) return;
+    function cleanNPIMultilineInput(input) {
+        let lines = input.value.split('\n');
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-        <td>
-            <input type="text"
-                   name="procedure_code"
-                   class="myk-form-input w-100"
-                   value="">
-        </td>
-        <td style="text-align:center;">
-            <input type="text"
-                   name="procedure_fee"
-                   class="myk-form-input w-100 text-center"
-                   value="">
-        </td>
-        <td style="text-align:center;">
-            <button type="button"
-                    class="provider-remove-btn"
-                    onclick="removeProcedureRow(this)">
-                x
-            </button>
-        </td>
-    `;
+        lines = lines.map(line => {
+            return line.replace(/\D/g, '').slice(0, 10);
+        });
 
-        tbody.appendChild(tr);
-    }
-
-    function removeProcedureRow(button) {
-        const row = button.closest("tr");
-        const tbody = document.getElementById("procedureTableBody");
-
-        if (!row || !tbody) return;
-
-        const rows = tbody.querySelectorAll("tr");
-
-        if (rows.length === 1) {
-            row.querySelectorAll("input").forEach(input => input.value = "");
-            return;
-        }
-
-        row.remove();
+        input.value = lines.join('\n');
     }
     function toggleSection() {
         const isCollapsed = card.classList.toggle("section-collapsed");
@@ -4169,6 +4741,107 @@ function removeProviderRow(button) {
         }
     }
 }
+function updateBillingTaxNPIHiddenField() {
+    const taxInput = document.getElementById("billing_tax_id_display");
+    const npiInput = document.getElementById("billing_npi_display");
+    const hidden = document.getElementById("tax_id_npi_claims_submitted_under");
+
+    if (!taxInput || !npiInput || !hidden) return;
+
+    const taxValue = taxInput.value.trim();
+    const npiValue = npiInput.value.trim();
+
+    let lines = [];
+
+    if (taxValue) {
+        lines.push("Tax ID: " + taxValue);
+    }
+
+    if (npiValue) {
+        lines.push("NPI: " + npiValue);
+    }
+
+    hidden.value = lines.join("\n");
+}
+document.addEventListener("input", function (event) {
+    if (
+        event.target &&
+        (
+            event.target.id === "billing_tax_id_display" ||
+            event.target.id === "billing_npi_display"
+        )
+    ) {
+        updateBillingTaxNPIHiddenField();
+    }
+});
+
+document.addEventListener("submit", function () {
+    updateBillingTaxNPIHiddenField();
+});
+function toggleSpecificInsuranceRulesTable() {
+    const yesRadio = document.getElementById("billing_specific_insurance_rules_yes");
+    const panel = document.getElementById("specificInsuranceRulesTable");
+
+    if (!yesRadio || !panel) return;
+
+    if (yesRadio.checked && isEditMode) {
+        panel.style.setProperty("display", "block", "important");
+    } else {
+        panel.style.setProperty("display", "none", "important");
+    }
+}
+
+document.addEventListener("change", function (event) {
+    if (event.target && event.target.name === "rules_for_specific_insurance_carriers") {
+        toggleSpecificInsuranceRulesTable();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    toggleSpecificInsuranceRulesTable();
+});
+
+function capitalizeInsuranceNames(value) {
+    return value
+        .split(/([,\n])/)
+        .map(part => {
+            const trimmedStart = part.replace(/^\s+/, "");
+            const leadingSpaces = part.match(/^\s*/)[0];
+
+            if (part === "," || part === "\n") return part;
+            if (!trimmedStart) return part;
+
+            return leadingSpaces + trimmedStart.charAt(0).toUpperCase() + trimmedStart.slice(1);
+        })
+        .join("");
+}
+
+function applyInsuranceCapitalization(input) {
+    const cursorPosition = input.selectionStart;
+    input.value = capitalizeInsuranceNames(input.value);
+
+    try {
+        input.setSelectionRange(cursorPosition, cursorPosition);
+    } catch (e) {}
+}
+
+document.addEventListener("input", function (event) {
+    if (!event.target) return;
+
+    const insuranceNameFields = [
+        "commercial",
+        "hmo_capitated_plans",
+        "insurance_with_login_access",
+        "eras_received_in_system",
+        "eras_not_received",
+        "paper_eobs_received",
+        "specific_insurance_name[]"
+    ];
+
+    if (insuranceNameFields.includes(event.target.name)) {
+        applyInsuranceCapitalization(event.target);
+    }
+});
 </script>
 
 {% endblock content %}
