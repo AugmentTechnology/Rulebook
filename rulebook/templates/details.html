@@ -16,9 +16,7 @@
             <h1 class="myk-heading-main myk-text-light myk-mb-4">
                 {{ details.practice_name }}
             </h1>
-            <img src="https://www.google.com/s2/favicons?sz=256&domain={{ details.practice_website
-                                                             | replace('https://','')
-                                                             | replace('http://','') }}" class="profile-pic">
+           
 
         </div>
 
@@ -3719,11 +3717,18 @@
                         </button>
                         <button type="submit" id="save-btn" class="myk-btn myk-btn-success myk-w-40">Save</button>
                         <button type="button" id="cancel-btn" class="myk-btn myk-btn-info myk-w-40" style="font-family: 'Book Antiqua'; height: 49px">Cancel</button>
+                        <button type="button"
+                                id="verifyNpiBtn"
+                                class="myk-btn myk-btn-info"
+                                onclick="verifyFacilityNPIs()"
+                                style="font-family: 'Book Antiqua';height: 49px;">
+                            Verify NPIs
+                        </button>
                         {% if not is_new and practice_id %}
                         <a href="{{ url_for('rulebook', practice_id=practice_id) }}?pdf=1"
                            target="_blank"
                            class="myk-btn myk-btn-info myk-w-40"
-                           style="font-family: 'Book Antiqua'; height: 49px; line-height: 32px; text-decoration: none;">
+                           style="font-family: 'Book Antiqua'; height: 33px;  text-decoration: none;">
                             PDF View
                         </a>
                         {% endif %}
