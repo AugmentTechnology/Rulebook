@@ -56,6 +56,7 @@ BLOCK_FIELDS = [
     ("top_denials_and_actions", "non_par_out_of_network_category", "non_par_out_of_network_category"),
     ("top_denials_and_actions", "time_filing_limits", "time_filing_limits"),
     ("top_denials_and_actions", "inclusive", "inclusive"),
+    ("top_denials_and_actions", "additional_denial_action", "additional_denial_action"),
 
     # -------- BILLING PROTOCOLS --------
     ("billing_protocols", "patient_payment_confirmation_method", "payment_confirm"),
@@ -78,6 +79,29 @@ def get_db_connection():
         password="12345678"
     )
 
+def practice_name_exists(cur, practice_name, exclude_practice_id=None):
+    practice_name = (practice_name or "").strip()
+
+    if not practice_name:
+        return False
+
+    if exclude_practice_id:
+        cur.execute("""
+            SELECT practice_id
+            FROM practice_information
+            WHERE LOWER(TRIM(practice_name)) = LOWER(TRIM(%s))
+              AND practice_id <> %s
+            LIMIT 1
+        """, (practice_name, exclude_practice_id))
+    else:
+        cur.execute("""
+            SELECT practice_id
+            FROM practice_information
+            WHERE LOWER(TRIM(practice_name)) = LOWER(TRIM(%s))
+            LIMIT 1
+        """, (practice_name,))
+
+    return cur.fetchone() is not None
 
 def ensure_soft_delete_columns(cur):
     """Ensure soft-delete/audit columns exist before reads or saves."""
@@ -278,7 +302,12 @@ def create_practice_full():
         cur.close()
         conn.close()
         return "Practice name is required", 400
-
+    
+    if practice_name_exists(cur, practice_name):
+        cur.close()
+        conn.close()
+        return "Duplicate practice name is not allowed. Please enter a different practice name.", 400
+    
     cur.execute("""
         INSERT INTO practice_information (practice_name)
         VALUES (%s)
@@ -714,11 +743,23 @@ def create_practice():
         conn = get_db_connection()
         cur = conn.cursor()
 
+        practice_name = (request.form.get("practice_name") or "").strip()
+
+        if not practice_name:
+            cur.close()
+            conn.close()
+            return "Practice name is required", 400
+
+        if practice_name_exists(cur, practice_name):
+            cur.close()
+            conn.close()
+            return "Duplicate practice name is not allowed. Please enter a different practice name.", 400
+
         cur.execute("""
             INSERT INTO practice_information (practice_name)
             VALUES (%s)
             RETURNING practice_id
-        """, (request.form.get("practice_name"),))
+        """, (practice_name,))
 
         practice_id = cur.fetchone()[0]
         conn.commit()
@@ -789,6 +830,11 @@ def save_practice(practice_id):
     conn = get_db_connection()
     cur = conn.cursor()
     ensure_soft_delete_columns(cur)
+
+    if values["practice_name"] and practice_name_exists(cur, values["practice_name"], practice_id):
+        cur.close()
+        conn.close()
+        return "Duplicate practice name is not allowed. Please enter a different practice name.", 400
 
     # Upsert (recommended): insert if missing, else update
     cur.execute("""
