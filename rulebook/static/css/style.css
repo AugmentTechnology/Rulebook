@@ -355,19 +355,9 @@
     padding: 10px;
     border-left: 3px solid #0056b3;
 }
-#details-page .search-pod {
-    position: absolute;
-    top: 120px;
-    right: 250px;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 5px 5px;
-    border-radius: 4px;
-}
+
 #details-page .search-pod label {
-        font-size: 0.9rem;
+        font-size: 1.3rem;
         font-weight: bold;
         color: rgb(0, 0, 0);
         margin-right: 10px;
@@ -2002,6 +1992,213 @@ body {
     grid-template-columns: 1fr 1fr !important;
     gap: 16px !important;
 }
+
+/* ================= Services & Procedures - Match Provider Table Look ================= */
+
+#details-page .section-services .services-provider-like-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+#details-page .section-services .services-provider-like-table th {
+    background: rgba(255, 255, 255, 0.55) !important;
+    color: #064b85 !important;
+    font-weight: 800 !important;
+    text-align: left !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.18) !important;
+}
+
+#details-page .section-services .services-provider-like-table td {
+    padding: 9px 12px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.12) !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+}
+
+/* CPT Code column */
+#details-page .section-services .services-provider-like-table th:nth-child(1),
+#details-page .section-services .services-provider-like-table td:nth-child(1) {
+    width: 22% !important;
+    white-space: nowrap !important;
+}
+
+/* CPT Description column */
+#details-page .section-services .services-provider-like-table th:nth-child(2),
+#details-page .section-services .services-provider-like-table td:nth-child(2) {
+    width: 68% !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Action column, only edit mode */
+#details-page .section-services .services-provider-like-table th:nth-child(3),
+#details-page .section-services .services-provider-like-table td:nth-child(3) {
+    width: 10% !important;
+    text-align: center !important;
+}
+
+/* Remove extra spacing inside services card */
+#details-page .section-services .provider-view-table-wrap {
+    width: 100% !important;
+    margin-top: 8px !important;
+}
+
+/* Services edit inputs same as provider inputs */
+#details-page .section-services .services-line-input {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #9bb6d9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 6px 4px !important;
+    font-size: 15px !important;
+    outline: none !important;
+}
+
+#details-page .section-services .services-line-input:focus {
+    border-bottom: 2px solid #0b4ea2 !important;
+}
+
+/* ================= Insurance Procedure Textarea Fix ================= */
+
+#details-page .section-insurance #procedureTableBody textarea.procedure-textarea {
+    width: 100% !important;
+    min-height: 42px !important;
+    resize: vertical !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #9bb6d9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 6px 4px !important;
+    font-size: 15px !important;
+    outline: none !important;
+}
+
+
+/* ================= Insurance Procedures Table Alignment Fix ================= */
+
+#details-page .section-insurance .insurance-procedure-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+
+#details-page .section-insurance .insurance-procedure-table th,
+#details-page .section-insurance .insurance-procedure-table td {
+    padding: 8px 10px !important;
+    vertical-align: top !important;
+    text-align: left !important;
+}
+
+#details-page .section-insurance .insurance-procedure-table th:nth-child(1),
+#details-page .section-insurance .insurance-procedure-table td:nth-child(1) {
+    width: 60% !important;
+}
+
+#details-page .section-insurance .insurance-procedure-table th:nth-child(2),
+#details-page .section-insurance .insurance-procedure-table td:nth-child(2) {
+    width: 30% !important;
+}
+
+#details-page .section-insurance .insurance-procedure-table th:nth-child(3),
+#details-page .section-insurance .insurance-procedure-table td:nth-child(3) {
+    width: 10% !important;
+    text-align: center !important;
+}
+
+/* ================= Uploaded Images Bigger / Cleaner ================= */
+
+#details-page .block-item img,
+#details-page .rendered-block img,
+#details-page .block-view img,
+#details-page .file-download-card img,
+#details-page .charge-entry-card img,
+#details-page .coding-mini-card img,
+#details-page .denial-card img,
+#details-page .statement-process-card img,
+#details-page .monthly-report-answer img {
+    max-width: 100% !important;
+    width: auto !important;
+    min-width: 420px !important;
+    max-height: 520px !important;
+    object-fit: contain !important;
+    border: 1px solid rgba(0,0,0,0.18) !important;
+    border-radius: 10px !important;
+    padding: 6px !important;
+    background: #ffffff !important;
+    cursor: pointer !important;
+}
+/* ================= Search Box Responsive Fix ================= */
+
+#details-page .search-pod {
+    position: fixed !important;
+    top: 18px !important;
+    right: 22px !important;
+    z-index: 3000 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    max-width: 260px !important;
+}
+
+#details-page #pageSearchInput {
+    width: 150px !important;
+}
+
+/* On smaller screens, move search below heading instead of overlapping cards */
+@media (max-width: 900px) {
+    #details-page .search-pod {
+        position: static !important;
+        margin: 10px 12px 18px 12px !important;
+        width: calc(100% - 24px) !important;
+        max-width: none !important;
+        justify-content: flex-start !important;
+        background: rgba(142, 170, 64, 0.85) !important;
+    }
+
+    #details-page #pageSearchInput {
+        width: 100% !important;
+    }
+
+    #details-page .profile-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+}
+/* On smaller screens, avoid overflow */
+@media (max-width: 768px) {
+    #details-page .block-item img,
+    #details-page .rendered-block img,
+    #details-page .block-view img,
+    #details-page .file-download-card img,
+    #details-page .charge-entry-card img,
+    #details-page .coding-mini-card img,
+    #details-page .denial-card img,
+    #details-page .statement-process-card img,
+    #details-page .monthly-report-answer img {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-height: none !important;
+    }
+}
+#details-page .section-insurance .insurance-procedure-table textarea.procedure-textarea {
+    display: block !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+#details-page .section-insurance #procedureTableBody textarea.procedure-textarea:focus {
+    border-bottom: 2px solid #0b4ea2 !important;
+}
 #details-page .section-facilities,
 #details-page .section-filedownload,
 #details-page .section-charge_entry,
@@ -2796,5 +2993,49 @@ body {
     #details-page .section-billing .billing-tax-npi-row {
         grid-template-columns: 1fr !important;
         gap: 6px !important;
+    }
+}
+/* ================= PDF View Image Size Fix ================= */
+
+#pdf-page .pdf-section img,
+#pdf-page .pdf-block img,
+#pdf-page .pdf-wrapper img {
+    display: block !important;
+    width: auto !important;
+    max-width: 95% !important;
+    min-width: 500px !important;
+    max-height: 650px !important;
+    object-fit: contain !important;
+    margin: 12px auto !important;
+    border: 1px solid #999 !important;
+    border-radius: 8px !important;
+    padding: 6px !important;
+    background: #ffffff !important;
+}
+
+/* Facility icons should stay small */
+#pdf-page .pdf-facility-icon {
+    min-width: 0 !important;
+    width: 75px !important;
+    max-width: 75px !important;
+    height: 75px !important;
+}
+
+/* Print version */
+@media print {
+    #pdf-page .pdf-section img,
+    #pdf-page .pdf-block img,
+    #pdf-page .pdf-wrapper img {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        max-height: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    #pdf-page .pdf-facility-icon {
+        width: 65px !important;
+        max-width: 65px !important;
+        height: 65px !important;
     }
 }

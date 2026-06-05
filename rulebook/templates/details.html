@@ -238,7 +238,7 @@
                                         <div class="data-row">        
                                             
                                             <span class="view-mode">{{ office_contacts.billing_rep_ext }}</span>
-                                            <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="XXXXX" maxlength="5" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
+                                            <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="XXXXXXXXXX" maxlength="10" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
                                         </div>
                                     </div>
 
@@ -386,6 +386,7 @@
                                         <input type="checkbox"
                                             id="op_delivery_email"
                                             name="delivery_mode"
+                                            onchange="updateOPDeliveryDetailQuestion()"
                                             value="Email"
                                             {% if 'Email' in selected_delivery %}checked{% endif %}>
                                         <label for="op_delivery_email" class="checkbox-label">Email</label>
@@ -393,6 +394,7 @@
                                         <input type="checkbox"
                                             id="op_delivery_fax"
                                             name="delivery_mode"
+                                            onchange="updateOPDeliveryDetailQuestion()"
                                             value="Fax"
                                             {% if 'Fax' in selected_delivery %}checked{% endif %}>
                                         <label for="op_delivery_fax" class="checkbox-label">Fax</label>
@@ -400,6 +402,7 @@
                                         <input type="checkbox"
                                             id="op_delivery_phone"
                                             name="delivery_mode"
+                                            onchange="updateOPDeliveryDetailQuestion()"
                                             value="Phone"
                                             {% if 'Phone' in selected_delivery %}checked{% endif %}>
                                         <label for="op_delivery_phone" class="checkbox-label">Phone</label>
@@ -407,14 +410,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">
+                            <div class="form-group myk-mb-3" id="opDeliveryDetailRow">
+                                <label class="myk-form-label myk-text-dark" id="opDeliveryDetailLabel">
                                     Email or Fax to send OP / Pending Clarification list?&nbsp;&nbsp;
                                 </label>
 
                                 <div class="data-row">
                                     <span class="view-mode">{{ communication_method.email_or_fax }}</span>
                                     <input type="text"
+                                        id="opDeliveryDetailInput"
                                         name="email_or_fax"
                                         class="edit-mode myk-form-input"
                                         value="{% if communication_method.email_or_fax %}{{ communication_method.email_or_fax }}{% endif %}" />
@@ -1710,99 +1714,116 @@
                                     <input type="text" name="established_office_visit" class="edit-mode myk-form-input" value="{% if insurance_details.established_office_visit %}{{ insurance_details.established_office_visit }}{% endif %}" />
                                 </div>
                             </div>
-                            <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Procedures:&nbsp;&nbsp;</label>
-
-                                <table class="table table-bordered">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th style="width: 65%;">Procedure/CPT</th>
-                                            <th style="width: 25%; text-align: center;">Fee</th>
-                                            <th style="width: 10%; text-align: center;"></th>
-                                        </tr>
-                                    </thead>
-
-                                    <!-- VIEW MODE -->
-                                    <tbody class="view-mode">
-                                        {% if insurance_procedure and insurance_procedure|length > 0 %}
-                                        {% for row in insurance_procedure %}
-                                        <tr>
-                                            <td>{{ row.procedure_code }}</td>
-                                            <td style="text-align:center;">{{ row.procedure_fee }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% else %}
-                                        <tr>
-                                            <td colspan="2" class="text-muted">No procedures added</td>
-                                        </tr>
-                                        {% endif %}
-                                    </tbody>
-
-                                    <!-- EDIT MODE -->
-                                    <tbody class="edit-mode" id="procedureTableBody" style="display:none;">
-                                        {% if insurance_procedure and insurance_procedure|length > 0 %}
-                                        {% for row in insurance_procedure %}
-                                        <tr class="procedure-edit-row" data-procedure-id="{{ row.id if row.id is defined else '' }}">
-                                            <td>
-                                                <input type="hidden"
-                                                    name="procedure_id[]"
-                                                    value="{{ row.id if row.id is defined else '' }}">
-
-                                                <input type="text"
-                                                    name="procedure_code"
-                                                    class="myk-form-input w-100"
-                                                    value="{{ row.procedure_code or '' }}">
-                                            </td>
-
-                                            <td style="text-align:center;">
-                                                <input type="text"
-                                                    name="procedure_fee"
-                                                    class="myk-form-input w-100 text-center"
-                                                    value="{{ row.procedure_fee or '' }}">
-                                            </td>
-
-                                            <td style="text-align:center;">
-                                                <button type="button"
-                                                        class="provider-remove-btn"
-                                                        onclick="removeProcedureRow(this)">
-                                                    x
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% else %}
-                                        <tr class="procedure-edit-row">
-                                            <td>
-                                                <input type="hidden" name="procedure_id[]" value="">
-                                                <input type="text" name="procedure_code" class="myk-form-input w-100" value="">
-                                            </td>
-
-                                            <td style="text-align:center;">
-                                                <input type="text" name="procedure_fee" class="myk-form-input w-100 text-center" value="">
-                                            </td>
-
-                                            <td style="text-align:center;">
-                                                <button type="button"
-                                                        class="provider-remove-btn"
-                                                        onclick="removeProcedureRow(this)">
-                                                    x
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
-                                <div id="deletedProceduresBox"></div>
-                                <!-- Add row button (show only in edit mode with your JS toggle) -->
-                                <div class="edit-mode" style="display:none;">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addProcedureRow()">
-                                        + Add Row
-                                    </button>
+                            <div class="insurance-procedure-wrapper">
+                                <div class="provider-table-label">
+                                    <h4 class="myk-form-label myk-text-dark">Procedures</h4>
                                 </div>
 
-                                
+                                <!-- VIEW MODE -->
+                                <div class="view-mode insurance-procedure-view-table-wrap">
+                                    <table class="provider-clean-table insurance-procedure-provider-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Procedure/CPT</th>
+                                                <th>Fee</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if insurance_procedure and insurance_procedure|length > 0 %}
+                                            {% for row in insurance_procedure %}
+                                            <tr>
+                                                <td>{{ row.procedure_code }}</td>
+                                                <td>{{ row.procedure_fee }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="2" class="text-muted">No procedures added</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
 
+                                <!-- EDIT MODE -->
+                                <div class="edit-mode insurance-procedure-edit-table-wrap" style="display:none;">
+                                    <table class="provider-edit-table insurance-procedure-provider-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Procedure/CPT</th>
+                                                <th>Fee</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="procedureTableBody">
+                                            {% if insurance_procedure and insurance_procedure|length > 0 %}
+                                            {% for row in insurance_procedure %}
+                                            <tr class="procedure-edit-row" data-procedure-id="{{ row.id if row.id is defined else '' }}">
+                                                <td>
+                                                    <input type="hidden"
+                                                        name="procedure_id[]"
+                                                        value="{{ row.id if row.id is defined else '' }}">
 
+                                                    <textarea name="procedure_code"
+                                                              class="procedure-line-input procedure-textarea"
+                                                              rows="2"
+                                                              placeholder="Procedure/CPT">{{ row.procedure_code or '' }}</textarea>
+                                                </td>
+
+                                                <td>
+                                                    <textarea name="procedure_fee"
+                                                              class="procedure-line-input procedure-textarea"
+                                                              rows="2"
+                                                              placeholder="Fee">{{ row.procedure_fee or '' }}</textarea>
+                                                </td>
+
+                                                <td class="procedure-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeProcedureRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <tr class="procedure-edit-row">
+                                                <td>
+                                                    <input type="hidden" name="procedure_id[]" value="">
+                                                    <textarea name="procedure_code"
+                                                              class="procedure-line-input procedure-textarea"
+                                                              rows="2"
+                                                              placeholder="Procedure/CPT"></textarea>
+                                                </td>
+
+                                                <td>
+                                                    <textarea name="procedure_fee"
+                                                              class="procedure-line-input procedure-textarea"
+                                                              rows="2"
+                                                              placeholder="Fee"></textarea>
+                                                </td>
+
+                                                <td class="procedure-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeProcedureRow(this)">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="deletedProceduresBox"></div>
+
+                                <button type="button"
+                                        class="edit-mode provider-add-btn insurance-procedure-add-btn"
+                                        style="display:none;"
+                                        onclick="addProcedureRow()">
+                                    + Add Procedure
+                                </button>
                             </div>
                             <br />
                             <div class="form-group myk-mb-3">
@@ -1874,152 +1895,251 @@
                             </h2>
 
                             <!-- ================= SERVICES PROVIDED ================= -->
-                            <div class="services-panel">
-
-                                <div class="services-panel-header">
-                                    <div>
-                                        <div class="services-panel-title">
-                                            List of Services Provided by the Practice
-                                        </div>
-
-                                        <div class="services-panel-subtitle">
-                                            CPT codes and descriptions used by this practice
-                                        </div>
-                                    </div>
-
-                                    <button type="button"
-                                            class="services-toggle-btn"
-                                            onclick="toggleServicePanel('procedureTableContent', this, 'View Procedure Details', 'Hide Procedure Details')">
-                                        View Procedure Details
-                                    </button>
+                            <div class="services-panel provider-table-wrapper">
+                                <div class="provider-table-label">
+                                    List of Services Provided by the Practice
                                 </div>
 
-                                <div id="procedureTableContent" class="services-table-panel" style="display:none;">
+                                <!-- Backend fields preserved -->
+                                <textarea name="cptcode" id="services_cptcode_hidden" style="display:none;">{{ services_procedure.get('cptcode','').replace('/','') }}</textarea>
+                                <textarea name="cptdesc" id="services_cptdesc_hidden" style="display:none;">{{ services_procedure.get('cptdesc','').replace('/','') }}</textarea>
 
-                                    <!-- VIEW MODE -->
-                                    <div class="view-mode">
-                                        <div class="services-table-scroll">
-                                            <table class="services-clean-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width:22%;">CPT Code</th>
-                                                        <th style="width:78%;">CPT Description</th>
-                                                    </tr>
-                                                </thead>
+                                <!-- VIEW MODE -->
+                                <div class="view-mode provider-view-table-wrap">
+                                    <table class="provider-clean-table services-provider-like-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 25%;">CPT Code</th>
+                                                <th style="width: 75%;">CPT Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% set cpt_codes = services_procedure.get('cptcode','').split('\n') %}
+                                            {% set cpt_descs = services_procedure.get('cptdesc','').split('\n') %}
+                                            {% set total_rows = [cpt_codes|length, cpt_descs|length]|max %}
+                                            {% set ns = namespace(has_service=false) %}
 
-                                                <tbody>
-                                                    {% set cpt_codes = services_procedure.get('cptcode','').split('\n') %}
-                                                    {% set cpt_descs = services_procedure.get('cptdesc','').split('\n') %}
-
-                                                    {% for code in cpt_codes %}
-                                                    {% set desc = cpt_descs[loop.index0] if loop.index0 < cpt_descs|length else '' %}
-                                                    {% if code.strip() or desc.strip() %}
+                                            {% for i in range(total_rows) %}
+                                                {% set code = cpt_codes[i] if i < cpt_codes|length else '' %}
+                                                {% set desc = cpt_descs[i] if i < cpt_descs|length else '' %}
+                                                {% if code.strip() or desc.strip() %}
+                                                    {% set ns.has_service = true %}
                                                     <tr>
                                                         <td>{{ code.strip() }}</td>
                                                         <td>{{ desc.strip() }}</td>
                                                     </tr>
-                                                    {% endif %}
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
 
-                                    <!-- EDIT MODE -->
-                                    <div class="edit-mode" style="display:none;">
-                                        <div class="services-edit-grid">
-                                            <div>
-                                                <label class="myk-form-label myk-text-dark">CPT Codes</label>
-                                                <textarea name="cptcode"
-                                                          class="myk-form-input w-100"
-                                                          rows="18">{{ services_procedure.get('cptcode','').replace('/','') }}</textarea>
-                                            </div>
-
-                                            <div>
-                                                <label class="myk-form-label myk-text-dark">CPT Descriptions</label>
-                                                <textarea name="cptdesc"
-                                                          class="myk-form-input w-100"
-                                                          rows="18">{{ services_procedure.get('cptdesc','').replace('/','') }}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                            {% if not ns.has_service %}
+                                            <tr>
+                                                <td colspan="2" class="text-muted">No services added</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                <!-- EDIT MODE -->
+                                <div class="edit-mode provider-edit-table-wrap" style="display:none;">
+                                    <table class="provider-edit-table services-provider-like-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 25%;">CPT Code</th>
+                                                <th style="width: 65%;">CPT Description</th>
+                                                <th style="width: 10%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="servicesProcedureBody">
+                                            {% set ns_edit = namespace(has_service=false) %}
+                                            {% for i in range(total_rows) %}
+                                                {% set code = cpt_codes[i] if i < cpt_codes|length else '' %}
+                                                {% set desc = cpt_descs[i] if i < cpt_descs|length else '' %}
+                                                {% if code.strip() or desc.strip() %}
+                                                    {% set ns_edit.has_service = true %}
+                                                    <tr class="services-procedure-edit-row">
+                                                        <td>
+                                                            <input type="text"
+                                                                   class="provider-line-input service-cpt-code-input"
+                                                                   value="{{ code.strip() }}"
+                                                                   placeholder="CPT code"
+                                                                   oninput="syncServiceProcedureTables()">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text"
+                                                                   class="provider-line-input service-cpt-desc-input"
+                                                                   value="{{ desc.strip() }}"
+                                                                   placeholder="CPT description"
+                                                                   oninput="syncServiceProcedureTables()">
+                                                        </td>
+                                                        <td class="provider-action-cell">
+                                                            <button type="button"
+                                                                    class="provider-remove-btn"
+                                                                    onclick="removeServiceProcedureRow(this, 'services')">
+                                                                x
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if not ns_edit.has_service %}
+                                            <tr class="services-procedure-edit-row">
+                                                <td>
+                                                    <input type="text"
+                                                           class="provider-line-input service-cpt-code-input"
+                                                           placeholder="CPT code"
+                                                           oninput="syncServiceProcedureTables()">
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                           class="provider-line-input service-cpt-desc-input"
+                                                           placeholder="CPT description"
+                                                           oninput="syncServiceProcedureTables()">
+                                                </td>
+                                                <td class="provider-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeServiceProcedureRow(this, 'services')">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <button type="button"
+                                        class="edit-mode provider-add-btn"
+                                        style="display:none;"
+                                        onclick="addServiceProcedureRow('services')">
+                                    + Add Service
+                                </button>
                             </div>
 
-
                             <!-- ================= IMMUNIZATIONS OFFERED ================= -->
-                            <div class="services-panel">
-
-                                <div class="services-panel-header">
-                                    <div>
-                                        <div class="services-panel-title">
-                                            Immunizations Offered
-                                        </div>
-
-                                        <div class="services-panel-subtitle">
-                                            Immunization CPT codes and descriptions
-                                        </div>
-                                    </div>
-
-                                    <button type="button"
-                                            class="services-toggle-btn"
-                                            onclick="toggleServicePanel('immunizationTableContent', this, 'View Immunizations Offered', 'Hide Immunizations')">
-                                        View Immunizations Offered
-                                    </button>
+                            <div class="services-panel provider-table-wrapper">
+                                <div class="provider-table-label">
+                                    Immunizations Offered
                                 </div>
 
-                                <div id="immunizationTableContent" class="services-table-panel" style="display:none;">
+                                <!-- Backend fields preserved -->
+                                <textarea name="cptcode1" id="immunization_cptcode_hidden" style="display:none;">{{ immun_procedure.get('cptcode','').replace('/','') }}</textarea>
+                                <textarea name="cptdesc1" id="immunization_cptdesc_hidden" style="display:none;">{{ immun_procedure.get('cptdesc','').replace('/','') }}</textarea>
 
-                                    <!-- VIEW MODE -->
-                                    <div class="view-mode">
-                                        <div class="services-table-scroll">
-                                            <table class="services-clean-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width:22%;">CPT Code</th>
-                                                        <th style="width:78%;">CPT Description</th>
-                                                    </tr>
-                                                </thead>
+                                <!-- VIEW MODE -->
+                                <div class="view-mode provider-view-table-wrap">
+                                    <table class="provider-clean-table services-provider-like-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 25%;">CPT Code</th>
+                                                <th style="width: 75%;">CPT Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% set immun_codes = immun_procedure.get('cptcode','').split('\n') %}
+                                            {% set immun_descs = immun_procedure.get('cptdesc','').split('\n') %}
+                                            {% set immun_total_rows = [immun_codes|length, immun_descs|length]|max %}
+                                            {% set ns_immun = namespace(has_immun=false) %}
 
-                                                <tbody>
-                                                    {% set immun_codes = immun_procedure.get('cptcode','').split('\n') %}
-                                                    {% set immun_descs = immun_procedure.get('cptdesc','').split('\n') %}
-
-                                                    {% for code in immun_codes %}
-                                                    {% set desc = immun_descs[loop.index0] if loop.index0 < immun_descs|length else '' %}
-                                                    {% if code.strip() or desc.strip() %}
+                                            {% for i in range(immun_total_rows) %}
+                                                {% set code = immun_codes[i] if i < immun_codes|length else '' %}
+                                                {% set desc = immun_descs[i] if i < immun_descs|length else '' %}
+                                                {% if code.strip() or desc.strip() %}
+                                                    {% set ns_immun.has_immun = true %}
                                                     <tr>
                                                         <td>{{ code.strip() }}</td>
                                                         <td>{{ desc.strip() }}</td>
                                                     </tr>
-                                                    {% endif %}
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
 
-                                    <!-- EDIT MODE -->
-                                    <div class="edit-mode" style="display:none;">
-                                        <div class="services-edit-grid">
-                                            <div>
-                                                <label class="myk-form-label myk-text-dark">Immunization CPT Codes</label>
-                                                <textarea name="cptcode1"
-                                                          class="myk-form-input w-100"
-                                                          rows="18">{{ immun_procedure.get('cptcode','').replace('/','') }}</textarea>
-                                            </div>
-
-                                            <div>
-                                                <label class="myk-form-label myk-text-dark">Immunization CPT Descriptions</label>
-                                                <textarea name="cptdesc1"
-                                                          class="myk-form-input w-100"
-                                                          rows="18">{{ immun_procedure.get('cptdesc','').replace('/','') }}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                            {% if not ns_immun.has_immun %}
+                                            <tr>
+                                                <td colspan="2" class="text-muted">No immunizations added</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                <!-- EDIT MODE -->
+                                <div class="edit-mode provider-edit-table-wrap" style="display:none;">
+                                    <table class="provider-edit-table services-provider-like-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 25%;">CPT Code</th>
+                                                <th style="width: 65%;">CPT Description</th>
+                                                <th style="width: 10%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="immunizationProcedureBody">
+                                            {% set ns_immun_edit = namespace(has_immun=false) %}
+                                            {% for i in range(immun_total_rows) %}
+                                                {% set code = immun_codes[i] if i < immun_codes|length else '' %}
+                                                {% set desc = immun_descs[i] if i < immun_descs|length else '' %}
+                                                {% if code.strip() or desc.strip() %}
+                                                    {% set ns_immun_edit.has_immun = true %}
+                                                    <tr class="immunization-procedure-edit-row">
+                                                        <td>
+                                                            <input type="text"
+                                                                   class="provider-line-input immunization-cpt-code-input"
+                                                                   value="{{ code.strip() }}"
+                                                                   placeholder="CPT code"
+                                                                   oninput="syncServiceProcedureTables()">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text"
+                                                                   class="provider-line-input immunization-cpt-desc-input"
+                                                                   value="{{ desc.strip() }}"
+                                                                   placeholder="CPT description"
+                                                                   oninput="syncServiceProcedureTables()">
+                                                        </td>
+                                                        <td class="provider-action-cell">
+                                                            <button type="button"
+                                                                    class="provider-remove-btn"
+                                                                    onclick="removeServiceProcedureRow(this, 'immunization')">
+                                                                x
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if not ns_immun_edit.has_immun %}
+                                            <tr class="immunization-procedure-edit-row">
+                                                <td>
+                                                    <input type="text"
+                                                           class="provider-line-input immunization-cpt-code-input"
+                                                           placeholder="CPT code"
+                                                           oninput="syncServiceProcedureTables()">
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                           class="provider-line-input immunization-cpt-desc-input"
+                                                           placeholder="CPT description"
+                                                           oninput="syncServiceProcedureTables()">
+                                                </td>
+                                                <td class="provider-action-cell">
+                                                    <button type="button"
+                                                            class="provider-remove-btn"
+                                                            onclick="removeServiceProcedureRow(this, 'immunization')">
+                                                        x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <button type="button"
+                                        class="edit-mode provider-add-btn"
+                                        style="display:none;"
+                                        onclick="addServiceProcedureRow('immunization')">
+                                    + Add Immunization
+                                </button>
                             </div>
 
                         </div>
@@ -3098,6 +3218,25 @@
                                     "top_denials_and_actions",
                                     "inclusive",
                                     "inclusive",
+                                    practice_id,
+                                    practice_images
+                                )
+                            }}
+                        </div>
+
+                        <!-- Additional Denial / Action -->
+                        <div class="denial-card">
+                            <div class="denial-card-title">Additional Denial / Action</div>
+                            <div class="denial-card-subtitle">
+                                Add any other denial reason, payer issue, or special action instruction
+                            </div>
+
+                            {{
+                                BF.render_block_field(
+                                    block_data.additional_denial_action_blocks,
+                                    "top_denials_and_actions",
+                                    "additional_denial_action",
+                                    "additional_denial_action",
                                     practice_id,
                                     practice_images
                                 )
@@ -4361,7 +4500,40 @@ function addBlock(prefix) {
         btn.parentElement.remove();
     }
 
-   
+   // Submit Rulebook form when Enter is pressed inside normal input fields
+    document.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter") return;
+
+        const form = document.getElementById("details-form");
+        if (!form) return;
+
+        const target = event.target;
+        if (!target || !form.contains(target)) return;
+
+        const tag = target.tagName ? target.tagName.toLowerCase() : "";
+        const type = (target.getAttribute("type") || "").toLowerCase();
+
+        // Do not submit when typing multiline text
+        if (tag === "textarea") return;
+
+        // Keep Search Enter behavior separate
+        if (target.id === "pageSearchInput") return;
+
+        // Do not interfere with file/buttons
+        if (type === "button" || type === "submit" || type === "file") return;
+
+        event.preventDefault();
+
+        const saveBtn = document.getElementById("save-btn");
+
+        if (saveBtn) {
+            saveBtn.click();
+        } else if (form.requestSubmit) {
+            form.requestSubmit();
+        } else {
+            form.submit();
+        }
+    });
 
 
     function deleteSavedBlock(blockId) {
@@ -4467,20 +4639,20 @@ function addProcedureRow() {
     tr.innerHTML = `
         <td>
             <input type="hidden" name="procedure_id[]" value="">
-            <input type="text"
-                   name="procedure_code"
-                   class="myk-form-input w-100"
-                   value="">
+            <textarea name="procedure_code"
+                      class="procedure-line-input procedure-textarea"
+                      rows="2"
+                      placeholder="Procedure/CPT"></textarea>
         </td>
 
-        <td style="text-align:center;">
-            <input type="text"
-                   name="procedure_fee"
-                   class="myk-form-input w-100 text-center"
-                   value="">
+        <td>
+            <textarea name="procedure_fee"
+                      class="procedure-line-input procedure-textarea"
+                      rows="2"
+                      placeholder="Fee"></textarea>
         </td>
 
-        <td style="text-align:center;">
+        <td class="procedure-action-cell">
             <button type="button"
                     class="provider-remove-btn"
                     onclick="removeProcedureRow(this)">
@@ -4597,6 +4769,96 @@ function removeSpecificInsuranceRuleRow(button) {
         addSpecificInsuranceRuleRow();
     }
 }
+
+
+function addServiceProcedureRow(type) {
+    const isImmunization = type === "immunization";
+    const tbody = document.getElementById(isImmunization ? "immunizationProcedureBody" : "servicesProcedureBody");
+    if (!tbody) return;
+
+    const row = document.createElement("tr");
+    row.className = isImmunization ? "immunization-procedure-edit-row" : "services-procedure-edit-row";
+
+    const codeClass = isImmunization ? "immunization-cpt-code-input" : "service-cpt-code-input";
+    const descClass = isImmunization ? "immunization-cpt-desc-input" : "service-cpt-desc-input";
+
+    row.innerHTML = `
+        <td>
+            <input type="text"
+                   class="provider-line-input ${codeClass}"
+                   placeholder="CPT code"
+                   oninput="syncServiceProcedureTables()">
+        </td>
+        <td>
+            <input type="text"
+                   class="provider-line-input ${descClass}"
+                   placeholder="CPT description"
+                   oninput="syncServiceProcedureTables()">
+        </td>
+        <td class="provider-action-cell">
+            <button type="button"
+                    class="provider-remove-btn"
+                    onclick="removeServiceProcedureRow(this, '${type}')">
+                x
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+    syncServiceProcedureTables();
+}
+
+function removeServiceProcedureRow(button, type) {
+    const isImmunization = type === "immunization";
+    const tbody = document.getElementById(isImmunization ? "immunizationProcedureBody" : "servicesProcedureBody");
+    const row = button.closest("tr");
+
+    if (!tbody || !row) return;
+
+    row.remove();
+
+    if (tbody.querySelectorAll("tr").length === 0) {
+        addServiceProcedureRow(type);
+    }
+
+    syncServiceProcedureTables();
+}
+
+function syncServiceProcedureTables() {
+    const syncOne = function (bodyId, codeClass, descClass, hiddenCodeId, hiddenDescId) {
+        const tbody = document.getElementById(bodyId);
+        const hiddenCode = document.getElementById(hiddenCodeId);
+        const hiddenDesc = document.getElementById(hiddenDescId);
+
+        if (!tbody || !hiddenCode || !hiddenDesc) return;
+
+        const codes = [];
+        const descs = [];
+
+        tbody.querySelectorAll("tr").forEach(row => {
+            const codeInput = row.querySelector("." + codeClass);
+            const descInput = row.querySelector("." + descClass);
+
+            const code = codeInput ? codeInput.value.trim() : "";
+            const desc = descInput ? descInput.value.trim() : "";
+
+            if (code || desc) {
+                codes.push(code);
+                descs.push(desc);
+            }
+        });
+
+        hiddenCode.value = codes.join("\n");
+        hiddenDesc.value = descs.join("\n");
+    };
+
+    syncOne("servicesProcedureBody", "service-cpt-code-input", "service-cpt-desc-input", "services_cptcode_hidden", "services_cptdesc_hidden");
+    syncOne("immunizationProcedureBody", "immunization-cpt-code-input", "immunization-cpt-desc-input", "immunization_cptcode_hidden", "immunization_cptdesc_hidden");
+}
+
+document.addEventListener("submit", function () {
+    syncServiceProcedureTables();
+});
 
 function verifyFacilityNPIs() {
         document.querySelectorAll(".npi-status[data-npi]").forEach(span => {
@@ -4847,6 +5109,60 @@ document.addEventListener("input", function (event) {
         applyInsuranceCapitalization(event.target);
     }
 });
+
+
+function getSelectedOPDeliveryModes() {
+    return Array.from(document.querySelectorAll('input[name="delivery_mode"]:checked'))
+        .map(input => input.value.trim())
+        .filter(Boolean);
+}
+
+function updateOPDeliveryDetailQuestion() {
+    const row = document.getElementById("opDeliveryDetailRow");
+    const label = document.getElementById("opDeliveryDetailLabel");
+    const input = document.getElementById("opDeliveryDetailInput");
+
+    if (!row || !label || !input) return;
+
+    const selected = getSelectedOPDeliveryModes();
+
+    if (selected.length === 0) {
+        label.innerHTML = "Email / Fax / Phone to send OP / Pending Clarification list?&nbsp;&nbsp;";
+        input.placeholder = "Select delivery mode first";
+        if (isEditMode) {
+            row.style.setProperty("display", "none", "important");
+        }
+        return;
+    }
+
+    const labelText = selected.join(" / ");
+    label.innerHTML = labelText + " to send OP / Pending Clarification list?&nbsp;&nbsp;";
+
+    if (selected.length === 1 && selected[0] === "Email") {
+        input.placeholder = "Enter email address";
+    } else if (selected.length === 1 && selected[0] === "Fax") {
+        input.placeholder = "Enter fax number";
+    } else if (selected.length === 1 && selected[0] === "Phone") {
+        input.placeholder = "Enter phone number / contact";
+    } else {
+        input.placeholder = "Enter " + labelText + " details";
+    }
+
+    if (isEditMode) {
+        row.style.removeProperty("display");
+    }
+}
+
+document.addEventListener("change", function (event) {
+    if (event.target && event.target.name === "delivery_mode") {
+        updateOPDeliveryDetailQuestion();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateOPDeliveryDetailQuestion();
+});
+
 </script>
 
 {% endblock content %}
