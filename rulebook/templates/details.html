@@ -174,7 +174,7 @@
                                         <label class="myk-form-label myk-text-dark">Phone:&nbsp;&nbsp;</label>
                                         <div class="data-row">
                                             <span class="view-mode">{{ office_contacts.provider_poc_phone }}</span>
-                                            <input type="text" name="provider_poc_phone" class="edit-mode phone-mask" placeholder="(XXX) XXX-XXXX" maxlength="14" value="{% if office_contacts.provider_poc_phone %}{{ office_contacts.provider_poc_phone }}{% endif %}" />
+                                            <input type="text" name="provider_poc_phone" class="edit-mode phone-mask" placeholder="(XXX) XXX-XXXX" minlength="14" value="{% if office_contacts.provider_poc_phone %}{{ office_contacts.provider_poc_phone }}{% endif %}" />
                                         </div>
                                     </div>
 
@@ -238,7 +238,7 @@
                                         <div class="data-row">        
                                             
                                             <span class="view-mode">{{ office_contacts.billing_rep_ext }}</span>
-                                            <input type="text" name="billing_rep_ext" class="edit-mode phone-mask" placeholder="XXXXXXXXXX" maxlength="10" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
+                                            <input type="text" name="billing_rep_ext" class="edit-mode" placeholder="XXXXXXXXXX" maxlength="10" value="{% if office_contacts.billing_rep_ext %}{{ office_contacts.billing_rep_ext }}{% endif %}" />
                                         </div>
                                     </div>
 
@@ -538,7 +538,7 @@
                                                         inputmode="numeric"
                                                         pattern="[0-9]{10}"
                                                         title="NPI must be exactly 10 digits"
-                                                        oninput="cleanNPIInput(this)"
+                                                        oninput="cleanNPIMultilineInput(this)"
                                                         value="{{ p.provider_npi }}"
                                                         placeholder="10 digit NPI">
                                                 </td>
@@ -579,7 +579,7 @@
                                                         inputmode="numeric"
                                                         pattern="[0-9]{10}"
                                                         title="NPI must be exactly 10 digits"
-                                                        oninput="cleanNPIInput(this)"
+                                                        oninput="cleanNPIMultilineInput(this)"
                                                         placeholder="10 digit NPI">
                                                 </td>
 
@@ -2149,10 +2149,34 @@
                             </h2>
 
                             <div class="form-group myk-mb-3">
-                                <label class="myk-form-label myk-text-dark">Collection agency signed up for this practice?:&nbsp;&nbsp;</label>
+                                <label class="myk-form-label myk-text-dark">
+                                    Collection agency signed up for this practice?:&nbsp;&nbsp;
+                                </label>
+
                                 <div class="data-row">
-                                    <span class="view-mode">{{ collection_agency_and_insurance_logins.has_collection_agency }}</span>
-                                    <input type="text" name="has_collection_agency" class="edit-mode myk-form-input" value="{% if collection_agency_and_insurance_logins.has_collection_agency %}{{ collection_agency_and_insurance_logins.has_collection_agency }}{% endif %}" />
+                                    <span class="view-mode">
+                                        {% if collection_agency_and_insurance_logins.has_collection_agency %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </span>
+
+                                    <div class="edit-mode radio-row" style="display:none; border:none;">
+                                        <input type="radio"
+                                            id="collection_agency_yes"
+                                            name="has_collection_agency"
+                                            value="Yes"
+                                            {% if collection_agency_and_insurance_logins.has_collection_agency %}checked{% endif %}>
+                                        <label for="collection_agency_yes" class="radio-label">Yes</label>
+
+                                        <input type="radio"
+                                            id="collection_agency_no"
+                                            name="has_collection_agency"
+                                            value="No"
+                                            {% if not collection_agency_and_insurance_logins.has_collection_agency %}checked{% endif %}>
+                                        <label for="collection_agency_no" class="radio-label">No</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group myk-mb-3">
@@ -2228,7 +2252,7 @@
                                             inputmode="numeric"
                                             pattern="[0-9]{10}"
                                             title="NPI must be exactly 10 digits"
-                                            oninput="cleanNPIInput(this)"
+                                            oninput="cleanNPIMultilineInput(this)"
                                             value="{{ ns_tax_npi.npi_value }}">
                                     </div>
 
@@ -4441,9 +4465,10 @@ function addBlock(prefix) {
         block.innerHTML = `
     <label>Block Type:</label>
     <select name="${prefix}_block_type[]">
-        <option value="paragraph">Paragraph</option>
+        
         <option value="heading">Heading</option>
         <option value="subheading">Subheading</option>
+        <option value="paragraph">Paragraph</option>
         <option value="bullet_list">Bullet List</option>
         <option value="numbered_list">Numbered List</option>
         <option value="note">Note</option>
@@ -4582,7 +4607,7 @@ function addBlock(prefix) {
                    inputmode="numeric"
                    pattern="[0-9]{10}"
                    title="NPI must be exactly 10 digits"
-                   oninput="cleanNPIInput(this)"
+                   oninput="cleanNPIMultilineInput(this)"
                    placeholder="10 digit NPI">
         </td>
 
@@ -5042,8 +5067,18 @@ document.addEventListener("input", function (event) {
     }
 });
 
-document.addEventListener("submit", function () {
+document.addEventListener("submit", function (event) {
     updateBillingTaxNPIHiddenField();
+
+    if (!validatePhoneFaxFields()) {
+        event.preventDefault();
+        return false;
+    }
+
+    if (!validateDateFields()) {
+        event.preventDefault();
+        return false;
+    }
 });
 function toggleSpecificInsuranceRulesTable() {
     const yesRadio = document.getElementById("billing_specific_insurance_rules_yes");
@@ -5162,6 +5197,73 @@ document.addEventListener("change", function (event) {
 document.addEventListener("DOMContentLoaded", function () {
     updateOPDeliveryDetailQuestion();
 });
+
+function validatePhoneFaxFields() {
+    const phoneFaxFieldNames = [
+        "practice_phone",
+        "provider_poc_phone",
+        "provider_poc_fax",
+        "billing_rep_phone",
+        "billing_rep_direct_line",
+        "billing_rep_fax",
+        "ipa_phone"
+    ];
+
+    for (const fieldName of phoneFaxFieldNames) {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (!field) continue;
+
+        const value = field.value || "";
+        const digits = value.replace(/\D/g, "");
+
+        // allow blank field
+        if (!digits) continue;
+
+        // if entered, must be exactly 10 digits
+        if (digits.length !== 10) {
+            alert("Phone/Fax number must be exactly 10 digits.");
+            field.focus();
+            return false;
+        }
+    }
+
+    return true;
+}
+function isValidStrictDate(value) {
+    if (!value) return true; // allow blank
+
+    const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) return false;
+
+    const month = parseInt(match[1], 10);
+    const day = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+
+    if (month < 1 || month > 12) return false;
+    if (year < 1900 || year > 2100) return false;
+
+    const lastDay = new Date(year, month, 0).getDate();
+
+    if (day < 1 || day > lastDay) return false;
+
+    return true;
+}
+
+function validateDateFields() {
+    const dateFields = document.querySelectorAll(".date-mask");
+
+    for (const field of dateFields) {
+        const value = (field.value || "").trim();
+
+        if (!isValidStrictDate(value)) {
+            alert("Date must be valid and in MM/DD/YYYY format.");
+            field.focus();
+            return false;
+        }
+    }
+
+    return true;
+}
 
 </script>
 
