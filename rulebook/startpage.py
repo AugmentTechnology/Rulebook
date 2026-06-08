@@ -1163,7 +1163,7 @@ def save_practice(practice_id):
         return v if v else None
 
     def npi_10(v):
-        # NPI must be max 10 digits
+        # NPI must be exactly 10 digits if entered
         lines = (v or "").splitlines()
 
         if not lines:
@@ -1175,7 +1175,14 @@ def save_practice(practice_id):
             return None
 
         digits = "".join(ch for ch in v if ch.isdigit())
-        return digits[:10] if digits else None
+
+        if not digits:
+            return None
+
+        if len(digits) != 10:
+            raise ValueError("Participating Facility NPI must be exactly 10 digits.")
+
+        return digits
 
     def ins_facility(ftype, name, address=None, npi=None, login=None, daily_claims=None, monthly_claims=None, first_dos=None):
         name1 = one_line(name)
@@ -1224,65 +1231,72 @@ def save_practice(practice_id):
             first_dos
         ))
 
-    # ---------------- OFFICE ----------------
-    for name, address, npi, login in zip_longest(
-        split_lines_keep_rows("office_name[]"),
-        split_lines_keep_rows("office_address[]"),
-        split_lines_keep_rows("office_npi[]"),
-        split_lines_keep_rows("office_login[]"),
-        fillvalue=""
-    ):
-        ins_facility("office", name, address, npi, login)
+    try:
+        # ---------------- OFFICE ----------------
+        for name, address, npi, login in zip_longest(
+            split_lines_keep_rows("office_name[]"),
+            split_lines_keep_rows("office_address[]"),
+            split_lines_keep_rows("office_npi[]"),
+            split_lines_keep_rows("office_login[]"),
+            fillvalue=""
+        ):
+            ins_facility("office", name, address, npi, login)
 
-    # ---------------- HOSPITALS ----------------
-    for name, address, npi, login, daily_claims, monthly_claims, first_dos in zip_longest(
-        split_lines_keep_rows("hospital_name[]"),
-        split_lines_keep_rows("hospital_address[]"),
-        split_lines_keep_rows("hospital_npi[]"),
-        split_lines_keep_rows("hospital_login[]"),
-        split_lines_keep_rows("daily_number_claims"),
-        split_lines_keep_rows("monthly_number_claims"),
-        split_lines_keep_rows("first_date_of_service"),
-        fillvalue=""
-    ):
-        ins_facility("hospital", name, address, npi, login, daily_claims, monthly_claims, first_dos)
-
-
-    # ---------------- NURSING ----------------
-    for name, address, npi in zip_longest(
-        split_lines_keep_rows("nursing_name[]"),
-        split_lines_keep_rows("nursing_address[]"),
-        split_lines_keep_rows("nursing_npi[]"),
-        fillvalue=""
-    ):
-        ins_facility("nursing", name, address, npi, None)
+        # ---------------- HOSPITALS ----------------
+        for name, address, npi, login, daily_claims, monthly_claims, first_dos in zip_longest(
+            split_lines_keep_rows("hospital_name[]"),
+            split_lines_keep_rows("hospital_address[]"),
+            split_lines_keep_rows("hospital_npi[]"),
+            split_lines_keep_rows("hospital_login[]"),
+            split_lines_keep_rows("daily_number_claims"),
+            split_lines_keep_rows("monthly_number_claims"),
+            split_lines_keep_rows("first_date_of_service"),
+            fillvalue=""
+        ):
+            ins_facility("hospital", name, address, npi, login, daily_claims, monthly_claims, first_dos)
 
 
-    # ---------------- SURGERY ----------------
-    for name, npi in zip_longest(
-        split_lines_keep_rows("surgery_name[]"),
-        split_lines_keep_rows("surgery_npi[]"),
-        fillvalue=""
-    ):
-        ins_facility("surgery", name, None, npi, None)
+        # ---------------- NURSING ----------------
+        for name, address, npi in zip_longest(
+            split_lines_keep_rows("nursing_name[]"),
+            split_lines_keep_rows("nursing_address[]"),
+            split_lines_keep_rows("nursing_npi[]"),
+            fillvalue=""
+        ):
+            ins_facility("nursing", name, address, npi, None)
 
 
-    # ---------------- DIALYSIS ----------------
-    for name, npi in zip_longest(
-        split_lines_keep_rows("dialysis_name[]"),
-        split_lines_keep_rows("dialysis_npi[]"),
-        fillvalue=""
-    ):
-        ins_facility("dialysis", name, None, npi, None)
+        # ---------------- SURGERY ----------------
+        for name, npi in zip_longest(
+            split_lines_keep_rows("surgery_name[]"),
+            split_lines_keep_rows("surgery_npi[]"),
+            fillvalue=""
+        ):
+            ins_facility("surgery", name, None, npi, None)
 
 
-    # ---------------- CATHLAB ----------------
-    for name, npi in zip_longest(
-        split_lines_keep_rows("cathlab_name[]"),
-        split_lines_keep_rows("cathlab_npi[]"),
-        fillvalue=""
-    ):
-        ins_facility("cathlab", name, None, npi, None)
+        # ---------------- DIALYSIS ----------------
+        for name, npi in zip_longest(
+            split_lines_keep_rows("dialysis_name[]"),
+            split_lines_keep_rows("dialysis_npi[]"),
+            fillvalue=""
+        ):
+            ins_facility("dialysis", name, None, npi, None)
+
+
+        # ---------------- CATHLAB ----------------
+        for name, npi in zip_longest(
+            split_lines_keep_rows("cathlab_name[]"),
+            split_lines_keep_rows("cathlab_npi[]"),
+            fillvalue=""
+        ):
+            ins_facility("cathlab", name, None, npi, None)
+
+    except ValueError as e:
+        conn.rollback()
+        cur.close()
+        conn.close()
+        return str(e), 400
 
     # -------- INSURANCE DETAILS SAVE --------
 

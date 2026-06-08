@@ -3993,6 +3993,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const updateBtn = document.getElementById('update-btn');
         const saveBtn = document.getElementById('save-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
         const commericialSelect = document.getElementById('commercial-select');
         const logoPreview = document.getElementById('document-logo-preview');
 
@@ -4040,6 +4041,12 @@
         if (updateBtn) {
             updateBtn.addEventListener('click', function () {
                 setMode(true);
+            });
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function () {
+                window.location.reload();
             });
         }
 
